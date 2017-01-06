@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opendata/opendata.iml" filepath="$PROJECT_DIR$/opendata/opendata.iml" />
+      <module fileurl="file://$PROJECT_DIR$/timeforcoffee-android.iml" filepath="$PROJECT_DIR$/timeforcoffee-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zvv/zvv.iml" filepath="$PROJECT_DIR$/zvv/zvv.iml" />
+    </modules>
+  </component>
+</project>

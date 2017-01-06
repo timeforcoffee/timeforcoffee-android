@@ -1,0 +1,40 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.3.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+ext {
+    MIN_SDK = 19
+    COMPILE_SDK = 23
+    TARGET_SDK = 23
+    BUILD_TOOL = "21.1.2"
+
+    PACKAGE_NAME = "ch.liip.timeforcoffee"
+
+    VERSION = "1.0.17"
+    VERSION_CODE = 17
+
+    RELEASE_MAP_API_KEY = "***REMOVED***"
+    DEBUG_MAP_API_KEY = "***REMOVED***"
+
+    PLAY_SERVICES_VERSION = "9.4.0"
+    SUPPORT_VERSION = "23.1.1"
+    RETROFIT_VERSION = "1.9.0"
+    DAGGER_VERSION = "1.2.2"
+    SUPPORT_WEARABLE_VERSION = "1.4.0"
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
