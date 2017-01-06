@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_stations">Arrêts</string>
+    <string name="tab_favorites">Favoris</string>
+    <string name="action_settings">"Paramètres"</string>
+    <string name="action_search">"Recherche</string>
+    <string name="action_about">"A propos de cette appli"</string>
+    <string name="action_favorite">"Ajouter aux favoris"</string>
+    <string name="title_no_stations">"Pas d'arrêts trouvés"</string>
+    <string name="title_enter_search">"Entrer votre recherche"</string>
+    <string name="title_no_favorites">"Pas de favoris</string>
+    <string name="title_add_favorite_end">"pour ajouter un arrêt comme favori"</string>
+    <string name="title_add_favorite_start">"Tape sur l'icône"</string>
+    <string name="platform">"- Voie: %s"</string>
+    <string name="retry">"Réessayer"</string>
+    <string name="network_error">"Problème de connexion"</string>
+    <string name="permission_message">"Nous avons besoin d’accéder à ta position pour pouvoir trouver les arrêtes les
+        plus proches."
+    </string>
+    <string name="permission_allow">"Autoriser"</string>
+    <string name="permission_dont_allow">"Ne pas autoriser"</string>
+    <string name="permission_no_location">"Tu n'as pas autorisé d'accéder à ta position"</string>
+    <string name="grant">"Autoriser"</string>
+    <string name="activate">"Activer"</string>
+    <string name="location_service_off">"Le service de localisation est désactivé"</string>
+    <string name="timeForCoffee_about_idea">Idée, website et API par</string>
+    <string name="timeForCoffee_about_ios_app">app iOS par</string>
+    <string name="timeForCoffee_about_android_app">app Android par</string>
+</resources>
