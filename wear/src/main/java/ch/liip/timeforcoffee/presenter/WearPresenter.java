@@ -212,14 +212,6 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         Log.d(TAG, "onLocationChanged");
         mSelectedStation = null;
         startMeasureTimeout();
-
-        //location.setLatitude(46.8017);
-        //location.setLongitude(7.1456);
-        //location.setLatitude(52.5074592);
-        //location.setLongitude(13.2860644);
-        location.setLatitude(40.705311);
-        location.setLongitude(-74.2581929);
-
         getStations(location);
     }
 
