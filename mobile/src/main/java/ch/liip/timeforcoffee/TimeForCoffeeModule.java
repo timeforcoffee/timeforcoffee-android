@@ -42,7 +42,7 @@ class TimeForCoffeeModule {
     @Singleton
     TransportService provideTransportService() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://transport.opendata.ch")
+                .setEndpoint("https://transport.opendata.ch")
                 .build();
 
         TransportService service = restAdapter.create(TransportService.class);
@@ -57,7 +57,7 @@ class TimeForCoffeeModule {
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://tfc.chregu.tv")
+                .setEndpoint("https://tfc.chregu.tv")
                 .setConverter(new GsonConverter(gson))
                 .build();
 
