@@ -1,21 +1,24 @@
 package ch.liip.timeforcoffee.opendata;
 
-import java.util.List;
-import java.util.Map;
+import retrofit.http.GET;
+import retrofit.http.Headers;
+import retrofit.http.QueryMap;
+import rx.Observable;
 
-import retrofit.Callback;
-import retrofit.http.*;
+import java.util.Map;
 
 /* Created by fsantschi on 08/03/15.
 */
 public interface TransportService {
     @Headers("Cache-Control:public, max-age=20")
     @GET("/v1/connections")
-    public void getConnections(@QueryMap Map<String,String> query, Callback<ConnectionsResponse> callback);
+    public Observable<ConnectionsResponse> getConnections(@QueryMap Map<String, String> query);
+
     @Headers("Cache-Control:public, max-age=20")
     @GET("/v1/locations")
-    public void getLocations(@QueryMap Map<String,String> query, Callback<LocationsResponse> callback);
+    public Observable<LocationsResponse> getLocations(@QueryMap Map<String, String> query);
+
     @Headers("Cache-Control:public, max-age=20")
     @GET("/v1/stationboard")
-    public void getStationboard(@QueryMap Map<String,String> query, Callback<StationboardResponse> callback);
+    public Observable<StationboardResponse> getStationboard(@QueryMap Map<String, String> query);
 }

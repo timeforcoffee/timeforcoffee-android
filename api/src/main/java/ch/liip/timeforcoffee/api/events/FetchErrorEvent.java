@@ -7,7 +7,13 @@ import retrofit.RetrofitError;
  */
 public class FetchErrorEvent {
     private RetrofitError error;
+    private Throwable throwable;
+
     public FetchErrorEvent(RetrofitError error) {
         this.error = error;
+    }
+
+    public FetchErrorEvent(Throwable throwable) {
+        this.throwable = throwable;
     }
 }

@@ -17,6 +17,9 @@ import com.google.android.gms.wearable.*;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -76,30 +79,23 @@ public class WearService extends WearableListenerService {
     public void getStations(Location location) {
         Log.d(TAG, "getStations");
 
-        Callback<LocationsResponse> callback = new Callback<LocationsResponse>() {
-
-            @Override
-            public void failure(RetrofitError error) {
-                // TODO Auto-generated method stub
-                String blah = "";
-            }
-
-            @Override
-            public void success(LocationsResponse locations, Response response) {
-                ArrayList<Station> stations = new ArrayList<Station>();
-                for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
-                    stations.add(StationMapper.fromLocation(location));
-                }
-                sendStations(stations);
-            }
-
-        };
-
         Map<String, String> query = new HashMap<String, String>();
         query.put("x", Double.toString(location.getLatitude()));
         query.put("y", Double.toString(location.getLongitude()));
 
-        transportService.getLocations(query, callback);
+        transportService.getLocations(query)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<LocationsResponse>() {
+                    @Override
+                    public void call(LocationsResponse locations) {
+                        ArrayList<Station> stations = new ArrayList<Station>();
+                        for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
+                            stations.add(StationMapper.fromLocation(location));
+                        }
+                        sendStations(stations);
+                    }
+                });
 
     }
 

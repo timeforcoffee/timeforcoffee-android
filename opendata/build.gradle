@@ -21,6 +21,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:'+project.SUPPORT_VERSION
+    compile 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
     compile 'com.squareup.retrofit:retrofit:' + project.RETROFIT_VERSION
+    compile 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
+    compile 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
 }
