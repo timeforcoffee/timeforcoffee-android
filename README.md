@@ -1,23 +1,21 @@
 # Time for Coffee Android
 
-# Project Name
-
 Time for Coffee for Android with Wear App. Real-time departure info for Switzerland.
 
 ## Road map
 
-- Compatibility with Android Wear 2.0
-- Make the app working outside of Swizerland
-- Display line details
-- Favorite a line
+* Compatibility with Android Wear 2.0
+* Make the app working outside of Swizerland
+* Display line details
+* Favorite a line
 
-- Navigation / display walk on a map
-- Widget
+* Navigation / display walk on a map
+* Widget
 
-- Integrate apps to buy a ticket
+* Integrate apps to buy a ticket
 
-- Cache responses
-- Architecture (RxJava?)
+* Cache responses
+* Architecture (RxJava?)
 
 ## Contributing
 
