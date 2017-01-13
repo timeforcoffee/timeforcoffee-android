@@ -11,7 +11,6 @@ Time for Coffee for Android with Wear App. Real-time departure info for Switzerl
 
 - [ ] Navigation / display walk on a map
 - [ ] Widget
-
 - [ ] Integrate apps to buy a ticket
 
 - [ ] Cache responses
