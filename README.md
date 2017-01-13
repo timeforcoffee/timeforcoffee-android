@@ -4,15 +4,13 @@ Time for Coffee for Android with Wear App. Real-time departure info for Switzerl
 
 ## Road map
 
-- [ ] Compatibility with Android Wear 2.0[ ]
+- [ ] Compatibility with Android Wear 2.0
 - [ ] Make the app working outside of Swizerland
 - [ ] Display line details
 - [ ] Favorite a line
-
 - [ ] Navigation / display walk on a map
 - [ ] Widget
 - [ ] Integrate apps to buy a ticket
-
 - [ ] Cache responses
 - [ ] Architecture (RxJava?)
 
