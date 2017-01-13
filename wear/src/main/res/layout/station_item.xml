@@ -12,7 +12,6 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_place"
     />
-
     <TextView android:id="@+id/name"
               tools:text="Zürich, Albisrieden"
               android:layout_marginLeft="10dp"
