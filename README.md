@@ -1,4 +1,4 @@
-# Time For Coffee Android
+# Time for Coffee Android
 
 # Project Name
 
