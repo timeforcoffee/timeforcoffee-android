@@ -96,9 +96,10 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         params.height = height;
         gradientOverlay.setLayoutParams(params);
         gradientOverlay.setAlpha(alpha);
-        if (alpha < 1){
+        if (alpha < 1) {
             mChevron.setBackgroundResource(R.drawable.chevron_up);
-        }else {mChevron.setBackgroundResource(R.drawable.chevron_down);
+        } else {
+            mChevron.setBackgroundResource(R.drawable.chevron_down);
 
         }
     }
@@ -119,7 +120,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDistanceComputed(WalkingDistance distance) {
 
-                if (distance == null) {
+                if (distance == null || !isAdded()) {
                     return;
                 }
 
@@ -139,6 +140,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
         if (distance != null) {
             distanceTextView.setText(distance.getWalkingDistance());
-         }
+        }
     }
 }
