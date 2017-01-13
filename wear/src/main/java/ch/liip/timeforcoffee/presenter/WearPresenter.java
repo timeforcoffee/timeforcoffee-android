@@ -283,9 +283,12 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
     public void onRefreshView() {
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mSelectedStation = null;
-            startMeasureTimeout();
-            getStations(location);
+            if (location != null) {
+                mActivity.displayRefreshState();
+                mSelectedStation = null;
+                startMeasureTimeout();
+                getStations(location);
+            }
         }
     }
 

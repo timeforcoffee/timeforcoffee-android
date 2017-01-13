@@ -162,9 +162,12 @@ public class WearActivity extends Activity {
 
     public void refresh() {
         mFragmentViewPager.setCurrentItem(0, 0, true);
+        mPresenter.onRefreshView();
+    }
+
+    public void displayRefreshState() {
         mDepartureListFragment.displayProgressIndicator();
         mStationListFragment.displayProgressIndicator();
-        mPresenter.onRefreshView();
     }
 
     @Override
