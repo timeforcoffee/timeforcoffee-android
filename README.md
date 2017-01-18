@@ -6,7 +6,7 @@ Time for Coffee for Android with Wear App. Real-time departure info for Switzerl
 
 - [ ] Compatibility with Android Wear 2.0
 - [ ] Make the app working outside of Swizerland
-- [ ] Improve location service / feedback when there is no location for quite a while
+- [ ] Improve location service / feedback when there is no location for quite a while
 - [ ] Display line details
 - [ ] Favorite a line
 - [ ] Navigation / display walk on a map
