@@ -64,10 +64,6 @@ dependencies {
     compile 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
     compile 'com.sothree.slidinguppanel:library:3.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-
-    compile('io.nlopez.smartlocation:library:3.2.7') {
-        transitive = false
-    }
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }

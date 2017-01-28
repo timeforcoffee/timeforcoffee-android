@@ -83,6 +83,16 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == mPresenter.PLAY_SERVICE_RESOLUTION_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                mPresenter.onResumeView();
+            }
+        }
+    }
+
     public void updateFavorites() {
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(
