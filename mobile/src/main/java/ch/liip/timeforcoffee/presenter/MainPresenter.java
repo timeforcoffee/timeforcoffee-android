@@ -1,12 +1,10 @@
 package ch.liip.timeforcoffee.presenter;
 
-import android.Manifest;
-import android.content.IntentSender;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import ch.liip.timeforcoffee.R;
@@ -18,12 +16,10 @@ import ch.liip.timeforcoffee.api.events.FetchOpenDataLocationsEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.PermissionsChecker;
 import ch.liip.timeforcoffee.widget.SnackBars;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.wearable.Wearable;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.config.LocationAccuracy;
+import io.nlopez.smartlocation.location.config.LocationParams;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -34,8 +30,7 @@ import java.util.Map;
 /**
  * Created by nicolas on 10/10/16.
  */
-public class MainPresenter implements Presenter, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener {
+public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private MainActivity mActivity;
 
@@ -46,11 +41,9 @@ public class MainPresenter implements Presenter, GoogleApiClient.ConnectionCallb
 
     private String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
     private PermissionsChecker permissionsChecker;
-    private GoogleApiClient mGoogleApiClient;
 
     final String TAG = "timeforcoffee";
-    public final int PLAY_SERVICE_RESOLUTION_REQUEST_CODE = 123;
-    public final int PERMISSION_REQUEST_CODE = 0;
+    final int PERMISSION_REQUEST_CODE = 0;
 
     @Inject
     EventBus mEventBus;
@@ -66,55 +59,9 @@ public class MainPresenter implements Presenter, GoogleApiClient.ConnectionCallb
 
         permissionsChecker = new PermissionsChecker(activity);
 
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(mActivity);
-        if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(mActivity, result, PLAY_SERVICE_RESOLUTION_REQUEST_CODE).show();
-            }
-        }
-
-        //Google Api client
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .addApi(LocationServices.API)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
     }
 
     public void onResumeView() {
-        if (mGoogleApiClient.isConnected()) {
-            connected();
-        } else {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected");
-        connected();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d(TAG, "connection to location client suspended");
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Log.d(TAG, "connection to location client failed");
-        if (result.hasResolution()) {
-            try {
-                result.startResolutionForResult(mActivity, PLAY_SERVICE_RESOLUTION_REQUEST_CODE);
-                return;
-            } catch (IntentSender.SendIntentException exception) {
-            }
-        }
-    }
-
-    void connected() {
         if (Build.FINGERPRINT.contains("generic")) { //emulator
             updateStationsWithLastPosition();
         } else if (!mIsCapturingLocation) {
@@ -150,17 +97,22 @@ public class MainPresenter implements Presenter, GoogleApiClient.ConnectionCallb
     }
 
     private void startLocation() {
+        if (!permissionsChecker.LacksPermission(locationPermission)) {
 
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
+                SnackBars.showLocalisationServiceOff(mActivity, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mActivity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                });
+                return;
+            }
 
-            LocationRequest locationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                    .setInterval(LOCATION_INTERVAL)
-                    .setFastestInterval(LOCATION_INTERVAL)
-                    .setSmallestDisplacement(LOCATION_SMALLEST_DISPLACEMENT);
-
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, (com.google.android.gms.location.LocationListener) this);
             mIsCapturingLocation = true;
+            SmartLocation smartLocation = new SmartLocation.Builder(mActivity).logging(true).build();
+            LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
+            smartLocation.location().config(locationParams).start(this);
 
         } else {
             permissionsChecker.RequestPermission(mActivity, locationPermission, PERMISSION_REQUEST_CODE, mActivity.getResources().getString(R.string.permission_message));
@@ -189,14 +141,11 @@ public class MainPresenter implements Presenter, GoogleApiClient.ConnectionCallb
 
     private void stopLocation() {
         mIsCapturingLocation = false;
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
+        SmartLocation.with(mActivity).location().stop();
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-
+    public void onLocationUpdated(Location location) {
         Log.i(TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
         mLastLocation = location;
         loadStations();
@@ -229,9 +178,6 @@ public class MainPresenter implements Presenter, GoogleApiClient.ConnectionCallb
 
     public void onDestroy() {
         mActivity = null;
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
         mEventBus.unregister(this);
     }
 
