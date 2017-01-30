@@ -5,7 +5,7 @@ import ch.liip.timeforcoffee.api.OpenDataApiService;
 import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.opendata.TransportService;
 import ch.liip.timeforcoffee.presenter.*;
-import ch.liip.timeforcoffee.wear.WearService;
+import ch.liip.timeforcoffee.wear.DataService;
 import ch.liip.timeforcoffee.zvv.ZvvService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +22,7 @@ import javax.inject.Singleton;
  */
 @Module(
         injects = {
-                WearService.class,
+                DataService.class,
                 MainPresenter.class,
                 DeparturesPresenter.class,
                 StationListPresenter.class,
