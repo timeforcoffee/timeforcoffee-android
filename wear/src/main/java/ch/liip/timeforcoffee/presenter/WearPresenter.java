@@ -81,7 +81,11 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
 
     @Override
     public void onResumeView() {
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient.isConnected()) {
+            startLocation();
+        } else {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
@@ -233,14 +237,22 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         if (messageEvent.getPath().compareTo("/stations") == 0) {
             Log.d(TAG, "stations changed");
             String stationsSerialized = new String(messageEvent.getData());
-            Station[] stations = (Station[]) SerialisationUtilsGSON.deserialize(Station[].class, stationsSerialized);
-            onStationsReceived(new LinkedList(Arrays.asList(stations)));
+            if (stationsSerialized == null || stationsSerialized.isEmpty() || stationsSerialized.equals("no_stations")) {
+                onStationsReceived(null);
+            } else {
+                Station[] stations = (Station[]) SerialisationUtilsGSON.deserialize(Station[].class, stationsSerialized);
+                onStationsReceived(new LinkedList(Arrays.asList(stations)));
+            }
         }
         if (messageEvent.getPath().compareTo("/departures") == 0) {
             Log.d(TAG, "departures changed");
             String departureSerialized = new String(messageEvent.getData());
-            Departure[] departures = (Departure[]) SerialisationUtilsGSON.deserialize(Departure[].class, departureSerialized);
-            onDeparturesReceived(new LinkedList(Arrays.asList(departures)));
+            if (departureSerialized == null || departureSerialized.isEmpty() || departureSerialized.equals("no_departures")) {
+                onDeparturesReceived(null);
+            } else {
+                Departure[] departures = (Departure[]) SerialisationUtilsGSON.deserialize(Departure[].class, departureSerialized);
+                onDeparturesReceived(new LinkedList(Arrays.asList(departures)));
+            }
         }
     }
 
