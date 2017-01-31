@@ -215,21 +215,13 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
     private void sendMessage(final String path, final String message, final String destNodeId) {
 
         if (mGoogleApiClient == null || !mGoogleApiClient.isConnected()) {
+            stopSelf();
             return;
         }
 
         Log.d(TAG, "DataService: sendMessage");
-
-        //new Thread(new Runnable() {
-        //@Override
-        //public void run() {
         byte[] bytes = message == null ? null : message.getBytes();
         Wearable.MessageApi.sendMessage(mGoogleApiClient, destNodeId, path, bytes);
-        //if (!result.getStatus().isSuccess()) {
-        //    Log.e(TAG, "WearService: There has been a problem sending the message");
-        //}
-        //}
-        //}).start();
 
         //Stop the service
         stopSelf();
