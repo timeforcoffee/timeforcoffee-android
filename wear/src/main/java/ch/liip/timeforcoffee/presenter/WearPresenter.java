@@ -14,6 +14,7 @@ import ch.liip.timeforcoffee.activity.WearActivity;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
+import ch.liip.timeforcoffee.common.SerializableLocation;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.PermissionsChecker;
 import com.google.android.gms.common.ConnectionResult;
@@ -221,8 +222,12 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
 
     void getStations(Location location) {
         Log.d(TAG, "getStations");
-        String stations = SerialisationUtilsGSON.serialize(location);
-        sendMessage("/location", stations);
+
+        if (location != null) {
+            SerializableLocation l = new SerializableLocation(location.getLatitude(), location.getLongitude());
+            String s = SerialisationUtilsGSON.serialize(l);
+            sendMessage("/location", s);
+        }
     }
 
     public void loadDepartures(String stationId) {
@@ -237,7 +242,7 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         if (messageEvent.getPath().compareTo("/stations") == 0) {
             Log.d(TAG, "stations changed");
             String stationsSerialized = new String(messageEvent.getData());
-            if (stationsSerialized == null || stationsSerialized.isEmpty() || stationsSerialized.equals("no_stations")) {
+            if (stationsSerialized == null || stationsSerialized.isEmpty()) {
                 onStationsReceived(null);
             } else {
                 Station[] stations = (Station[]) SerialisationUtilsGSON.deserialize(Station[].class, stationsSerialized);
@@ -247,7 +252,7 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         if (messageEvent.getPath().compareTo("/departures") == 0) {
             Log.d(TAG, "departures changed");
             String departureSerialized = new String(messageEvent.getData());
-            if (departureSerialized == null || departureSerialized.isEmpty() || departureSerialized.equals("no_departures")) {
+            if (departureSerialized == null || departureSerialized.isEmpty()) {
                 onDeparturesReceived(null);
             } else {
                 Departure[] departures = (Departure[]) SerialisationUtilsGSON.deserialize(Departure[].class, departureSerialized);

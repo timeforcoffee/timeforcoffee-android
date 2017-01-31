@@ -162,7 +162,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
     void sendStations(ArrayList<Station> stations, String destSourceNodeId) {
         Log.d(TAG, "DataService: sendStations");
         if (stations == null || stations.isEmpty()) {
-            sendMessage("/stations", "no_stations", destSourceNodeId);
+            sendMessage("/stations", "", destSourceNodeId);
         } else {
             sendMessage("/stations", SerialisationUtilsGSON.serialize(stations), destSourceNodeId);
         }
@@ -206,7 +206,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
     void sendDepartures(ArrayList<Departure> departures, String destNodeId) {
         Log.d(TAG, "DataService: sendDepartures");
         if (departures == null || departures.isEmpty()) {
-            sendMessage("/departures", "no_departures", destNodeId);
+            sendMessage("/departures", "", destNodeId);
         } else {
             sendMessage("/departures", SerialisationUtilsGSON.serialize(departures), destNodeId);
         }
