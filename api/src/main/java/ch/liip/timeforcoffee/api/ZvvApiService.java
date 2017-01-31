@@ -7,9 +7,9 @@ import ch.liip.timeforcoffee.zvv.StationsResponse;
 import ch.liip.timeforcoffee.zvv.ZvvService;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class ZvvApiService {
         this.zvvService = zvvService;
         this.eventBus.register(this);
     }
-    
+
     @Subscribe
     public void onEvent(FetchZvvStationboardEvent event) {
         fetchZvvStationboard(event.getStationId());
@@ -40,36 +40,29 @@ public class ZvvApiService {
     }
 
     public void fetchZvvStationboard(String stationId) {
-        Callback<StationboardResponse> callback = new Callback<StationboardResponse>() {
 
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new FetchErrorEvent(error));
-            }
+        zvvService.getStationboard(stationId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<StationboardResponse>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void success(StationboardResponse stationboard, Response response) {
-                eventBus.post(new ZvvStationboardFetchedEvent(stationboard.getDepartures()));
-            }
+                    }
 
-        };
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
 
-        zvvService.getStationboard(stationId, callback);
+                    @Override
+                    public void onNext(StationboardResponse stationboard) {
+                        eventBus.post(new ZvvStationboardFetchedEvent(stationboard.getDepartures()));
+                    }
+                });
     }
 
     public void fetchZvvStations(String searchQuery) {
-        Callback<StationsResponse> callback = new Callback<StationsResponse>() {
-
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new FetchErrorEvent(error));
-            }
-
-            @Override
-            public void success(StationsResponse stationsResponse, Response response) {
-                eventBus.post(new ZvvStationsFetchedEvent(stationsResponse.getStations()));
-            }
-        };
 
         if (searchQuery.isEmpty()) { //search query is empty =>  return an empty station list
             List<Station> stations = new ArrayList<Station>();
@@ -77,6 +70,24 @@ public class ZvvApiService {
             return;
         }
 
-        zvvService.getStations(searchQuery, callback);
+        zvvService.getStations(searchQuery)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<StationsResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
+
+                    @Override
+                    public void onNext(StationsResponse stationsResponse) {
+                        eventBus.post(new ZvvStationsFetchedEvent(stationsResponse.getStations()));
+                    }
+                });
     }
 }

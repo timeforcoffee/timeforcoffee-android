@@ -100,6 +100,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     @Override
     public void onResume() {
         super.onResume();
+        mNoStationsLayout.setVisibility(View.GONE);
         mPresenter.onResumeView();
     }
 
