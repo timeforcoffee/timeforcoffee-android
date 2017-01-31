@@ -8,9 +8,10 @@ import ch.liip.timeforcoffee.opendata.StationboardResponse;
 import ch.liip.timeforcoffee.opendata.TransportService;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -44,62 +45,84 @@ public class OpenDataApiService {
         fetchOpenDataStationboard(event.getQuery());
     }
 
+
     public void fetchOpenDataConnections(Map<String, String> query) {
-        Callback<ConnectionsResponse> callback = new Callback<ConnectionsResponse>() {
 
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new FetchErrorEvent(error));
-            }
+        transportService.getConnections(query)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ConnectionsResponse>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void success(ConnectionsResponse connections, Response response) {
-                eventBus.post(new OpenDataConnectionsFetchedEvent(connections.getConnections()));
-            }
+                    }
 
-        };
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
 
-        transportService.getConnections(query, callback);
+                    @Override
+                    public void onNext(ConnectionsResponse connections) {
+                        eventBus.post(new OpenDataConnectionsFetchedEvent(connections.getConnections()));
+                    }
+                });
     }
 
     public void fetchOpenDataLocations(Map<String, String> query) {
-        Callback<LocationsResponse> callback = new Callback<LocationsResponse>() {
 
-            @Override
-            public void failure(RetrofitError error) {
+        transportService.getLocations(query)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<LocationsResponse, ArrayList<Station>>() {
+                    @Override
+                    public ArrayList<Station> call(LocationsResponse locations) {
+                        ArrayList<Station> stations = new ArrayList<Station>();
+                        for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
+                            stations.add(StationMapper.fromLocation(location));
+                        }
+                        return stations;
+                    }
+                })
+                .subscribe(new Subscriber<ArrayList<Station>>() {
+                    @Override
+                    public void onCompleted() {
 
-                eventBus.post(new FetchErrorEvent(error));
-            }
+                    }
 
-            @Override
-            public void success(LocationsResponse locations, Response response) {
-                ArrayList<Station> stations = new ArrayList<Station>();
-                for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
-                    stations.add(StationMapper.fromLocation(location));
-                }
-                eventBus.post(new StationsFetchedEvent(stations));
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
 
-        };
+                    @Override
+                    public void onNext(ArrayList<Station> stations) {
+                        eventBus.post(new StationsFetchedEvent(stations));
+                    }
+                });
 
-        transportService.getLocations(query, callback);
     }
 
     public void fetchOpenDataStationboard(Map<String, String> query) {
-        Callback<StationboardResponse> callback = new Callback<StationboardResponse>() {
 
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new FetchErrorEvent(error));
-            }
+        transportService.getStationboard(query)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<StationboardResponse>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void success(StationboardResponse stationboard, Response response) {
-                eventBus.post(new OpenDataStationboardFetchedEvent(stationboard.getStationboards()));
-            }
+                    }
 
-        };
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
 
-        transportService.getStationboard(query, callback);
+                    @Override
+                    public void onNext(StationboardResponse stationboard) {
+                        eventBus.post(new OpenDataStationboardFetchedEvent(stationboard.getStationboards()));
+                    }
+                });
     }
 }

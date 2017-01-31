@@ -35,6 +35,7 @@
                 <data android:scheme="wear" android:host="*" android:path="/station"/>
             </intent-filter>
         </service>
+        <service android:name=".wear.DataService"/>
 
         <activity
                 android:name=".activity.MainActivity"

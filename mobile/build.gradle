@@ -49,22 +49,23 @@ dependencies {
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
-    provided 'com.squareup.dagger:dagger-compiler:'+project.DAGGER_VERSION
+    provided 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
     compile project(':opendata')
     compile project(':api')
     compile project(':common')
 
-    compile 'com.android.support:appcompat-v7:'+project.SUPPORT_VERSION
-    compile 'com.android.support:support-v4:'+project.SUPPORT_VERSION
-    compile 'com.android.support:design:'+project.SUPPORT_VERSION
-    compile 'com.google.android.gms:play-services-wearable:'+project.PLAY_SERVICES_VERSION
-    compile 'com.google.android.gms:play-services-maps:' +project.PLAY_SERVICES_VERSION
-
-    compile 'com.squareup.dagger:dagger:' +project.DAGGER_VERSION
+    compile 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
+    compile 'com.android.support:support-v4:' + project.SUPPORT_VERSION
+    compile 'com.android.support:design:' + project.SUPPORT_VERSION
+    compile 'com.google.android.gms:play-services-wearable:' + project.PLAY_SERVICES_VERSION
+    compile 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
+    compile 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
+    compile 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
+    compile 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
     compile 'com.sothree.slidinguppanel:library:3.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
-    compile ('io.nlopez.smartlocation:library:3.2.7') {
+    compile('io.nlopez.smartlocation:library:3.2.7') {
         transitive = false
     }
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {

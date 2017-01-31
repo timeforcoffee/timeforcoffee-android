@@ -41,9 +41,9 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
     private PermissionsChecker permissionsChecker;
-    final int PERMISSION_REQUEST_CODE = 0;
 
     final String TAG = "timeforcoffee";
+    final int PERMISSION_REQUEST_CODE = 0;
 
     @Inject
     EventBus mEventBus;
@@ -58,6 +58,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         mEventBus.register(this);
 
         permissionsChecker = new PermissionsChecker(activity);
+
     }
 
     public void onResumeView() {
