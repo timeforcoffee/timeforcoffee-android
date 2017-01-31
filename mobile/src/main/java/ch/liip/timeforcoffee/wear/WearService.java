@@ -1,9 +1,9 @@
 package ch.liip.timeforcoffee.wear;
 
 import android.content.Intent;
-import android.location.Location;
 import android.util.Log;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
+import ch.liip.timeforcoffee.common.SerializableLocation;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -34,7 +34,7 @@ public class WearService extends WearableListenerService {
                 return;
             }
 
-            Location location = (Location) SerialisationUtilsGSON.deserialize(Location.class, serializedLocation);
+            SerializableLocation location = (SerializableLocation) SerialisationUtilsGSON.deserialize(SerializableLocation.class, serializedLocation);
 
             if (location != null) {
                 Intent dataService = new Intent(this, DataService.class);
