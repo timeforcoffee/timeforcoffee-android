@@ -2,19 +2,6 @@
 
 Time for Coffee for Android with Wear App. Real-time departure info for Switzerland.
 
-## Road map
-
-- [ ] Compatibility with Android Wear 2.0
-- [ ] Make the app working outside of Swizerland
-- [ ] Improve location service / feedback when there is no location for quite a while
-- [ ] Display line details
-- [ ] Favorite a line
-- [ ] Navigation / display walk on a map
-- [ ] Widget
-- [ ] Integrate apps to buy a ticket
-- [ ] Cache responses
-- [ ] Architecture (RxJava?)
-
 ## Contributing
 
 1. Fork it!
