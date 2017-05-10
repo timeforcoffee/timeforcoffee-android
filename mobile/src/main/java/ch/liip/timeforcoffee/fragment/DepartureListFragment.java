@@ -33,7 +33,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     private DepartureListPresenter mPresenter;
 
-    private DepartureListAdapter departureListAdapter;
+    private DepartureListAdapter mDepartureListAdapter;
     private RelativeLayout mProgressLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -70,8 +70,8 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        departureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>());
-        setListAdapter(departureListAdapter);
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>());
+        setListAdapter(mDepartureListAdapter);
 
         mPresenter = new DepartureListPresenter(this);
     }
