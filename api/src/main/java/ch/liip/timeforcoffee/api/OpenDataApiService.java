@@ -2,10 +2,7 @@ package ch.liip.timeforcoffee.api;
 
 import ch.liip.timeforcoffee.api.events.*;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
-import ch.liip.timeforcoffee.opendata.ConnectionsResponse;
-import ch.liip.timeforcoffee.opendata.LocationsResponse;
-import ch.liip.timeforcoffee.opendata.StationboardResponse;
-import ch.liip.timeforcoffee.opendata.TransportService;
+import ch.liip.timeforcoffee.opendata.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import rx.Subscriber;
@@ -41,6 +38,7 @@ public class OpenDataApiService {
         fetchOpenDataLocations(event.getQuery());
     }
 
+    @Subscribe
     public void onEvent(FetchOpenDataStationboardEvent event) {
         fetchOpenDataStationboard(event.getQuery());
     }

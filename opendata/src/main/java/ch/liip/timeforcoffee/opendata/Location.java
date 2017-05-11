@@ -7,9 +7,9 @@ public class Location {
     private String id;
     private String type;
     private String name;
-    private float score;
+    private Float score;
     private Coordinate coordinate;
-    private float distance;
+    private Float distance;
     Location() {}
 
     public String getId() {
@@ -24,7 +24,7 @@ public class Location {
         return name;
     }
 
-    public float getScore() {
+    public Float getScore() {
         return score;
     }
 
@@ -32,7 +32,7 @@ public class Location {
         return coordinate;
     }
 
-    public float getDistance() {
+    public Float getDistance() {
         return distance;
     }
 }
