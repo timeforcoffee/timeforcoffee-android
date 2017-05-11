@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.api.events;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.liip.timeforcoffee.opendata.Journey;
@@ -11,8 +12,13 @@ import ch.liip.timeforcoffee.opendata.Location;
 public class OpenDataStationboardFetchedEvent {
     private List<Journey> stationboards;
 
-    public OpenDataStationboardFetchedEvent(List<Journey> locations) {
-        this.stationboards = stationboards;
+    public OpenDataStationboardFetchedEvent(List<Journey> journeys) {
+        if(journeys != null) {
+            this.stationboards = journeys;
+        } else {
+            this.stationboards = new LinkedList<>();
+        }
+
     }
 
     public List<Journey> getStationboards() {

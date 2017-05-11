@@ -112,7 +112,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setDepartures(List<Departure> departures) {
-        departureListAdapter.setDepartures(departures);
+        mDepartureListAdapter.setDepartures(departures);
     }
 
     @Override

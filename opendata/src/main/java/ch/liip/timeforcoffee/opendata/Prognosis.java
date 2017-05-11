@@ -9,8 +9,8 @@ public class Prognosis {
     private String platform;
     private Date departure;
     private Date arrival;
-    private float capacity1st;
-    private float capacity2st;
+    private Float capacity1st;
+    private Float capacity2st;
     Prognosis() {}
 
     public String getPlatform() {
@@ -25,11 +25,11 @@ public class Prognosis {
         return arrival;
     }
 
-    public float getCapacity1st() {
+    public Float getCapacity1st() {
         return capacity1st;
     }
 
-    public float getCapacity2st() {
+    public Float getCapacity2st() {
         return capacity2st;
     }
 }

@@ -6,16 +6,16 @@ import java.util.List;
  * Created by fsantschi on 09/03/15.
  */
 public class StationboardResponse {
-    private Connection station;
-    private List<Journey> stationboards;
+    private Location station;
+    private List<Journey> stationboard;
 
     public StationboardResponse() {}
 
-    public Connection getStation() {
+    public Location getStation() {
         return station;
     }
 
     public List<Journey> getStationboards() {
-        return stationboards;
+        return stationboard;
     }
 }
