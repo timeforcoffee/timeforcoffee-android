@@ -35,8 +35,12 @@ public class MainActivity extends AppCompatActivity
 
         // Initialize the ViewPager and set an adapter
         List fragments = new Vector();
+
+        Bundle favoritesFragmentArgs = new Bundle();
+        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
+
         fragments.add(Fragment.instantiate(this, StationListFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName()));
+        fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs));
 
         mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), fragments);
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
