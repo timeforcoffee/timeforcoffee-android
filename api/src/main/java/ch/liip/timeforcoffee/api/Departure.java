@@ -5,25 +5,33 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Departure {
+
     private String name;
     private String type;
     private Boolean accessible;
-    private String to;
+    private String destination;
     private String platform;
     private Date scheduled;
     private Date realtime;
     private int colorFg;
     private int colorBg;
+    private boolean isFavorite;
 
-    public Departure(String name, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, Boolean accessible) {
+    public Departure(String name, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, boolean accessible, boolean isFavorite) {
         this.name = name;
         this.colorBg = colorBg;
         this.colorFg = colorFg;
-        this.to = to;
+        this.destination = to;
         this.platform = platform;
         this.scheduled = scheduled;
         this.realtime = realtime;
         this.accessible = accessible;
+        this.isFavorite = isFavorite;
+    }
+
+    public Departure(String name, String destination) {
+        this.name = name;
+        this.destination = destination;
     }
 
     public String getName() {
@@ -38,8 +46,8 @@ public class Departure {
         return accessible;
     }
 
-    public String getTo() {
-        return to;
+    public String getDestination() {
+        return destination;
     }
 
     public String getPlatform() {return platform;}
@@ -118,5 +126,26 @@ public class Departure {
             diff = scheduled.getTime() - now.getTime();
         }
         return TimeUnit.MILLISECONDS.toMinutes(diff);
+    }
+
+    public boolean getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        boolean sameSame = false;
+        boolean sameDestination = false;
+
+        if (object != null && object instanceof Departure) {
+            sameSame = this.name.equals(((Departure) object).getName());
+            sameDestination = this.destination.equals(((Departure) object).getDestination());
+        }
+
+        return sameSame && sameDestination;
     }
 }

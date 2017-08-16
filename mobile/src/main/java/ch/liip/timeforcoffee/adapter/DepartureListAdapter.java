@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +26,14 @@ import java.util.List;
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
     private List<Departure> mDepartures;
+    private FavoritesDataSource mFavoritesDataSource;
     private Context mContext;
 
     private static final String[] linesWithSymbol = {"ICN", "EN", "ICN", "TGV", "RX", "EC", "IC", "SC", "CNL", "ICE", "IR"};
 
     private static class DepartureViewHolder {
         FontFitTextView lineNameTextView;
-        TextView toTextView;
+        TextView destinationTextView;
         TextView departureTextView;
         TextView scheduledTimeTextView;
         TextView realtimeTextView;
@@ -37,11 +41,12 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         TextView accessibleTextView;
     }
 
-    public DepartureListAdapter(Context context, List<Departure> departures) {
+    public DepartureListAdapter(Context context, List<Departure> departures, FavoritesDataSource favoritesDataSource) {
         super(context, R.layout.fragment_departure_list_row, departures);
 
         mDepartures = departures;
         mContext = context;
+        mFavoritesDataSource = favoritesDataSource;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -56,7 +61,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
             viewHolder = new DepartureViewHolder();
             viewHolder.lineNameTextView = (FontFitTextView) convertView.findViewById(R.id.name);
-            viewHolder.toTextView = (TextView) convertView.findViewById(R.id.to);
+            viewHolder.destinationTextView = (TextView) convertView.findViewById(R.id.to);
             viewHolder.departureTextView = (TextView) convertView.findViewById(R.id.departure);
             viewHolder.scheduledTimeTextView = (TextView) convertView.findViewById(R.id.scheduledtime);
             viewHolder.realtimeTextView = (TextView) convertView.findViewById(R.id.realtime);
@@ -69,10 +74,10 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             viewHolder = (DepartureViewHolder) convertView.getTag();
         }
 
-        Departure departure = this.mDepartures.get(position);
+        final Departure departure = this.mDepartures.get(position);
 
         setLineName(viewHolder.lineNameTextView, departure);
-        viewHolder.toTextView.setText(departure.getTo());
+        viewHolder.destinationTextView.setText(departure.getDestination());
         viewHolder.departureTextView.setText(departure.departureInMinutes());
 
         if (departure.isLate()) { //realtime != schedule time
@@ -98,26 +103,36 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             viewHolder.accessibleTextView.setVisibility(View.GONE);
         }
 
+        viewHolder.lineNameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isFavorite = departure.getIsFavorite();
+                if (isFavorite) {
+                    //remove from favorites
+                    mFavoritesDataSource.deleteFavoriteLine(departure);
+                } else {
+                    //add to favorites
+                    mFavoritesDataSource.insertFavoriteLine(departure);
+                }
+
+                departure.setIsFavorite(!isFavorite);
+            }
+        });
+
         return convertView;
     }
 
     private void setLineName(TextView textView, Departure departure) {
-
         String name = departure.getName();
         textView.setText(name);
 
         try {
-
-
             if (Arrays.asList(linesWithSymbol).contains(name)) {
-
                 Typeface type = Typefaces.get(mContext, "trainsymbol");
                 textView.setTypeface(type);
                 textView.setTextColor(Color.WHITE);
                 textView.setBackgroundColor(Color.RED);
-
             } else {
-
                 if (name.equals("RE")) {
                     textView.setTextColor(Color.RED);
                 } else {
@@ -136,6 +151,10 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             }
         } catch (Exception ex) {
         }
+    }
+
+    public Departure getDeparture(int position) {
+        return this.mDepartures.get(position);
     }
 
     public void setDepartures(List<Departure> mDepartures) {

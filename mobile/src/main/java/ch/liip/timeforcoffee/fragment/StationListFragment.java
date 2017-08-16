@@ -35,9 +35,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     private Callbacks mCallbacks = sDummyCallbacks;
 
     public interface Callbacks {
-        public void onStationSelected(Station station);
-
-        public void onRefresh();
+        void onStationSelected(Station station);
+        void onRefresh();
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {

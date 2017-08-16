@@ -19,7 +19,7 @@ public class DepartureMapper {
         } catch (Throwable e) {
             //
         }
-        return new Departure(zvvDeparture.getName(), zvvDeparture.getTo(), zvvDeparture.getPlatform(), colorFg, colorBg, zvvDeparture.getDeparture().getScheduled(), zvvDeparture.getDeparture().getRealtime(), zvvDeparture.getAccessible());
+        return new Departure(zvvDeparture.getName(), zvvDeparture.getTo(), zvvDeparture.getPlatform(), colorFg, colorBg, zvvDeparture.getDeparture().getScheduled(), zvvDeparture.getDeparture().getRealtime(), zvvDeparture.getAccessible(), false);
     }
 
     public static Departure fromOpenData(ch.liip.timeforcoffee.opendata.Journey journey) {

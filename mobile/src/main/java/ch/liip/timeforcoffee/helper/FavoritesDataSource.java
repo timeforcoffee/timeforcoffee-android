@@ -25,7 +25,7 @@ public class FavoritesDataSource {
             FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE,
             FavoriteStationColumn.COLUMN_DISTANCE};
 
-    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_LINE_ID,
+    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_DESTINATION,
             FavoriteLineColumn.COLUMN_NAME};
 
     public FavoritesDataSource(Context context) {
@@ -60,17 +60,21 @@ public class FavoritesDataSource {
     public void insertFavoriteLine(Departure departure) {
         ContentValues values = new ContentValues();
         values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
+        values.put(FavoriteLineColumn.COLUMN_DESTINATION, departure.getDestination());
 
         database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
     }
 
     public void deleteFavoriteLine(Departure departure) {
-        String id = departure.getName();
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = " + id, null);
+        String name = departure.getName();
+        String destination = departure.getDestination();
+
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = " + name  +
+                " AND " + FavoriteLineColumn.COLUMN_DESTINATION + " = " + destination, null);
     }
 
     public List<Station> getAllFavoriteStations() {
-        List<Station> stations = new ArrayList<Station>();
+        List<Station> stations = new ArrayList<>();
 
         Cursor cursor = database.query(FavoriteStationColumn.TABLE_NAME, allStationColumns, null, null, null, null, null);
         cursor.moveToFirst();
@@ -85,7 +89,7 @@ public class FavoritesDataSource {
         return stations;
     }
 
-    /*public List<Departure> getAllFavoriteLines() {
+    public List<Departure> getAllFavoriteLines() {
         List<Departure> departures = new ArrayList<>();
 
         Cursor cursor = database.query(FavoriteLineColumn.TABLE_NAME, allLineColumns, null, null, null, null, null);
@@ -99,7 +103,7 @@ public class FavoritesDataSource {
         // make sure to close the cursor
         cursor.close();
         return departures;
-    }*/
+    }
 
     private Station cursorToStation(Cursor cursor) {
         String id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_STATION_ID));
@@ -116,11 +120,11 @@ public class FavoritesDataSource {
         return station;
     }
 
-    /*private Departure cursorToLine(Cursor cursor) {
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_LINE_ID));
+    private Departure cursorToLine(Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
+        String destination = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION));
 
-        Departure departure = new Departure();
+        Departure departure = new Departure(name, destination);
         return departure;
-    }*/
+    }
 }
