@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.presenter;
 
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
@@ -47,10 +48,15 @@ public class FavoritesListPresenter implements Presenter {
     }
 
     public void updateFavorites() {
-        List<Station> favs = mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS
-                ? mFavoriteDataSource.getAllFavoriteStations()
-                : mFavoriteDataSource.getAllFavoriteStations();
+        if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
+            updateFavoriteStations();
+        } else {
+            updateFavoriteDepartures();
+        }
+    }
 
+    private void updateFavoriteStations() {
+        List<Station> favs = mFavoriteDataSource.getAllFavoriteStations();
         if (favs.size() == 0) {
             mFragment.showNoFavoritesLayout(true);
         } else {
@@ -58,6 +64,17 @@ public class FavoritesListPresenter implements Presenter {
         }
 
         mFragment.setStations(favs);
+    }
+
+    private void updateFavoriteDepartures() {
+        List<Departure> favs = mFavoriteDataSource.getAllFavoriteLines();
+        if (favs.size() == 0) {
+            mFragment.showNoFavoritesLayout(true);
+        } else {
+            mFragment.showNoFavoritesLayout(false);
+        }
+
+        mFragment.setDepartures(favs);
     }
 
     public FavoritesDataSource getFavoriteDataSource() {

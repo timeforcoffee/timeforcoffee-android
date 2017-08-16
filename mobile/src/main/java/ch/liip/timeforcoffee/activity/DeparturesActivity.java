@@ -3,23 +3,36 @@ package ch.liip.timeforcoffee.activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
+import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
+import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
+
+import com.astuetz.PagerSlidingTabStrip;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-public class DeparturesActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, DepartureListFragment.Callbacks {
+import java.util.List;
+import java.util.Vector;
+
+public class DeparturesActivity extends AppCompatActivity implements
+        SlidingUpPanelLayout.PanelSlideListener, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
+    private TabsAdapter mPagerAdapter;
+    private ViewPager mViewPager;
 
     private DeparturesPresenter mPresenter;
 
@@ -57,6 +70,36 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         Station station = new Station(id, name, distance, loc, false);
         station.setIsFavorite(isFavorite);
         mStationMapFragment.setStation(station);
+
+        // Initialize the ViewPager and set an adapter
+        List fragments = new Vector();
+
+        Bundle favoritesFragmentArgs = new Bundle();
+        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_DEPARTURES);
+
+        fragments.add(Fragment.instantiate(this, DepartureListFragment.class.getName()));
+        fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs));
+
+        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), fragments);
+        mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
+        mViewPager.setAdapter(mPagerAdapter);
+
+        // Bind the tabs to the ViewPager
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabs.setViewPager(mViewPager);
+
+        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + mViewPager.getCurrentItem());
+                if (currentFragment instanceof FavoritesListFragment) {
+                    ((FavoritesListFragment) currentFragment).updateFavorites();
+                } else if (currentFragment instanceof StationListFragment) {
+                    ((StationListFragment) currentFragment).updateFavorites();
+                }
+            }
+        });
 
         mPresenter = new DeparturesPresenter(this, station);
     }
@@ -115,6 +158,14 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onFavoriteDepartureSelected(Departure departure) {
+        // handle
+    }
+
+    @Override
+    public void onFavoriteStationSelected(Station station) { }
 
     @Override
     public void onPanelSlide(View panel, float slideOffset) {
