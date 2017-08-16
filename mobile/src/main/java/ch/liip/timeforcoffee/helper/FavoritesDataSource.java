@@ -70,7 +70,7 @@ public class FavoritesDataSource {
         String destination = departure.getDestination();
 
         database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = " + name  +
-                " AND " + FavoriteLineColumn.COLUMN_DESTINATION + " = " + destination, null);
+                " AND " + FavoriteLineColumn.COLUMN_DESTINATION + " = '" + destination + "'", null);
     }
 
     public List<Station> getAllFavoriteStations() {

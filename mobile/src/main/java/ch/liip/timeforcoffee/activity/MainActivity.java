@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
@@ -114,6 +115,9 @@ public class MainActivity extends AppCompatActivity
     public void onFavoriteStationSelected(Station station) {
         selectStation(station);
     }
+
+    @Override
+    public void onFavoriteDepartureSelected(Departure departure) { }
 
     @Override
     public void onRefresh() {

@@ -23,8 +23,8 @@ public class FontFitTextView extends AppCompatTextView implements View.OnClickLi
     }
 
     public FontFitTextView(Context context, AttributeSet attrs) {
-
         super(context, attrs);
+        setOnClickListener(this);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
