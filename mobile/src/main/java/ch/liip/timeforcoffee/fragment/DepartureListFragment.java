@@ -8,10 +8,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.presenter.DepartureListPresenter;
 
 import java.util.ArrayList;
@@ -33,14 +35,14 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     private DepartureListPresenter mPresenter;
 
-    private DepartureListAdapter departureListAdapter;
+    private DepartureListAdapter mDepartureListAdapter;
     private RelativeLayout mProgressLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
     public interface Callbacks {
-        public void onRefresh();
+        void onRefresh();
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -69,11 +71,10 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        departureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>());
-        setListAdapter(departureListAdapter);
-
         mPresenter = new DepartureListPresenter(this);
+
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), mPresenter.getFavoritesDataSource());
+        setListAdapter(mDepartureListAdapter);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
         }, 100);
     }
 
-    public void showProgresLayout(boolean show) {
+    public void showProgressLayout(boolean show) {
         if (show) {
             mProgressLayout.setVisibility(View.VISIBLE);
         } else {
@@ -112,7 +113,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setDepartures(List<Departure> departures) {
-        departureListAdapter.setDepartures(departures);
+        mDepartureListAdapter.setDepartures(departures);
     }
 
     @Override
