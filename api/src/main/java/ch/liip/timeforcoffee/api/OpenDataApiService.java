@@ -77,7 +77,10 @@ public class OpenDataApiService {
                     public ArrayList<Station> call(LocationsResponse locations) {
                         ArrayList<Station> stations = new ArrayList<Station>();
                         for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
-                            stations.add(StationMapper.fromLocation(location));
+                            Station newStation = StationMapper.fromLocation(location);
+                            if (newStation != null) {
+                                stations.add(newStation);
+                            }
                         }
                         return stations;
                     }
