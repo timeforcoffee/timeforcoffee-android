@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
@@ -27,19 +28,25 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     public static final int ARG_MODE_DEPARTURES = 1;
 
     private FavoritesListPresenter mPresenter;
+    private int mFavoriteMode;
     private Callbacks mCallbacks = sDummyCallbacks;
 
     private StationListAdapter mStationListAdapter;
+    private DepartureListAdapter mDepartureListAdapter;
     private LinearLayout mNoFavoritesLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public interface Callbacks {
-        public void onFavoriteStationSelected(Station station);
+        void onFavoriteStationSelected(Station station);
+        void onFavoriteDepartureSelected(Departure departure);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onFavoriteStationSelected(Station station) {
+        }
+        @Override
+        public void onFavoriteDepartureSelected(Departure departure) {
         }
     };
 
@@ -60,8 +67,15 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
             return;
         }
 
-        mPresenter = new FavoritesListPresenter(this, args.getInt(ARG_MODE));
-        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), mPresenter.getFavoriteDataSource());
+        mFavoriteMode = args.getInt(ARG_MODE);
+        mPresenter = new FavoritesListPresenter(this, mFavoriteMode);
+
+        if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
+            mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), mPresenter.getFavoriteDataSource());
+        } else {
+            mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), mPresenter.getFavoriteDataSource());
+        }
+
         setListAdapter(mStationListAdapter);
     }
 
@@ -90,6 +104,13 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
+        if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
+            mCallbacks.onFavoriteStationSelected(mStationListAdapter.getStation(position));
+        } else {
+            mCallbacks.onFavoriteDepartureSelected(mDepartureListAdapter.getDeparture(position));
+        }
+
+
         mCallbacks.onFavoriteStationSelected(mStationListAdapter.getStation(position));
     }
 
@@ -133,7 +154,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setDepartures(List<Departure> departures) {
-        // handle
+        mDepartureListAdapter.setDepartures(departures);
     }
 
     @Override
