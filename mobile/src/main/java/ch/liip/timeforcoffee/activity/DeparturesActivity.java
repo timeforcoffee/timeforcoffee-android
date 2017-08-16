@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;

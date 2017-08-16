@@ -3,15 +3,19 @@ package ch.liip.timeforcoffee.common;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-public class FontFitTextView extends TextView {
+public class FontFitTextView extends AppCompatTextView implements View.OnClickListener {
 
     private int mMaxFontSize;
+
+    private OnClickListener clickListener;
 
     public FontFitTextView(Context context) {
         super(context);
@@ -74,6 +78,15 @@ public class FontFitTextView extends TextView {
     }
 
     @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        if (l == this) {
+            super.setOnClickListener(l);
+        } else {
+            clickListener = l;
+        }
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
@@ -91,6 +104,13 @@ public class FontFitTextView extends TextView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (w != oldw) {
             refitText(this.getText().toString(), w);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (clickListener != null) {
+            clickListener.onClick(this);
         }
     }
 

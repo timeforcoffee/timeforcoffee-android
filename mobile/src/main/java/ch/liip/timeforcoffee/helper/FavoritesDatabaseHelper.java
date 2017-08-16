@@ -20,8 +20,8 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     public static abstract class FavoriteLineColumn implements BaseColumns {
         public static final String TABLE_NAME = "favorite_lines";
         public static final String COLUMN_ID = "id";
-        public static final String COLUMN_LINE_ID = "line_id";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_DESTINATION = "destination";
     }
 
     public static final int DATABASE_VERSION = 2;
@@ -32,35 +32,38 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     private static final String FLOAT_TYPE = " FLOAT";
     private static final String COMMA_SEP = ",";
 
-    private static final String SQL_CREATE_ENTRIES =
+    private static final String SQL_CREATE_STATION_TABLE =
             "CREATE TABLE " + FavoriteStationColumn.TABLE_NAME + " (" +
                     FavoriteStationColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
                     FavoriteStationColumn.COLUMN_STATION_ID + TEXT_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    FavoriteStationColumn.COLUMN_DISTANCE + FLOAT_TYPE + " );" +
-                    "CREATE TABLE " + FavoriteLineColumn.TABLE_NAME + " (" +
-                    FavoriteLineColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    FavoriteLineColumn.COLUMN_LINE_ID + TEXT_TYPE + COMMA_SEP +
-                    FavoriteLineColumn.COLUMN_NAME + TEXT_TYPE + COMMA_SEP + " );";
+                    FavoriteStationColumn.COLUMN_DISTANCE + FLOAT_TYPE + " )";
 
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + FavoriteStationColumn.TABLE_NAME  + ";" +
-                    "DROP TABLE IF EXISTS " + FavoriteLineColumn.TABLE_NAME;
+    private static final String SQL_CREATE_LINE_TABLE =
+            "CREATE TABLE " + FavoriteLineColumn.TABLE_NAME + " (" +
+                    FavoriteLineColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    FavoriteLineColumn.COLUMN_DESTINATION + TEXT_TYPE + COMMA_SEP +
+                    FavoriteLineColumn.COLUMN_NAME + TEXT_TYPE  + " )";
+
+    private static final String SQL_DELETE_STATION_TABLE = "DROP TABLE IF EXISTS " + FavoriteStationColumn.TABLE_NAME;
+    private static final String SQL_DELETE_LINE_TABLE = "DROP TABLE IF EXISTS " + FavoriteLineColumn.TABLE_NAME;
 
     public FavoritesDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_STATION_TABLE);
+        db.execSQL(SQL_CREATE_LINE_TABLE);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_STATION_TABLE);
+        db.execSQL(SQL_DELETE_LINE_TABLE);
         onCreate(db);
     }
 

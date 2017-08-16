@@ -40,7 +40,7 @@ public class DepartureListPresenter implements Presenter {
     @Override
     public void onResumeView() {
         if (mDepartures != null && mDepartures.size() == 0) {
-            mFragment.showProgresLayout(true);
+            mFragment.showProgressLayout(true);
         }
         updateFavorites();
     }
@@ -63,34 +63,10 @@ public class DepartureListPresenter implements Presenter {
     }
 
     public void updateDepartures(List<Departure> newDepartures) {
-
-        // handle this
-       /* if (newDepartures.size() == 0) {
-            mFragment.showNoStationsLayout(true);
-        } else {
-            mFragment.showNoStationsLayout(false);
-        }
-
-        //look if some of the retrieved stations are store as favorite and filter out stations with same id
         List<Departure> favorites = mFavoriteDataSource.getAllFavoriteLines();
-        List<Departure> stationsFiltered = new ArrayList<>();
-
         for (Departure departure : newDepartures)  {
-            if (mDepartures != null && mDepartures.contains(departure)) {
-                //Station already in the list => get the old station (avoid to recompute walking distance)
-                stationsFiltered.add(mDepartures.get(mDepartures.indexOf(departure)));
-            } else {
-                //otherwise, add the new station
-                stationsFiltered.add(departure);
-            }
-
-            //update favorite state // handle this for a line
             departure.setIsFavorite(favorites.contains(departure));
-
         }
-
-        mDepartures = stationsFiltered;
-        mFragment.setDepartures(mDepartures);*/
 
         mDepartures = newDepartures;
         mFragment.setDepartures(newDepartures);
@@ -101,24 +77,24 @@ public class DepartureListPresenter implements Presenter {
             return;
         }
 
-        /*List<Departure> favorites = mFavoriteDataSource.getAllFavoriteLines(); // probably need to handle a line model
+        List<Departure> favorites = mFavoriteDataSource.getAllFavoriteLines();
         for (Departure departure : mDepartures) {
-            //update favorite state // handle this for a line
+            //update favorite state
             departure.setIsFavorite(favorites.contains(departure));
-        }*/
+        }
 
         mFragment.setDepartures(mDepartures);
     }
 
     @Subscribe
     public void onDeparturesFetchedEvent(DeparturesFetchedEvent event) {
-        mFragment.showProgresLayout(false);
+        mFragment.showProgressLayout(false);
         updateDepartures(event.getDepartures());
     }
 
     @Subscribe
     public void onFetchErrorEvent(FetchErrorEvent event) {
-        mFragment.showProgresLayout(false);
+        mFragment.showProgressLayout(false);
     }
 
     public FavoritesDataSource getFavoritesDataSource() {
