@@ -13,11 +13,13 @@ import java.util.List;
 public class FavoritesListPresenter implements Presenter {
 
     FavoritesListFragment mFragment;
+    private int mFavoriteMode;
 
     FavoritesDataSource mFavoriteDataSource;
 
-    public FavoritesListPresenter(FavoritesListFragment fragment) {
+    public FavoritesListPresenter(FavoritesListFragment fragment, int favoriteMode) {
         mFragment = fragment;
+        mFavoriteMode = favoriteMode;
 
         mFavoriteDataSource = new FavoritesDataSource(mFragment.getActivity());
         mFavoriteDataSource.open();
@@ -45,13 +47,16 @@ public class FavoritesListPresenter implements Presenter {
     }
 
     public void updateFavorites() {
-        List<Station> favs = mFavoriteDataSource.getAllFavorites();
+        List<Station> favs = mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS
+                ? mFavoriteDataSource.getAllFavoriteStations()
+                : mFavoriteDataSource.getAllFavoriteStations();
 
         if (favs.size() == 0) {
             mFragment.showNoFavoritesLayout(true);
         } else {
             mFragment.showNoFavoritesLayout(false);
         }
+
         mFragment.setStations(favs);
     }
 

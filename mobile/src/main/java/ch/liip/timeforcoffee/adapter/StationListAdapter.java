@@ -101,10 +101,10 @@ public class StationListAdapter extends ArrayAdapter<Station> {
                 boolean isFavorite = currentStation.getIsFavorite();
                 if (isFavorite) {
                     //remove from favorites
-                    favoritesDataSource.deleteFavorite(currentStation);
+                    favoritesDataSource.deleteFavoriteStation(currentStation);
                 } else {
                     //add to favorites
-                    favoritesDataSource.insertFavorites(currentStation);
+                    favoritesDataSource.insertFavoriteStation(currentStation);
                 }
                 currentStation.setIsFavorite(!isFavorite);
             }

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.presenter.FavoritesListPresenter;
 
@@ -21,13 +22,16 @@ import java.util.List;
 
 public class FavoritesListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String ARG_MODE = "fav-mode";
+    public static final int ARG_MODE_STATIONS = 0;
+    public static final int ARG_MODE_DEPARTURES = 1;
+
     private FavoritesListPresenter mPresenter;
+    private Callbacks mCallbacks = sDummyCallbacks;
 
     private StationListAdapter mStationListAdapter;
     private LinearLayout mNoFavoritesLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private Callbacks mCallbacks = sDummyCallbacks;
 
     public interface Callbacks {
         public void onFavoriteStationSelected(Station station);
@@ -51,7 +55,12 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPresenter = new FavoritesListPresenter(this);
+        Bundle args = getArguments();
+        if(args == null) {
+            return;
+        }
+
+        mPresenter = new FavoritesListPresenter(this, args.getInt(ARG_MODE));
         mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), mPresenter.getFavoriteDataSource());
         setListAdapter(mStationListAdapter);
     }
@@ -121,6 +130,10 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
     public void setStations(List<Station> stations) {
         mStationListAdapter.setStations(stations);
+    }
+
+    public void setDepartures(List<Departure> departures) {
+        // handle
     }
 
     @Override

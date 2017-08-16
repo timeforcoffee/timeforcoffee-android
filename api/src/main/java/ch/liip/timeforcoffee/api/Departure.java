@@ -1,15 +1,9 @@
 package ch.liip.timeforcoffee.api;
 
-import android.graphics.Color;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class Departure {
     private String name;
     private String type;
