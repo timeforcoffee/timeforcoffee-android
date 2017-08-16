@@ -106,11 +106,11 @@ public class DeparturesPresenter implements Presenter {
         if (getIsFavorite()) {
             //Remove from fav
             mStation.setIsFavorite(false);
-            mFavoriteDataSource.deleteFavorite(mStation);
+            mFavoriteDataSource.deleteFavoriteStation(mStation);
         } else {
             //Add to fav
             mStation.setIsFavorite(true);
-            mFavoriteDataSource.insertFavorites(mStation);
+            mFavoriteDataSource.insertFavoriteStation(mStation);
         }
     }
 }

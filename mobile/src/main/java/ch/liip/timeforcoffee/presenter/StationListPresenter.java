@@ -73,15 +73,10 @@ public class StationListPresenter implements Presenter {
         }
 
         //look if some of the retrieved stations are store as favorite and filter out stations with same id
-        List<Station> favorites = mFavoriteDataSource.getAllFavorites();
+        List<Station> favorites = mFavoriteDataSource.getAllFavoriteStations();
         List<Station> stationsFiltered = new ArrayList<Station>();
 
-        for (
-                Station station
-                : newStations)
-
-        {
-
+        for (Station station : newStations) {
             if (mStations != null && mStations.contains(station)) {
                 //Station already in the list => get the old station (avoid to recompute walking distance)
                 stationsFiltered.add(mStations.get(mStations.indexOf(station)));
@@ -91,8 +86,11 @@ public class StationListPresenter implements Presenter {
             }
 
             //update favorite state
-            station.setIsFavorite(favorites.contains(station));
-
+            for(Station favorite : favorites) {
+                if(favorite.equals(station)) {
+                    station.setIsFavorite(true);
+                }
+            }
         }
 
         mStations = stationsFiltered;
@@ -103,10 +101,14 @@ public class StationListPresenter implements Presenter {
         if (mStations == null) {
             return;
         }
-        List<Station> favorites = mFavoriteDataSource.getAllFavorites();
+        List<Station> favorites = mFavoriteDataSource.getAllFavoriteStations();
         for (Station station : mStations) {
             //update favorite state
-            station.setIsFavorite(favorites.contains(station));
+            for(Station favorite : favorites) {
+                if(favorite.equals(station)) {
+                    station.setIsFavorite(true);
+                }
+            }
         }
         mFragment.setStations(mStations);
     }
