@@ -5,19 +5,19 @@ package ch.liip.timeforcoffee.opendata;
  */
 public class Coordinate {
     private String type;
-    private float x;
-    private float y;
+    private Float x;
+    private Float y;
     Coordinate() {}
 
     public String getType() {
         return type;
     }
 
-    public float getX() {
+    public Float getX() {
         return x;
     }
 
-    public float getY() {
+    public Float getY() {
         return y;
     }
 }

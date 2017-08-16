@@ -1,6 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
@@ -33,7 +33,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     private DepartureListPresenter mPresenter;
 
-    private DepartureListAdapter departureListAdapter;
+    private DepartureListAdapter mDepartureListAdapter;
     private RelativeLayout mProgressLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -58,20 +58,20 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        departureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>());
-        setListAdapter(departureListAdapter);
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>());
+        setListAdapter(mDepartureListAdapter);
 
         mPresenter = new DepartureListPresenter(this);
     }
@@ -112,7 +112,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setDepartures(List<Departure> departures) {
-        departureListAdapter.setDepartures(departures);
+        mDepartureListAdapter.setDepartures(departures);
     }
 
     @Override
