@@ -32,7 +32,8 @@ public class DepartureMapper {
                 Color.WHITE,
                 journey.getStop().getDeparture(),
                 null,
-                null
+                false,
+                false
         );
     }
 }
