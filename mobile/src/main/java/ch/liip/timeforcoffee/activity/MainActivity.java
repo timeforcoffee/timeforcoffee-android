@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         fragments.add(Fragment.instantiate(this, StationListFragment.class.getName()));
         fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs));
 
-        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), fragments);
+        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
 

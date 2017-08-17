@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="activity_title">Time for Coffee!</string>
     <string name="tab_stations">Stations</string>
+    <string name="tab_departures">Departures</string>
     <string name="tab_favorites">Favorites</string>
     <string name="search_hint">...</string>
     <string name="action_search">Search</string>

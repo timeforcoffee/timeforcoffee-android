@@ -124,7 +124,7 @@ public class FavoritesDataSource {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
         String destination = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION));
 
-        Departure departure = new Departure(name, destination);
+        Departure departure = new Departure(name, destination, true);
         return departure;
     }
 }

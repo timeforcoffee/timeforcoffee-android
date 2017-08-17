@@ -29,9 +29,10 @@ public class Departure {
         this.isFavorite = isFavorite;
     }
 
-    public Departure(String name, String destination) {
+    public Departure(String name, String destination, boolean isFavorite) {
         this.name = name;
         this.destination = destination;
+        this.isFavorite = isFavorite;
     }
 
     public String getName() {
@@ -130,8 +131,7 @@ public class Departure {
         this.isFavorite = isFavorite;
     }
 
-    @Override
-    public boolean equals(Object object) {
+    public boolean lineEquals(Object object) {
         boolean sameSame = false;
         boolean sameDestination = false;
 
