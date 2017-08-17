@@ -194,7 +194,15 @@ public class DeparturesActivity extends AppCompatActivity implements
     public void onFavoriteStationSelected(Station station) { }
 
     private void selectDeparture(Departure departure) {
-        Intent detailIntent = new Intent(this, DeparturesActivity.class);
+        Intent detailIntent = new Intent(this, ConnectionsActivity.class);
+        Station station = mPresenter.getStation();
+
+        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_ID, station.getId());
+        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_NAME, station.getName());
+        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_DISTANCE, station.getDistance());
+        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
+        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_IS_FAVORITE, station.getIsFavorite());
         detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_NAME, departure.getName());
         detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_TYPE, departure.getType());
         detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
@@ -205,6 +213,7 @@ public class DeparturesActivity extends AppCompatActivity implements
         detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_SCHEDULED, departure.getScheduled());
         detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_REALTIME, departure.getRealtime());
         detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_IS_FAVORITE, departure.getIsFavorite());
+
         startActivity(detailIntent);
     }
 

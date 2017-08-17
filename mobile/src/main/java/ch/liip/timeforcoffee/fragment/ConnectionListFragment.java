@@ -14,12 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.ConnexionListAdapter;
+import ch.liip.timeforcoffee.adapter.ConnectionListAdapter;
 import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.presenter.ConnectionListPresenter;
 
 public class ConnectionListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String ARG_STATION_ID = "station_id";
+    public static final String ARG_STATION_NAME = "station_name";
+    public static final String ARG_STATION_DISTANCE = "station_distance";
+    public static final String ARG_STATION_LONGITUDE = "station_longitude";
+    public static final String ARG_STATION_LATITUDE = "station_latitude";
+    public static final String ARG_STATION_IS_FAVORITE = "station_is_favorite";
     public static final String ARG_DEPARTURE_NAME = "departure_name";
     public static final String ARG_DEPARTURE_TYPE = "departure_type";
     public static final String ARG_DEPARTURE_ACCESSIBLE = "departure_accessible";
@@ -33,7 +39,7 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
 
     private ConnectionListPresenter mPresenter;
 
-    private ConnexionListAdapter mConnexionListAdapter;
+    private ConnectionListAdapter mConnectionListAdapter;
     private RelativeLayout mProgressLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -65,7 +71,7 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (!(context instanceof DepartureListFragment.Callbacks)) {
+        if (!(context instanceof ConnectionListFragment.Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
         mCallbacks = (ConnectionListFragment.Callbacks) context;
@@ -76,13 +82,13 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
         super.onCreate(savedInstanceState);
         mPresenter = new ConnectionListPresenter(this);
 
-        mConnexionListAdapter = new ConnexionListAdapter(getActivity(), new ArrayList<Connection>());
-        setListAdapter(mConnexionListAdapter);
+        mConnectionListAdapter = new ConnectionListAdapter(getActivity(), new ArrayList<Connection>());
+        setListAdapter(mConnectionListAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_departure_list, container, false); // handle xml
+        View rootView = inflater.inflate(R.layout.fragment_connection_list, container, false);
 
         mProgressLayout = (RelativeLayout) rootView.findViewById(R.id.progressLayout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
@@ -117,7 +123,7 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
     }
 
     public void setConnections(List<Connection> connections) {
-        mConnexionListAdapter.setConnexions(connections);
+        mConnectionListAdapter.setConnexions(connections);
     }
 
     @Override

@@ -14,6 +14,7 @@ import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.ConnectionsActivity;
 import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
@@ -23,6 +24,7 @@ import ch.liip.timeforcoffee.widget.SnackBars;
 public class ConnectionsPresenter implements Presenter {
 
     private ConnectionsActivity mActivity;
+    private Station mStation;
     private Departure mDeparture;
     private Timer mAutoUpdateTimer;
     public static final int UPDATE_FREQUENCY = 60000;
@@ -35,8 +37,9 @@ public class ConnectionsPresenter implements Presenter {
     @Inject
     ConnectionService connectionService;
 
-    public ConnectionsPresenter(ConnectionsActivity activity, Departure departure) {
+    public ConnectionsPresenter(ConnectionsActivity activity, Station station, Departure departure) {
         mActivity = activity;
+        mStation = station;
         mDeparture = departure;
 
         ((TimeForCoffeeApplication) activity.getApplication()).inject(this);
@@ -68,7 +71,7 @@ public class ConnectionsPresenter implements Presenter {
     }
 
     public void updateConnections() {
-        mEventBus.post(new FetchConnectionsEvent(mDeparture));
+        mEventBus.post(new FetchConnectionsEvent(mStation.getName(), mDeparture.getDestination()));
     }
 
     @Subscribe
@@ -92,6 +95,14 @@ public class ConnectionsPresenter implements Presenter {
         mEventBus.unregister(this);
         mFavoriteDataSource.close();
         mActivity = null;
+    }
+
+    public Station getStation() {
+        return mStation;
+    }
+
+    public Departure getDeparture() {
+        return mDeparture;
     }
 
     public boolean getIsFavorite() {

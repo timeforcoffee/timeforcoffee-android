@@ -1,17 +1,20 @@
 package ch.liip.timeforcoffee.api.events;
 
-import ch.liip.timeforcoffee.api.Departure;
-
 public class FetchConnectionsEvent {
 
-    private final Departure departure;
+    private final String from;
+    private final String to;
 
-    public FetchConnectionsEvent(Departure departure) {
-        this.departure = departure;
+    public FetchConnectionsEvent(String from, String to) {
+        this.from = from;
+        this.to = to;
     }
 
-    public Departure getDeparture() {
-        return departure;
+    public String getFrom() {
+        return from;
     }
 
+    public String getTo() {
+        return to;
+    }
 }

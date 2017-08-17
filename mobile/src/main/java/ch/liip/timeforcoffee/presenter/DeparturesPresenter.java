@@ -17,7 +17,6 @@ import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchDeparturesEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
@@ -137,6 +136,10 @@ public class DeparturesPresenter implements Presenter {
         mEventBus.unregister(this);
         mFavoriteDataSource.close();
         mActivity = null;
+    }
+
+    public Station getStation() {
+        return mStation;
     }
 
     public boolean getIsFavorite() {
