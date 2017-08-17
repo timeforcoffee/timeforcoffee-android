@@ -28,8 +28,8 @@ public class ConnectionService {
     @Subscribe
     public void onEvent(FetchConnectionsEvent event) {
         Map<String,String> crtMap = new HashMap<>();
-        crtMap.put("from", event.getDeparture().getDestination());
-        crtMap.put("to", event.getDeparture().getDestination());
+        crtMap.put("from", event.getFrom());
+        crtMap.put("to", event.getTo());
         eventBus.post(new FetchOpenDataConnectionsEvent(crtMap));
     }
 

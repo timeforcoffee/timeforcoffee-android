@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.activity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import java.util.Date;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
@@ -30,7 +32,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_departure_list); // handle xml
+        setContentView(R.layout.activity_connection_list);
 
         mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
         mSlidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
@@ -39,24 +41,32 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // handle args
-        String name = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_NAME);
-        String type = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_TYPE);
-        boolean accessible = getIntent().getBooleanExtra(ConnectionListFragment.ARG_DEPARTURE_ACCESSIBLE, true);
-        String destination = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_DESTINATION);
-        String platform = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_PLATFORM);
-        Date scheduled = new Date(getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_SCHEDULED));
-        Date realtime = new Date(getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_REALTIME));
-        int colorFg = getIntent().getIntExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_FG, 0);
-        int colorBg = getIntent().getIntExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_BG, 0);
-        boolean isFavorite = getIntent().getBooleanExtra(ConnectionListFragment.ARG_DEPARTURE_IS_FAVORITE, false);
+        String stationId = getIntent().getStringExtra(ConnectionListFragment.ARG_STATION_ID);
+        String stationName = getIntent().getStringExtra(ConnectionListFragment.ARG_STATION_NAME);
+        float stationDistance = getIntent().getFloatExtra(ConnectionListFragment.ARG_STATION_DISTANCE, 0.0f);
+        boolean stationIsFavorite = getIntent().getBooleanExtra(ConnectionListFragment.ARG_STATION_IS_FAVORITE, false);
 
-        Departure departure = new Departure(name, destination, platform, colorFg, colorBg, scheduled, realtime, accessible, isFavorite);
+        Location stationLoc = new Location("reverseGeocoded");
+        stationLoc.setLatitude(getIntent().getDoubleExtra(ConnectionListFragment.ARG_STATION_LATITUDE, 0.0));
+        stationLoc.setLongitude(getIntent().getDoubleExtra(ConnectionListFragment.ARG_STATION_LONGITUDE, 0.0));
 
-        // handle station
-        // mStationMapFragment.setStation(station);
+        String departureName = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_NAME);
+        String departureType = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_TYPE);
+        boolean departureAccessible = getIntent().getBooleanExtra(ConnectionListFragment.ARG_DEPARTURE_ACCESSIBLE, true);
+        String departureDestination = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_DESTINATION);
+        String departurePlatform = getIntent().getStringExtra(ConnectionListFragment.ARG_DEPARTURE_PLATFORM);
+        Date departureScheduled = (Date) getIntent().getSerializableExtra(ConnectionListFragment.ARG_DEPARTURE_SCHEDULED);
+        Date departureRealtime = (Date) getIntent().getSerializableExtra(ConnectionListFragment.ARG_DEPARTURE_REALTIME);
+        int departureColorFg = getIntent().getIntExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_FG, 0);
+        int departureColorBg = getIntent().getIntExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_BG, 0);
+        boolean departureIsFavorite = getIntent().getBooleanExtra(ConnectionListFragment.ARG_DEPARTURE_IS_FAVORITE, false);
 
-        mPresenter = new ConnectionsPresenter(this, departure);
+        Station station = new Station(stationId, stationName, stationDistance, stationLoc, stationIsFavorite);
+        Departure departure = new Departure(departureName, departureDestination, departurePlatform, departureColorFg, departureColorBg,
+                departureScheduled, departureRealtime, departureAccessible, departureIsFavorite);
+
+        mStationMapFragment.setStation(station);
+        mPresenter = new ConnectionsPresenter(this, station, departure);
     }
 
     @Override

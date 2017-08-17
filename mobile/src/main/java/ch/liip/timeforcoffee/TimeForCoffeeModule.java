@@ -25,7 +25,9 @@ import javax.inject.Singleton;
                 DataService.class,
                 MainPresenter.class,
                 DeparturesPresenter.class,
-                StationSearchPresenter.class
+                StationSearchPresenter.class,
+                ConnectionsPresenter.class,
+                ConnectionListPresenter.class
         }
 )
 class TimeForCoffeeModule {

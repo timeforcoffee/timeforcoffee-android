@@ -55,7 +55,7 @@ public class ConnectionListPresenter implements Presenter {
     }
 
     @Subscribe
-    public void onDeparturesFetchedEvent(ConnectionsFetchedEvent event) {
+    public void onConnectionsFetchedEvent(ConnectionsFetchedEvent event) {
         mFragment.showProgressLayout(false);
         updateConnections(event.getConnections());
     }
