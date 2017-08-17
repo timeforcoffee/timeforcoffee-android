@@ -42,9 +42,6 @@ public class DeparturesPresenter implements Presenter {
     @Inject
     DepartureService departureService;
 
-    @Inject
-    ZvvApiService zvvApiService;
-
     public DeparturesPresenter(DeparturesActivity activity, Station station) {
         mActivity = activity;
         mStation = station;
