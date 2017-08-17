@@ -69,7 +69,7 @@ public class FavoritesDataSource {
         String name = departure.getName();
         String destination = departure.getDestination();
 
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = " + name  +
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + name  + "'" +
                 " AND " + FavoriteLineColumn.COLUMN_DESTINATION + " = '" + destination + "'", null);
     }
 
