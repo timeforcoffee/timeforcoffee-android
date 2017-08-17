@@ -31,8 +31,8 @@ public class DepartureMapper {
                 Color.BLACK,
                 Color.WHITE,
                 journey.getStop().getDeparture(),
-                journey.getStop().getDeparture(), // use real data
-                true, // this should come from the journey
+                null,
+                false,
                 false
         );
     }

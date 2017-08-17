@@ -8,7 +8,7 @@ public class Departure {
 
     private String name;
     private String type;
-    private Boolean accessible;
+    private boolean accessible;
     private String destination;
     private String platform;
     private Date scheduled;
@@ -42,7 +42,7 @@ public class Departure {
         return type;
     }
 
-    public Boolean getAccessible() {
+    public boolean isAccessible() {
         return accessible;
     }
 
@@ -98,12 +98,6 @@ public class Departure {
         return false;
     }
 
-    public Boolean isAccessible(){
-        if (accessible != null){
-            return getAccessible();
-        }
-        return false;
-    }
     public String departureInMinutes() {
 
         long timeInterval = getTimeDiffInMinutes();
