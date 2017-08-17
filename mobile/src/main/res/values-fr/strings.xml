@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stations">Arrêts</string>
+    <string name="tab_departures">Departs</string>
     <string name="tab_favorites">Favoris</string>
     <string name="action_settings">"Paramètres"</string>
     <string name="action_search">"Recherche</string>

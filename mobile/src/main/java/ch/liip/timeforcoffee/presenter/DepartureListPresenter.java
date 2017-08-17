@@ -65,7 +65,11 @@ public class DepartureListPresenter implements Presenter {
     public void updateDepartures(List<Departure> newDepartures) {
         List<Departure> favorites = mFavoriteDataSource.getAllFavoriteLines();
         for (Departure departure : newDepartures)  {
-            departure.setIsFavorite(favorites.contains(departure));
+            for(Departure favorite : favorites) {
+                if(favorite.equals(departure)) {
+                    departure.setIsFavorite(true);
+                }
+            }
         }
 
         mDepartures = newDepartures;
@@ -79,8 +83,11 @@ public class DepartureListPresenter implements Presenter {
 
         List<Departure> favorites = mFavoriteDataSource.getAllFavoriteLines();
         for (Departure departure : mDepartures) {
-            //update favorite state
-            departure.setIsFavorite(favorites.contains(departure));
+            for(Departure favorite : favorites) {
+                if(favorite.equals(departure)) {
+                    departure.setIsFavorite(true);
+                }
+            }
         }
 
         mFragment.setDepartures(mDepartures);

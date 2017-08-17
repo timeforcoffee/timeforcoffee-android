@@ -82,7 +82,7 @@ public class DeparturesActivity extends AppCompatActivity implements
         fragments.add(Fragment.instantiate(this, DepartureListFragment.class.getName()));
         fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs));
 
-        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), fragments);
+        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_departures, R.string.tab_favorites }, fragments);
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
 

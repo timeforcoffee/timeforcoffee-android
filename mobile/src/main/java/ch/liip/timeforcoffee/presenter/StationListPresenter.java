@@ -85,7 +85,6 @@ public class StationListPresenter implements Presenter {
                 stationsFiltered.add(station);
             }
 
-            //update favorite state
             for(Station favorite : favorites) {
                 if(favorite.equals(station)) {
                     station.setIsFavorite(true);
@@ -101,15 +100,16 @@ public class StationListPresenter implements Presenter {
         if (mStations == null) {
             return;
         }
+
         List<Station> favorites = mFavoriteDataSource.getAllFavoriteStations();
         for (Station station : mStations) {
-            //update favorite state
             for(Station favorite : favorites) {
                 if(favorite.equals(station)) {
                     station.setIsFavorite(true);
                 }
             }
         }
+
         mFragment.setStations(mStations);
     }
 
