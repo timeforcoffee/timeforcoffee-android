@@ -1,6 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
@@ -8,16 +8,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.presenter.DepartureListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
+import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.presenter.DepartureListPresenter;
 
 
 public class DepartureListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -60,12 +59,12 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
