@@ -72,11 +72,11 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
         if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
             mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), mPresenter.getFavoriteDataSource());
+            setListAdapter(mStationListAdapter);
         } else {
             mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), mPresenter.getFavoriteDataSource());
+            setListAdapter(mDepartureListAdapter);
         }
-
-        setListAdapter(mStationListAdapter);
     }
 
     @Override
