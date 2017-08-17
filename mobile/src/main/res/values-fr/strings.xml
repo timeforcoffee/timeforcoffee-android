@@ -14,7 +14,7 @@
     <string name="title_add_favorite_start">"Tape sur l'icône"</string>
     <string name="platform">"- Voie: %s"</string>
     <string name="retry">"Réessayer"</string>
-    <string name="network_error">"Problème de connexion"</string>
+    <string name="network_error">"Problème de connection"</string>
     <string name="permission_message">"Nous avons besoin d’accéder à ta position pour pouvoir trouver les arrêtes les
         plus proches."
     </string>

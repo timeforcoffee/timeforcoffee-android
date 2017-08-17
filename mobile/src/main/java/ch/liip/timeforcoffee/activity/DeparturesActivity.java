@@ -17,6 +17,7 @@ import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
@@ -180,12 +181,32 @@ public class DeparturesActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onDepartureSelected(Departure departure) {
+        selectDeparture(departure);
+    }
+
+    @Override
     public void onFavoriteDepartureSelected(Departure departure) {
-        // handle
+        selectDeparture(departure);
     }
 
     @Override
     public void onFavoriteStationSelected(Station station) { }
+
+    private void selectDeparture(Departure departure) {
+        Intent detailIntent = new Intent(this, DeparturesActivity.class);
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_NAME, departure.getName());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_TYPE, departure.getType());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_DESTINATION, departure.getDestination());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_PLATFORM, departure.getPlatform());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_FG, departure.getColorFg());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_BG, departure.getColorBg());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_SCHEDULED, departure.getScheduled());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_REALTIME, departure.getRealtime());
+        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_IS_FAVORITE, departure.getIsFavorite());
+        startActivity(detailIntent);
+    }
 
     @Override
     public void onPanelSlide(View panel, float slideOffset) {
@@ -193,22 +214,16 @@ public class DeparturesActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPanelExpanded(View panel) {
-    }
+    public void onPanelExpanded(View panel) { }
 
     @Override
-    public void onPanelCollapsed(View panel) {
-    }
+    public void onPanelCollapsed(View panel) { }
 
     @Override
-    public void onPanelAnchored(View panel) {
-
-    }
+    public void onPanelAnchored(View panel) { }
 
     @Override
-    public void onPanelHidden(View panel) {
-
-    }
+    public void onPanelHidden(View panel) { }
 
     public FavoritesDataSource getFavoriteDataSource() {
         return mPresenter.getFavoritesDataSource();

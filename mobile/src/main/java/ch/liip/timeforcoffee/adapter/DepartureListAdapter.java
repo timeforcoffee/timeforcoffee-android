@@ -161,9 +161,9 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         return this.mDepartures.get(position);
     }
 
-    public void setDepartures(List<Departure> mDepartures) {
+    public void setDepartures(List<Departure> departures) {
         this.mDepartures.clear();
-        this.mDepartures.addAll(mDepartures);
+        this.mDepartures.addAll(departures);
         notifyDataSetChanged();
     }
 }

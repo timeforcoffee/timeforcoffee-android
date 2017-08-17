@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,15 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     private Callbacks mCallbacks = sDummyCallbacks;
 
     public interface Callbacks {
+        void onDepartureSelected(Departure departure);
         void onRefresh();
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
+        @Override
+        public void onDepartureSelected(Departure departure) {
+        }
+
         @Override
         public void onRefresh() {
         }
@@ -82,6 +88,11 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     public void setDepartures(List<Departure> departures) {
         mDepartureListAdapter.setDepartures(departures);
+    }
+
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        super.onListItemClick(listView, view, position, id);
+        mCallbacks.onDepartureSelected(mDepartureListAdapter.getDeparture(position));
     }
 
     @Override
