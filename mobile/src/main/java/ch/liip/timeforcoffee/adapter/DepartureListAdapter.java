@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.common.FontFitTextView;
@@ -116,6 +117,9 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 }
 
                 departure.setIsFavorite(!isFavorite);
+
+                String action = isFavorite ? "removed" : "added";
+                ((DeparturesActivity)getContext()).displayToastMessage(departure.getName() + " " + departure.getDestination() + " has been " + action + " from the favorite list");
             }
         });
 
