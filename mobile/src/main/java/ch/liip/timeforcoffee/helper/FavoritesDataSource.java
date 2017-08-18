@@ -53,8 +53,8 @@ public class FavoritesDataSource {
     }
 
     public void deleteFavoriteStation(Station station) {
-        String id = station.getId();
-        database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_STATION_ID + " = " + id, null);
+        String name = station.getName();
+        database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_NAME + " = '" + name + "'", null);
     }
 
     public void insertFavoriteLine(Departure departure) {

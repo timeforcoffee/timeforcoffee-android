@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
@@ -176,5 +177,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             mProgressLayout.setVisibility(View.GONE);
         }
+    }
+
+    public void displayToastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
