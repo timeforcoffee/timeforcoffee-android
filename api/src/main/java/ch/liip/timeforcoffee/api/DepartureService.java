@@ -26,7 +26,7 @@ public class DepartureService {
     @Subscribe
     public void onEvent(FetchDeparturesEvent event) {
         Map<String,String> crtMap = new HashMap<>();
-        crtMap.put("id", event.getStationId());
+        crtMap.put("station", event.getStation().getName());
         eventBus.post(new FetchOpenDataStationboardEvent(crtMap));
     }
 
