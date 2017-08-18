@@ -13,18 +13,6 @@
                   android:drawSelectorOnTop="false"/>
     </android.support.v4.widget.SwipeRefreshLayout>
     <RelativeLayout
-            android:id="@+id/progressLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <ProgressBar
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:gravity="center"/>
-    </RelativeLayout>
-    <RelativeLayout
             android:id="@+id/noStationsLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

@@ -10,9 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
 
@@ -143,17 +143,17 @@ public class StationSearchActivity extends AppCompatActivity
     }
 
     private void selectStation(Station station) {
-
         Intent detailIntent = new Intent(this, DeparturesActivity.class);
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_ID, station.getId());
-        detailIntent.putExtra(DepartureListFragment.ARG__STATION_NAME, station.getName());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_DISTANCE, station.getDistance());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
+        detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
         detailIntent.putExtra(DeparturesActivity.ARG_FROM_SEARCH, true);
         detailIntent.putExtra(ARG_SEARCH_QUERY, mPresenter.getSearchQuery());
-        startActivity(detailIntent);
 
+        startActivity(detailIntent);
     }
 
     @Override

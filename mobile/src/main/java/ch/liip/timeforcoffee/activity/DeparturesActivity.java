@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import ch.liip.timeforcoffee.R;
@@ -20,23 +21,35 @@ import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 public class DeparturesActivity extends AppCompatActivity implements
         SlidingUpPanelLayout.PanelSlideListener, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
 
+    public static final String ARG_STATION_ID = "station_id";
+    public static final String ARG__STATION_NAME = "station_name";
+    public static final String ARG_STATION_DISTANCE = "station_distance";
+    public static final String ARG_STATION_LONGITUDE = "station_longitude";
+    public static final String ARG_STATION_LATITUDE = "station_latitude";
+    public static final String ARG_IS_FAVORITE = "station_is_favorite";
+
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
     private TabsAdapter mPagerAdapter;
     private ViewPager mViewPager;
+    private RelativeLayout mProgressLayout;
 
     private DeparturesPresenter mPresenter;
+    private DepartureListFragment mDepartureListFragment;
+    private FavoritesListFragment mFavoriteListFragment;
 
     public static final String ARG_FROM_SEARCH = "from_search";
 
@@ -53,34 +66,37 @@ public class DeparturesActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_departure_list);
 
         mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
+        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
         mSlidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mSlidingLayout.setPanelSlideListener(this);
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String id = getIntent().getStringExtra(DepartureListFragment.ARG_STATION_ID);
-        String name = getIntent().getStringExtra(DepartureListFragment.ARG__STATION_NAME);
-        float distance = getIntent().getFloatExtra(DepartureListFragment.ARG_STATION_DISTANCE, 0.0f);
+        String id = getIntent().getStringExtra(ARG_STATION_ID);
+        String name = getIntent().getStringExtra(ARG__STATION_NAME);
+        float distance = getIntent().getFloatExtra(ARG_STATION_DISTANCE, 0.0f);
 
         Location loc = new Location("reverseGeocoded");
-        loc.setLatitude(getIntent().getDoubleExtra(DepartureListFragment.ARG_STATION_LATITUDE, 0.0));
-        loc.setLongitude(getIntent().getDoubleExtra(DepartureListFragment.ARG_STATION_LONGITUDE, 0.0));
+        loc.setLatitude(getIntent().getDoubleExtra(ARG_STATION_LATITUDE, 0.0));
+        loc.setLongitude(getIntent().getDoubleExtra(ARG_STATION_LONGITUDE, 0.0));
 
-        boolean isFavorite = getIntent().getBooleanExtra(DepartureListFragment.ARG_IS_FAVORITE, false);
+        boolean isFavorite = getIntent().getBooleanExtra(ARG_IS_FAVORITE, false);
 
         Station station = new Station(id, name, distance, loc, false);
         station.setIsFavorite(isFavorite);
         mStationMapFragment.setStation(station);
 
         // Initialize the ViewPager and set an adapter
-        List fragments = new Vector();
-
         Bundle favoritesFragmentArgs = new Bundle();
         favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_DEPARTURES);
 
-        fragments.add(Fragment.instantiate(this, DepartureListFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs));
+        mDepartureListFragment = (DepartureListFragment) Fragment.instantiate(this, DepartureListFragment.class.getName());
+        mFavoriteListFragment = (FavoritesListFragment)  Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+
+        List fragments = new Vector();
+        fragments.add(mDepartureListFragment);
+        fragments.add(mFavoriteListFragment);
 
         mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_departures, R.string.tab_favorites }, fragments);
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
@@ -91,15 +107,9 @@ public class DeparturesActivity extends AppCompatActivity implements
         tabs.setViewPager(mViewPager);
 
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-
             @Override
             public void onPageSelected(int position) {
-                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + mViewPager.getCurrentItem());
-                if (currentFragment instanceof FavoritesListFragment) {
-                    ((FavoritesListFragment) currentFragment).updateFavorites();
-                } else if (currentFragment instanceof StationListFragment) {
-                    ((StationListFragment) currentFragment).updateFavorites();
-                }
+                mPresenter.updateFavorites();
             }
         });
 
@@ -161,6 +171,14 @@ public class DeparturesActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    public void updateDepartures(List<Departure> departures) {
+        mDepartureListFragment.setDepartures(departures);
+    }
+
+    public void updateFavorites(List<Departure> favoriteDepartures) {
+        mFavoriteListFragment.setDepartures(favoriteDepartures);
+    }
+
     @Override
     public void onFavoriteDepartureSelected(Departure departure) {
         // handle
@@ -192,7 +210,19 @@ public class DeparturesActivity extends AppCompatActivity implements
 
     }
 
+    public FavoritesDataSource getFavoriteDataSource() {
+        return mPresenter.getFavoritesDataSource();
+    }
+
     public void displayToastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showProgressLayout(boolean show) {
+        if (show) {
+            mProgressLayout.setVisibility(View.VISIBLE);
+        } else {
+            mProgressLayout.setVisibility(View.GONE);
+        }
     }
 }
