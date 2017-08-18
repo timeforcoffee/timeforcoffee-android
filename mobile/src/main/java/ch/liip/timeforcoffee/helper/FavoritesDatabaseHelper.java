@@ -20,7 +20,7 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     public static abstract class FavoriteLineColumn implements BaseColumns {
         public static final String TABLE_NAME = "favorite_lines";
         public static final String COLUMN_ID = "id";
-        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_LINE_NUMBER = "line_number";
         public static final String COLUMN_DESTINATION = "destination";
     }
 
@@ -45,7 +45,7 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + FavoriteLineColumn.TABLE_NAME + " (" +
                     FavoriteLineColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
                     FavoriteLineColumn.COLUMN_DESTINATION + TEXT_TYPE + COMMA_SEP +
-                    FavoriteLineColumn.COLUMN_NAME + TEXT_TYPE  + " )";
+                    FavoriteLineColumn.COLUMN_LINE_NUMBER + TEXT_TYPE  + " )";
 
     private static final String SQL_DELETE_STATION_TABLE = "DROP TABLE IF EXISTS " + FavoriteStationColumn.TABLE_NAME;
     private static final String SQL_DELETE_LINE_TABLE = "DROP TABLE IF EXISTS " + FavoriteLineColumn.TABLE_NAME;

@@ -26,7 +26,7 @@ public class FavoritesDataSource {
             FavoriteStationColumn.COLUMN_DISTANCE};
 
     private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_DESTINATION,
-            FavoriteLineColumn.COLUMN_NAME};
+            FavoriteLineColumn.COLUMN_LINE_NUMBER};
 
     public FavoritesDataSource(Context context) {
         dbHelper = new FavoritesDatabaseHelper(context);
@@ -59,17 +59,17 @@ public class FavoritesDataSource {
 
     public void insertFavoriteLine(Departure departure) {
         ContentValues values = new ContentValues();
-        values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
+        values.put(FavoriteLineColumn.COLUMN_LINE_NUMBER, departure.getLineNumber());
         values.put(FavoriteLineColumn.COLUMN_DESTINATION, departure.getDestination());
 
         database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
     }
 
     public void deleteFavoriteLine(Departure departure) {
-        String name = departure.getName();
+        String lineNumber = departure.getLineNumber();
         String destination = departure.getDestination();
 
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + name  + "'" +
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_LINE_NUMBER + " = '" + lineNumber  + "'" +
                 " AND " + FavoriteLineColumn.COLUMN_DESTINATION + " = '" + destination + "'", null);
     }
 
@@ -121,10 +121,10 @@ public class FavoritesDataSource {
     }
 
     private Departure cursorToLine(Cursor cursor) {
-        String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
+        String lineNumber = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_LINE_NUMBER));
         String destination = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION));
 
-        Departure departure = new Departure(name, destination, true);
+        Departure departure = new Departure(lineNumber, destination, true);
         return departure;
     }
 }
