@@ -24,7 +24,7 @@ import java.util.List;
 
 public class FavoritesListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    public static final String ARG_MODE = "fav-mode";
+    public static final String ARG_MODE = "fav_mode";
     public static final int ARG_MODE_STATIONS = 0;
     public static final int ARG_MODE_DEPARTURES = 1;
 

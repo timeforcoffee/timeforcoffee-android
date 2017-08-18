@@ -16,18 +16,21 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.activity.MainActivity;
+import ch.liip.timeforcoffee.activity.StationSearchActivity;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
 public class StationListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
+
+    public static final String ARG_SEARCH_MODE = "search_mode";
+    private boolean mSearchMode;
 
     private StationListAdapter mStationListAdapter;
     private RelativeLayout mNoStationsLayout;
     private RelativeLayout mEnterSearchLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
-
-    public static final String ARG_SEARCH_MODE = "search_mode";
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
@@ -58,9 +61,12 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean searchMode = getActivity().getIntent().getBooleanExtra(ARG_SEARCH_MODE, false);
+        mSearchMode = getActivity().getIntent().getBooleanExtra(ARG_SEARCH_MODE, false);
+        FavoritesDataSource favoritesDataSource = mSearchMode
+                ? ((StationSearchActivity)getActivity()).getFavoriteDataSource()
+                : ((MainActivity)getActivity()).getFavoriteDataSource();
 
-        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), ((MainActivity)getActivity()).getFavoriteDataSource());
+        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), favoritesDataSource);
         setListAdapter(mStationListAdapter);
     }
 
@@ -72,6 +78,14 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         mEnterSearchLayout = (RelativeLayout) rootView.findViewById(R.id.enterSearchLayout);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
+
+        if (mSearchMode) {
+            mNoStationsLayout.setVisibility(View.GONE);
+            mEnterSearchLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoStationsLayout.setVisibility(View.GONE);
+            mEnterSearchLayout.setVisibility(View.GONE);
+        }
 
         return rootView;
     }

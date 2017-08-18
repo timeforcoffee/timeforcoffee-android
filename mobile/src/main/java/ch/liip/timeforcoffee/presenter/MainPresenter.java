@@ -43,7 +43,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private List<Station> mStations;
     private List<Station> mFavoriteStations;
-    private boolean mSearchMode;
     private FavoritesDataSource mFavoriteDataSource;
 
     private Location mLastLocation;
@@ -127,6 +126,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
 
         mFavoriteStations = finalFavoriteStations;
+        mActivity.updateStations(mStations);
         mActivity.updateFavorites(mFavoriteStations);
     }
 

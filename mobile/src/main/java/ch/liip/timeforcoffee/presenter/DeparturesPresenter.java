@@ -101,6 +101,7 @@ public class DeparturesPresenter implements Presenter {
         }
 
         mFavoriteDepartures = favoriteDepartures;
+        mActivity.updateDepartures(mDepartures);
         mActivity.updateFavorites(mFavoriteDepartures);
     }
 
