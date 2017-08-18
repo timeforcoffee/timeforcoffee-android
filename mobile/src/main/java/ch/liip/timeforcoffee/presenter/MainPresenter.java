@@ -115,17 +115,11 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
 
         List<Station> favoriteStations = mFavoriteDataSource.getAllFavoriteStations();
-        List<Station> finalFavoriteStations = new ArrayList<>();
         for(Station station : mStations) {
-            for(Station favorite : favoriteStations) {
-                if(favorite.equals(station)) {
-                    station.setIsFavorite(true);
-                    finalFavoriteStations.add(station);
-                }
-            }
+            station.setIsFavorite(favoriteStations.contains(station));
         }
 
-        mFavoriteStations = finalFavoriteStations;
+        mFavoriteStations = favoriteStations;
         mActivity.updateStations(mStations);
         mActivity.updateFavorites(mFavoriteStations);
     }

@@ -73,8 +73,13 @@ public class StationSearchPresenter implements Presenter {
     @Subscribe
     public void onStationsFetchedEvent(StationsFetchedEvent event) {
         mActivity.showProgressLayout(false);
-
         mStations = event.getStations();
+
+        List<Station> favoriteStations = mFavoriteDataSource.getAllFavoriteStations();
+        for(Station station : mStations) {
+            station.setIsFavorite(favoriteStations.contains(station));
+        }
+
         mActivity.updateStations(mStations);
     }
 

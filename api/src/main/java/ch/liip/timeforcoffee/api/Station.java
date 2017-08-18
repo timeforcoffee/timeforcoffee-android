@@ -195,12 +195,12 @@ public class Station implements RoutingListener {
 
     @Override
     public boolean equals(Object object) {
-        boolean sameSame = false;
+        boolean sameName = false;
 
         if (object != null && object instanceof Station) {
-            sameSame = this.id.equals(((Station) object).getId());
+            sameName = this.name.equals(((Station) object).getName());
         }
 
-        return sameSame;
+        return sameName;
     }
 }
