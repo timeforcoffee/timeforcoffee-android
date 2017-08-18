@@ -197,22 +197,22 @@ public class DeparturesActivity extends AppCompatActivity implements
         Intent detailIntent = new Intent(this, ConnectionsActivity.class);
         Station station = mPresenter.getStation();
 
-        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_ID, station.getId());
-        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_NAME, station.getName());
-        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_DISTANCE, station.getDistance());
-        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
-        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
-        detailIntent.putExtra(ConnectionListFragment.ARG_STATION_IS_FAVORITE, station.getIsFavorite());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_NAME, departure.getName());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_TYPE, departure.getType());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_DESTINATION, departure.getDestination());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_PLATFORM, departure.getPlatform());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_FG, departure.getColorFg());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_COLOR_BG, departure.getColorBg());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_SCHEDULED, departure.getScheduled());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_REALTIME, departure.getRealtime());
-        detailIntent.putExtra(ConnectionListFragment.ARG_DEPARTURE_IS_FAVORITE, departure.getIsFavorite());
+        detailIntent.putExtra(ConnectionsActivity.ARG_STATION_ID, station.getId());
+        detailIntent.putExtra(ConnectionsActivity.ARG_STATION_NAME, station.getName());
+        detailIntent.putExtra(ConnectionsActivity.ARG_STATION_DISTANCE, station.getDistance());
+        detailIntent.putExtra(ConnectionsActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
+        detailIntent.putExtra(ConnectionsActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+        detailIntent.putExtra(ConnectionsActivity.ARG_STATION_IS_FAVORITE, station.getIsFavorite());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_NAME, departure.getName());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_TYPE, departure.getType());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DESTINATION, departure.getDestination());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_PLATFORM, departure.getPlatform());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_COLOR_FG, departure.getColorFg());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_COLOR_BG, departure.getColorBg());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_SCHEDULED, departure.getScheduled());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_REALTIME, departure.getRealtime());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_IS_FAVORITE, departure.getIsFavorite());
 
         startActivity(detailIntent);
     }

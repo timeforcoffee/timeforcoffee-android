@@ -5,6 +5,7 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,9 +13,12 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.ConnectionsActivity;
+import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
@@ -24,11 +28,12 @@ import ch.liip.timeforcoffee.widget.SnackBars;
 public class ConnectionsPresenter implements Presenter {
 
     private ConnectionsActivity mActivity;
-    private Station mStation;
-    private Departure mDeparture;
     private Timer mAutoUpdateTimer;
     public static final int UPDATE_FREQUENCY = 60000;
 
+    private Station mStation;
+    private Departure mDeparture;
+    private List<Connection> mConnections;
     private FavoritesDataSource mFavoriteDataSource;
 
     @Inject
@@ -50,20 +55,7 @@ public class ConnectionsPresenter implements Presenter {
     }
 
     public void onResumeView() {
-
-        //timer to refresh departures each 60 secs
-        mAutoUpdateTimer = new Timer();
-        mAutoUpdateTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateConnections();
-                    }
-                });
-            }
-        }, 0, UPDATE_FREQUENCY);
-
+        updateConnections();
     }
 
     public void onRefreshView() {
@@ -71,11 +63,24 @@ public class ConnectionsPresenter implements Presenter {
     }
 
     public void updateConnections() {
+        if (mConnections == null || mConnections.size() == 0) {
+            mActivity.showProgressLayout(true);
+        }
+
         mEventBus.post(new FetchConnectionsEvent(mStation.getName(), mDeparture.getDestination()));
     }
 
     @Subscribe
+    public void onConnectionsFetchedEvent(ConnectionsFetchedEvent event) {
+        mActivity.showProgressLayout(false);
+
+        mConnections = event.getConnections();
+        mActivity.updateConnections(mConnections);
+    }
+
+    @Subscribe
     public void onFetchErrorEvent(FetchErrorEvent event) {
+        mActivity.showProgressLayout(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,5 +124,9 @@ public class ConnectionsPresenter implements Presenter {
             mDeparture.setIsFavorite(true);
             mFavoriteDataSource.insertFavoriteLine(mDeparture);
         }
+    }
+
+    public FavoritesDataSource getFavoritesDataSource() {
+        return mFavoriteDataSource;
     }
 }

@@ -53,10 +53,6 @@ public class DeparturesPresenter implements Presenter {
     }
 
     public void onResumeView() {
-        if (mDepartures != null && mDepartures.size() == 0) {
-            mActivity.showProgressLayout(true);
-        }
-
         //timer to refresh departures each 60 secs
         mAutoUpdateTimer = new Timer();
         mAutoUpdateTimer.schedule(new TimerTask() {
@@ -77,6 +73,10 @@ public class DeparturesPresenter implements Presenter {
     }
 
     public void updateDepartures() {
+        if (mDepartures == null || mDepartures.size() == 0) {
+            mActivity.showProgressLayout(true);
+        }
+
         mEventBus.post(new FetchDeparturesEvent(mStation));
     }
 
