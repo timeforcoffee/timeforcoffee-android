@@ -108,9 +108,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         } else {
             mCallbacks.onFavoriteDepartureSelected(mDepartureListAdapter.getDeparture(position));
         }
-
-
-        mCallbacks.onFavoriteStationSelected(mStationListAdapter.getStation(position));
     }
 
     @Override
