@@ -83,4 +83,11 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     public void setDepartures(List<Departure> departures) {
         mDepartureListAdapter.setDepartures(departures);
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        // Reset the active callbacks interface to the dummy implementation.
+        mCallbacks = sDummyCallbacks;
+    }
 }

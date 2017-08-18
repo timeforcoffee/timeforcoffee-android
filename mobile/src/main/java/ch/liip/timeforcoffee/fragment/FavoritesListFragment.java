@@ -132,18 +132,12 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setStations(List<Station> stations) {
-        if(stations.size() > 0) {
-            showNoFavoritesLayout(false);
-        }
-
+        showNoFavoritesLayout(stations.size() == 0);
         mStationListAdapter.setStations(stations);
     }
 
     public void setDepartures(List<Departure> departures) {
-        if(departures.size() > 0) {
-            showNoFavoritesLayout(false);
-        }
-
+        showNoFavoritesLayout(departures.size() == 0);
         mDepartureListAdapter.setDepartures(departures);
     }
 
