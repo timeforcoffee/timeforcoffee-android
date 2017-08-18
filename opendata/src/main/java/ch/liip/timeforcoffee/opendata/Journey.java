@@ -6,8 +6,10 @@ import java.util.List;
  * Created by fsantschi on 08/03/15.
  */
 public class Journey {
+    private Checkpoint stop;
     private String name;
     private String category;
+    private String subcategory;
     private String categoryCode;
     private String number;
     private String operator;
@@ -15,7 +17,7 @@ public class Journey {
     private List<Checkpoint> passList;
     private String capacity1st;
     private String capacity2st;
-    private Stop stop;
+
     Journey() {}
 
     public String getName() {
@@ -54,7 +56,7 @@ public class Journey {
         return capacity2st;
     }
 
-    public Stop getStop() {
+    public Checkpoint getStop() {
         return stop;
     }
 }

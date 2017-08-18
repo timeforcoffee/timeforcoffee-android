@@ -25,9 +25,7 @@ import javax.inject.Singleton;
                 DataService.class,
                 MainPresenter.class,
                 DeparturesPresenter.class,
-                StationListPresenter.class,
-                StationSearchPresenter.class,
-                DepartureListPresenter.class
+                StationSearchPresenter.class
         }
 )
 class TimeForCoffeeModule {
@@ -41,8 +39,13 @@ class TimeForCoffeeModule {
     @Provides
     @Singleton
     TransportService provideTransportService() {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://transport.opendata.ch")
+                .setConverter(new GsonConverter(gson))
                 .build();
 
         TransportService service = restAdapter.create(TransportService.class);

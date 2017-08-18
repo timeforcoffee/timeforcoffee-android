@@ -11,12 +11,13 @@ import java.util.List;
 public class TabsAdapter extends FragmentPagerAdapter {
 
     private final List fragments;
-    private final int[] titles = { R.string.tab_stations, R.string.tab_favorites};
+    private final int[] titles;
     private Context context;
 
-    public TabsAdapter(Context context, FragmentManager fm, List fragments) {
+    public TabsAdapter(Context context, FragmentManager fm, int[] titlesRes,  List fragments) {
         super(fm);
         this.context = context;
+        this.titles = titlesRes;
         this.fragments = fragments;
     }
 

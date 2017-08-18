@@ -7,8 +7,8 @@ import android.provider.BaseColumns;
 
 public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
 
-    public static abstract class FavoriteColumn implements BaseColumns {
-        public static final String TABLE_NAME = "favorites";
+    public static abstract class FavoriteStationColumn implements BaseColumns {
+        public static final String TABLE_NAME = "favorite_stations";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_STATION_ID = "station_id";
         public static final String COLUMN_NAME = "name";
@@ -17,7 +17,14 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_DISTANCE = "distance";
     }
 
-    public static final int DATABASE_VERSION = 1;
+    public static abstract class FavoriteLineColumn implements BaseColumns {
+        public static final String TABLE_NAME = "favorite_lines";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_LINE_NUMBER = "line_number";
+        public static final String COLUMN_DESTINATION = "destination";
+    }
+
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "FavoritesReader.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -25,31 +32,38 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     private static final String FLOAT_TYPE = " FLOAT";
     private static final String COMMA_SEP = ",";
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + FavoriteColumn.TABLE_NAME + " (" +
-                    FavoriteColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    FavoriteColumn.COLUMN_STATION_ID + TEXT_TYPE + COMMA_SEP +
-                    FavoriteColumn.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
-                    FavoriteColumn.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    FavoriteColumn.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    FavoriteColumn.COLUMN_DISTANCE + FLOAT_TYPE +
-                    " )";
+    private static final String SQL_CREATE_STATION_TABLE =
+            "CREATE TABLE " + FavoriteStationColumn.TABLE_NAME + " (" +
+                    FavoriteStationColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    FavoriteStationColumn.COLUMN_STATION_ID + TEXT_TYPE + COMMA_SEP +
+                    FavoriteStationColumn.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+                    FavoriteStationColumn.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
+                    FavoriteStationColumn.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
+                    FavoriteStationColumn.COLUMN_DISTANCE + FLOAT_TYPE + " )";
 
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + FavoriteColumn.TABLE_NAME;
+    private static final String SQL_CREATE_LINE_TABLE =
+            "CREATE TABLE " + FavoriteLineColumn.TABLE_NAME + " (" +
+                    FavoriteLineColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    FavoriteLineColumn.COLUMN_DESTINATION + TEXT_TYPE + COMMA_SEP +
+                    FavoriteLineColumn.COLUMN_LINE_NUMBER + TEXT_TYPE  + " )";
+
+    private static final String SQL_DELETE_STATION_TABLE = "DROP TABLE IF EXISTS " + FavoriteStationColumn.TABLE_NAME;
+    private static final String SQL_DELETE_LINE_TABLE = "DROP TABLE IF EXISTS " + FavoriteLineColumn.TABLE_NAME;
 
     public FavoritesDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_STATION_TABLE);
+        db.execSQL(SQL_CREATE_LINE_TABLE);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_STATION_TABLE);
+        db.execSQL(SQL_DELETE_LINE_TABLE);
         onCreate(db);
     }
 

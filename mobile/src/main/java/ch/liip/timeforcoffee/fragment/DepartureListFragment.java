@@ -1,6 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
@@ -8,39 +8,25 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.presenter.DepartureListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
+import ch.liip.timeforcoffee.api.Departure;
+
 
 public class DepartureListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    public static final String ARG_STATION_ID = "station_id";
-    public static final String ARG__STATION_NAME = "station_name";
-    public static final String ARG_STATION_DISTANCE = "station_distance";
-    public static final String ARG_STATION_LONGITUDE = "station_longitude";
-    public static final String ARG_STATION_LATITUDE = "station_latitude";
-    public static final String ARG_IS_FAVORITE = "station_is_favorite";
-
-    private DepartureListPresenter mPresenter;
-
-    private DepartureListAdapter departureListAdapter;
-    private RelativeLayout mProgressLayout;
+    private DepartureListAdapter mDepartureListAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
     public interface Callbacks {
-        public void onRefresh();
+        void onRefresh();
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -58,38 +44,29 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        departureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>());
-        setListAdapter(departureListAdapter);
-
-        mPresenter = new DepartureListPresenter(this);
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), ((DeparturesActivity)getActivity()).getFavoriteDataSource());
+        setListAdapter(mDepartureListAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_departure_list, container, false);
-        mProgressLayout = (RelativeLayout) rootView.findViewById(R.id.progressLayout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        return rootView;
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.onResumeView();
+        return rootView;
     }
 
     @Override
@@ -103,27 +80,14 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
         }, 100);
     }
 
-    public void showProgresLayout(boolean show) {
-        if (show) {
-            mProgressLayout.setVisibility(View.VISIBLE);
-        } else {
-            mProgressLayout.setVisibility(View.GONE);
-        }
-    }
-
     public void setDepartures(List<Departure> departures) {
-        departureListAdapter.setDepartures(departures);
+        mDepartureListAdapter.setDepartures(departures);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mPresenter.onPauseView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
+    public void onDetach() {
+        super.onDetach();
+        // Reset the active callbacks interface to the dummy implementation.
+        mCallbacks = sDummyCallbacks;
     }
 }

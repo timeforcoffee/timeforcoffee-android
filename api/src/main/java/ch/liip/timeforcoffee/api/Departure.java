@@ -1,51 +1,61 @@
 package ch.liip.timeforcoffee.api;
 
-import android.graphics.Color;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class Departure {
+
     private String name;
+    private String lineNumber;
     private String type;
-    private Boolean accessible;
-    private String to;
+    private boolean accessible;
+    private String destination;
     private String platform;
     private Date scheduled;
     private Date realtime;
     private int colorFg;
     private int colorBg;
+    private boolean isFavorite;
 
-    public Departure(String name, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, Boolean accessible) {
+    public Departure(String name, String lineNumber, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, boolean accessible, boolean isFavorite) {
         this.name = name;
+        this.lineNumber = lineNumber;
         this.colorBg = colorBg;
         this.colorFg = colorFg;
-        this.to = to;
+        this.destination = to;
         this.platform = platform;
         this.scheduled = scheduled;
         this.realtime = realtime;
         this.accessible = accessible;
+        this.isFavorite = isFavorite;
+    }
+
+    public Departure(String lineNumber, String destination, boolean isFavorite) {
+        this.lineNumber = lineNumber;
+        this.destination = destination;
+        this.isFavorite = isFavorite;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getLineNumber() {
+        return lineNumber;
+    }
+
     public String getType() {
         return type;
     }
 
-    public Boolean getAccessible() {
+    public boolean isAccessible() {
         return accessible;
     }
 
-    public String getTo() {
-        return to;
+    public String getDestination() {
+        return destination;
     }
 
     public String getPlatform() {return platform;}
@@ -96,12 +106,6 @@ public class Departure {
         return false;
     }
 
-    public Boolean isAccessible(){
-        if (accessible != null){
-            return getAccessible();
-        }
-        return false;
-    }
     public String departureInMinutes() {
 
         long timeInterval = getTimeDiffInMinutes();
@@ -124,5 +128,25 @@ public class Departure {
             diff = scheduled.getTime() - now.getTime();
         }
         return TimeUnit.MILLISECONDS.toMinutes(diff);
+    }
+
+    public boolean getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public boolean lineEquals(Object object) {
+        boolean sameLineNumber = false;
+        boolean sameDestination = false;
+
+        if (object != null && object.getClass() == Departure.class) {
+            sameLineNumber = this.lineNumber.equals(((Departure) object).getLineNumber());
+            sameDestination = this.destination.equals(((Departure) object).getDestination());
+        }
+
+        return sameLineNumber && sameDestination;
     }
 }

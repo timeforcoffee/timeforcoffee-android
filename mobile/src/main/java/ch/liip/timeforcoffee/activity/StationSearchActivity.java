@@ -10,16 +10,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
+import java.util.List;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
 
 public class StationSearchActivity extends AppCompatActivity
         implements StationListFragment.Callbacks {
 
     StationSearchPresenter mPresenter;
+    StationListFragment mStationListFragment;
 
     private EditText mSearchEditText;
     private ProgressBar mSearchProgressBar;
@@ -42,6 +46,7 @@ public class StationSearchActivity extends AppCompatActivity
             searchQuery = getIntent().getStringExtra(ARG_SEARCH_QUERY);
         }
 
+        mPresenter = new StationSearchPresenter(this, searchQuery);
         setContentView(R.layout.activity_search_station_list);
 
         // Set custom view on action bar.
@@ -50,6 +55,8 @@ public class StationSearchActivity extends AppCompatActivity
         actionBar.setCustomView(R.layout.search_bar);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        mStationListFragment = (StationListFragment) getSupportFragmentManager().findFragmentById(R.id.station_list);
+
         mSearchEditText = (EditText) actionBar.getCustomView().findViewById(R.id.searchField);
         mSearchEditText.addTextChangedListener(new SearchWatcher());
         mSearchEditText.setText(searchQuery);
@@ -57,8 +64,6 @@ public class StationSearchActivity extends AppCompatActivity
 
         mSearchProgressBar = (ProgressBar) actionBar.getCustomView().findViewById(R.id.search_progress_bar);
         mSearchProgressBar.setVisibility(View.GONE);
-
-        mPresenter = new StationSearchPresenter(this, searchQuery);
     }
 
     /**
@@ -124,6 +129,10 @@ public class StationSearchActivity extends AppCompatActivity
         mPresenter.onDestroy();
     }
 
+    public void updateStations(List<Station> stations) {
+        mStationListFragment.setStations(stations);
+    }
+
     public void showProgressLayout(boolean show) {
         if (show) {
             mSearchProgressBar.setVisibility(View.VISIBLE);
@@ -143,17 +152,17 @@ public class StationSearchActivity extends AppCompatActivity
     }
 
     private void selectStation(Station station) {
-
         Intent detailIntent = new Intent(this, DeparturesActivity.class);
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_ID, station.getId());
-        detailIntent.putExtra(DepartureListFragment.ARG__STATION_NAME, station.getName());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_DISTANCE, station.getDistance());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
+        detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
         detailIntent.putExtra(DeparturesActivity.ARG_FROM_SEARCH, true);
         detailIntent.putExtra(ARG_SEARCH_QUERY, mPresenter.getSearchQuery());
-        startActivity(detailIntent);
 
+        startActivity(detailIntent);
     }
 
     @Override
@@ -166,4 +175,7 @@ public class StationSearchActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public FavoritesDataSource getFavoriteDataSource() {
+        return mPresenter.getFavoritesDataSource();
+    }
 }
