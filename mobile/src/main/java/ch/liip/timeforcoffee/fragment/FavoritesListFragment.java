@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.presenter.FavoritesListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     public static final int ARG_MODE_STATIONS = 0;
     public static final int ARG_MODE_DEPARTURES = 1;
 
-    private FavoritesListPresenter mPresenter;
     private int mFavoriteMode;
     private Callbacks mCallbacks = sDummyCallbacks;
 
@@ -68,24 +68,23 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         }
 
         mFavoriteMode = args.getInt(ARG_MODE);
-        mPresenter = new FavoritesListPresenter(this, mFavoriteMode);
-
         if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
-            mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), mPresenter.getFavoriteDataSource());
+            mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), ((MainActivity)getActivity()).getFavoriteDataSource());
             setListAdapter(mStationListAdapter);
         } else {
-            mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), mPresenter.getFavoriteDataSource());
+            mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), ((DeparturesActivity)getActivity()).getFavoriteDataSource());
             setListAdapter(mDepartureListAdapter);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_favorites_list, container, false);
+
         mNoFavoritesLayout = (LinearLayout) rootView.findViewById(R.id.noFavoritesLayout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
         return rootView;
     }
 
@@ -119,22 +118,9 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mPresenter.onRefreshView();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 100);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.onResumeView();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mPresenter.onPauseView();
     }
 
     public void showNoFavoritesLayout(boolean show) {
@@ -145,15 +131,19 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         }
     }
 
-    public void updateFavorites() {
-        mPresenter.updateFavorites();
-    }
-
     public void setStations(List<Station> stations) {
+        if(stations.size() > 0) {
+            showNoFavoritesLayout(false);
+        }
+
         mStationListAdapter.setStations(stations);
     }
 
     public void setDepartures(List<Departure> departures) {
+        if(departures.size() > 0) {
+            showNoFavoritesLayout(false);
+        }
+
         mDepartureListAdapter.setDepartures(departures);
     }
 
@@ -163,11 +153,4 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
-    }
-
 }

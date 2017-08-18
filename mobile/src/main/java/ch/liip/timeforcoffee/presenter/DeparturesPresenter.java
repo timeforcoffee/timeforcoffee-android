@@ -1,33 +1,39 @@
 package ch.liip.timeforcoffee.presenter;
 
 import android.view.View;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.ZvvApiService;
+import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchDeparturesEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.widget.SnackBars;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
-import javax.inject.Inject;
-import java.util.Timer;
-import java.util.TimerTask;
-
-/**
- * Created by nicolas on 23/12/16.
- */
 public class DeparturesPresenter implements Presenter {
 
     private DeparturesActivity mActivity;
-    Station mStation;
     private Timer mAutoUpdateTimer;
     public static final int UPDATE_FREQUENCY = 60000;
 
+    private Station mStation;
+    private List<Departure> mDepartures;
+    private List<Departure> mFavoriteDepartures;
     private FavoritesDataSource mFavoriteDataSource;
 
     @Inject
@@ -51,6 +57,9 @@ public class DeparturesPresenter implements Presenter {
     }
 
     public void onResumeView() {
+        if (mDepartures != null && mDepartures.size() == 0) {
+            mActivity.showProgressLayout(true);
+        }
 
         //timer to refresh departures each 60 secs
         mAutoUpdateTimer = new Timer();
@@ -75,8 +84,39 @@ public class DeparturesPresenter implements Presenter {
         mEventBus.post(new FetchDeparturesEvent(mStation.getId()));
     }
 
+    public void updateFavorites() {
+        if(mDepartures == null || mDepartures.size() == 0) {
+            return;
+        }
+
+        List<Departure> favoriteLines = mFavoriteDataSource.getAllFavoriteLines();
+        List<Departure> favoriteDepartures = new ArrayList<>();
+        for(Departure departure : mDepartures) {
+            for(Departure favorite : favoriteLines) {
+                if(favorite.lineEquals(departure)) {
+                    departure.setIsFavorite(true);
+                    favoriteDepartures.add(departure);
+                }
+            }
+        }
+
+        mFavoriteDepartures = favoriteDepartures;
+        mActivity.updateFavorites(mFavoriteDepartures);
+    }
+
+    @Subscribe
+    public void onDeparturesFetchedEvent(DeparturesFetchedEvent event) {
+        mActivity.showProgressLayout(false);
+
+        mDepartures = event.getDepartures();
+        mActivity.updateDepartures(mDepartures);
+
+        updateFavorites();
+    }
+
     @Subscribe
     public void onFetchErrorEvent(FetchErrorEvent event) {
+        mActivity.showProgressLayout(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,5 +152,9 @@ public class DeparturesPresenter implements Presenter {
             mStation.setIsFavorite(true);
             mFavoriteDataSource.insertFavoriteStation(mStation);
         }
+    }
+
+    public FavoritesDataSource getFavoritesDataSource() {
+        return mFavoriteDataSource;
     }
 }
