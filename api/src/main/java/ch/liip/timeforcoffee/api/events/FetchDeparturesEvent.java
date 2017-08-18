@@ -1,17 +1,19 @@
 package ch.liip.timeforcoffee.api.events;
 
+import ch.liip.timeforcoffee.api.Station;
+
 /**
  * Created by fsantschi on 11/03/15.
  */
 public class FetchDeparturesEvent {
 
-    private final String stationId;
+    private final Station station;
 
-    public FetchDeparturesEvent(String stationId) {
-        this.stationId = stationId;
+    public FetchDeparturesEvent(Station station) {
+        this.station = station;
     }
 
-    public String getStationId() {
-        return stationId;
+    public Station getStation() {
+        return station;
     }
 }

@@ -81,7 +81,7 @@ public class DeparturesPresenter implements Presenter {
     }
 
     public void updateDepartures() {
-        mEventBus.post(new FetchDeparturesEvent(mStation.getId()));
+        mEventBus.post(new FetchDeparturesEvent(mStation));
     }
 
     public void updateFavorites() {
