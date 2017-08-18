@@ -2,11 +2,13 @@ package ch.liip.timeforcoffee.api;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Departure {
 
     private String name;
+    private String lineNumber;
     private String type;
     private boolean accessible;
     private String destination;
@@ -17,8 +19,9 @@ public class Departure {
     private int colorBg;
     private boolean isFavorite;
 
-    public Departure(String name, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, boolean accessible, boolean isFavorite) {
+    public Departure(String name, String lineNumber, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, boolean accessible, boolean isFavorite) {
         this.name = name;
+        this.lineNumber = lineNumber;
         this.colorBg = colorBg;
         this.colorFg = colorFg;
         this.destination = to;
@@ -29,14 +32,18 @@ public class Departure {
         this.isFavorite = isFavorite;
     }
 
-    public Departure(String name, String destination, boolean isFavorite) {
-        this.name = name;
+    public Departure(String lineNumber, String destination, boolean isFavorite) {
+        this.lineNumber = lineNumber;
         this.destination = destination;
         this.isFavorite = isFavorite;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getLineNumber() {
+        return lineNumber;
     }
 
     public String getType() {
@@ -132,14 +139,14 @@ public class Departure {
     }
 
     public boolean lineEquals(Object object) {
-        boolean sameSame = false;
+        boolean sameLineNumber = false;
         boolean sameDestination = false;
 
-        if (object != null && object instanceof Departure) {
-            sameSame = this.name.equals(((Departure) object).getName());
+        if (object != null && object.getClass() == Departure.class) {
+            sameLineNumber = this.lineNumber.equals(((Departure) object).getLineNumber());
             sameDestination = this.destination.equals(((Departure) object).getDestination());
         }
 
-        return sameSame && sameDestination;
+        return sameLineNumber && sameDestination;
     }
 }

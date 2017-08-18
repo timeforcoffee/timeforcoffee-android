@@ -95,9 +95,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     }
 
     public void setStations(List<Station> stations) {
-        if(stations.size() > 0) {
-            showNoStationsLayout(false);
-        }
+        showNoStationsLayout(stations.size() == 0);
 
         mEnterSearchLayout.setVisibility(View.GONE);
         mStationListAdapter.setStations(stations);
@@ -123,6 +121,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     @Override
     public void onDetach() {
         super.onDetach();
+        // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
     }
 }
