@@ -92,12 +92,15 @@ public class DeparturesPresenter implements Presenter {
         List<Departure> favoriteLines = mFavoriteDataSource.getAllFavoriteLines();
         List<Departure> favoriteDepartures = new ArrayList<>();
         for(Departure departure : mDepartures) {
+            boolean contains = false;
             for(Departure favorite : favoriteLines) {
                 if(favorite.lineEquals(departure)) {
-                    departure.setIsFavorite(true);
                     favoriteDepartures.add(departure);
+                    contains = true;
                 }
             }
+
+            departure.setIsFavorite(contains);
         }
 
         mFavoriteDepartures = favoriteDepartures;
