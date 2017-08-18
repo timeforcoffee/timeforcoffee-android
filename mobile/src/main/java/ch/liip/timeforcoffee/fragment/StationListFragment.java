@@ -1,6 +1,5 @@
 package ch.liip.timeforcoffee.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,21 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.StationListAdapter;
-import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.presenter.StationListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.MainActivity;
+import ch.liip.timeforcoffee.adapter.StationListAdapter;
+import ch.liip.timeforcoffee.api.Station;
+
 
 public class StationListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private StationListPresenter mPresenter;
-
     private StationListAdapter mStationListAdapter;
-    private RelativeLayout mProgressLayout;
     private RelativeLayout mNoStationsLayout;
     private RelativeLayout mEnterSearchLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -62,29 +59,20 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         super.onCreate(savedInstanceState);
 
         boolean searchMode = getActivity().getIntent().getBooleanExtra(ARG_SEARCH_MODE, false);
-        mPresenter = new StationListPresenter(this, searchMode);
 
-        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), mPresenter.getFavoritesDataSource());
+        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), ((MainActivity)getActivity()).getFavoriteDataSource());
         setListAdapter(mStationListAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_station_list, container, false);
-        mProgressLayout = (RelativeLayout) rootView.findViewById(R.id.progressLayout);
+
         mNoStationsLayout = (RelativeLayout) rootView.findViewById(R.id.noStationsLayout);
         mEnterSearchLayout = (RelativeLayout) rootView.findViewById(R.id.enterSearchLayout);
-
-        if (mPresenter.getSearchMode()) {
-            mProgressLayout.setVisibility(View.GONE);
-            mNoStationsLayout.setVisibility(View.GONE);
-            mEnterSearchLayout.setVisibility(View.VISIBLE);
-        } else {
-            mNoStationsLayout.setVisibility(View.GONE);
-            mEnterSearchLayout.setVisibility(View.GONE);
-        }
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
+
         return rootView;
     }
 
@@ -97,21 +85,6 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         mCallbacks = (Callbacks) context;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mNoStationsLayout.setVisibility(View.GONE);
-        mPresenter.onResumeView();
-    }
-
-    public void showProgressLayout(boolean show) {
-        if (show) {
-            mProgressLayout.setVisibility(View.VISIBLE);
-        } else {
-            mProgressLayout.setVisibility(View.GONE);
-        }
-    }
-
     public void showNoStationsLayout(boolean show) {
         mEnterSearchLayout.setVisibility(View.GONE);
         if (show) {
@@ -122,12 +95,12 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     }
 
     public void setStations(List<Station> stations) {
+        if(stations.size() > 0) {
+            showNoStationsLayout(false);
+        }
+
         mEnterSearchLayout.setVisibility(View.GONE);
         mStationListAdapter.setStations(stations);
-    }
-
-    public void updateFavorites() {
-        mPresenter.updateFavorites();
     }
 
     @Override
@@ -148,21 +121,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     }
 
     @Override
-    public void onPause() {
-        mPresenter.onPauseView();
-        super.onPause();
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = sDummyCallbacks;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
-    }
-
 }

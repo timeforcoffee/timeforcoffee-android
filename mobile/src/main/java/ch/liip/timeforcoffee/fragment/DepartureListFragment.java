@@ -8,34 +8,19 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.presenter.DepartureListPresenter;
 
 
 public class DepartureListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    public static final String ARG_STATION_ID = "station_id";
-    public static final String ARG__STATION_NAME = "station_name";
-    public static final String ARG_STATION_DISTANCE = "station_distance";
-    public static final String ARG_STATION_LONGITUDE = "station_longitude";
-    public static final String ARG_STATION_LATITUDE = "station_latitude";
-    public static final String ARG_IS_FAVORITE = "station_is_favorite";
-
-    private DepartureListPresenter mPresenter;
-
     private DepartureListAdapter mDepartureListAdapter;
-    private RelativeLayout mProgressLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Callbacks mCallbacks = sDummyCallbacks;
@@ -70,26 +55,18 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new DepartureListPresenter(this);
 
-        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), mPresenter.getFavoritesDataSource());
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), ((DeparturesActivity)getActivity()).getFavoriteDataSource());
         setListAdapter(mDepartureListAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_departure_list, container, false);
-        mProgressLayout = (RelativeLayout) rootView.findViewById(R.id.progressLayout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        return rootView;
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.onResumeView();
+        return rootView;
     }
 
     @Override
@@ -103,27 +80,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
         }, 100);
     }
 
-    public void showProgressLayout(boolean show) {
-        if (show) {
-            mProgressLayout.setVisibility(View.VISIBLE);
-        } else {
-            mProgressLayout.setVisibility(View.GONE);
-        }
-    }
-
     public void setDepartures(List<Departure> departures) {
         mDepartureListAdapter.setDepartures(departures);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mPresenter.onPauseView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
     }
 }
