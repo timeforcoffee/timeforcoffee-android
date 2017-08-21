@@ -52,8 +52,7 @@ public class FavoritesDataSource {
     }
 
     public void deleteFavoriteStation(Station station) {
-        String name = station.getName();
-        database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_NAME + " = '" + name + "'", null);
+        database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_STATION_ID + " = " + station.getId(), null);
     }
 
     public void insertFavoriteLine(Departure departure) {
@@ -64,8 +63,7 @@ public class FavoritesDataSource {
     }
 
     public void deleteFavoriteLine(Departure departure) {
-        String name = departure.getName();
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + name  + "'", null);
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "'", null);
     }
 
     public List<Station> getAllFavoriteStations() {
@@ -101,7 +99,7 @@ public class FavoritesDataSource {
     }
 
     private Station cursorToStation(Cursor cursor) {
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_STATION_ID));
+        int id = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_STATION_ID));
         String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_NAME));
         double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LONGITUDE));

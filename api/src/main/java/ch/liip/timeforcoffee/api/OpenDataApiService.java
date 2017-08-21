@@ -14,10 +14,8 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class OpenDataApiService {
+
     private EventBus eventBus;
     private TransportService transportService;
 
@@ -29,42 +27,8 @@ public class OpenDataApiService {
     }
 
     @Subscribe
-    public void onEvent(FetchOpenDataConnectionsEvent event) {
-        fetchOpenDataConnections(event.getQuery());
-    }
-
-    @Subscribe
     public void onEvent(FetchOpenDataLocationsEvent event) {
         fetchOpenDataLocations(event.getQuery());
-    }
-
-    @Subscribe
-    public void onEvent(FetchOpenDataStationboardEvent event) {
-        fetchOpenDataStationboard(event.getQuery());
-    }
-
-
-    public void fetchOpenDataConnections(Map<String, String> query) {
-
-        transportService.getConnections(query)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ConnectionsResponse>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e));
-                    }
-
-                    @Override
-                    public void onNext(ConnectionsResponse connections) {
-                        eventBus.post(new OpenDataConnectionsFetchedEvent(connections.getConnections()));
-                    }
-                });
     }
 
     public void fetchOpenDataLocations(Map<String, String> query) {
@@ -102,28 +66,5 @@ public class OpenDataApiService {
                     }
                 });
 
-    }
-
-    public void fetchOpenDataStationboard(Map<String, String> query) {
-
-        transportService.getStationboard(query)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationboardResponse>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e));
-                    }
-
-                    @Override
-                    public void onNext(StationboardResponse stationboard) {
-                        eventBus.post(new OpenDataStationboardFetchedEvent(stationboard.getStationboards()));
-                    }
-                });
     }
 }

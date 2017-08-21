@@ -74,7 +74,7 @@ public class DeparturesActivity extends AppCompatActivity implements
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String id = getIntent().getStringExtra(ARG_STATION_ID);
+        int id = getIntent().getIntExtra(ARG_STATION_ID, 0);
         String name = getIntent().getStringExtra(ARG__STATION_NAME);
         float distance = getIntent().getFloatExtra(ARG_STATION_DISTANCE, 0.0f);
 
@@ -169,6 +169,7 @@ public class DeparturesActivity extends AppCompatActivity implements
                 item.setIcon(R.drawable.ic_action_star_border);
             }
         }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -172,6 +172,7 @@ public class StationSearchActivity extends AppCompatActivity
             navigateUpTo(new Intent(this, MainActivity.class));
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

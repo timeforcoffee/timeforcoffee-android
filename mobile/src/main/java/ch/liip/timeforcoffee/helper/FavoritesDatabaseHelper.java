@@ -27,6 +27,7 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "FavoritesReader.db";
 
     private static final String TEXT_TYPE = " TEXT";
+    private static final String INT_TYPE = " INTEGER";
     private static final String DOUBLE_TYPE = " DOUBLE";
     private static final String FLOAT_TYPE = " FLOAT";
     private static final String COMMA_SEP = ",";
@@ -34,7 +35,7 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_STATION_TABLE =
             "CREATE TABLE " + FavoriteStationColumn.TABLE_NAME + " (" +
                     FavoriteStationColumn.COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    FavoriteStationColumn.COLUMN_STATION_ID + TEXT_TYPE + COMMA_SEP +
+                    FavoriteStationColumn.COLUMN_STATION_ID + INT_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +

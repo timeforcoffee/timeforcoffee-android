@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -86,5 +87,10 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
 
     public void setConnections(List<Connection> connections) {
         mConnectionListAdapter.setConnexions(connections);
+    }
+
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        super.onListItemClick(listView, view, position, id);
+        mCallbacks.onConnectionSelected(mConnectionListAdapter.getConnexion(position));
     }
 }

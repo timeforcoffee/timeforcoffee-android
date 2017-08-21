@@ -83,12 +83,12 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
         if (departure.isLate()) { //realtime != schedule time
             viewHolder.realtimeTextView.setVisibility(View.VISIBLE);
-            viewHolder.realtimeTextView.setText(departure.getRealtimeStr());
-            viewHolder.scheduledTimeTextView.setText(departure.getScheduledStr());
+            viewHolder.realtimeTextView.setText(departure.getDepartureRealtimeStr());
+            viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             viewHolder.realtimeTextView.setVisibility(View.GONE);
-            viewHolder.scheduledTimeTextView.setText(departure.getScheduledStr());
+            viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(viewHolder.scheduledTimeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 

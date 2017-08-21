@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -21,10 +20,7 @@ import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
-import ch.liip.timeforcoffee.fragment.DepartureListFragment;
-import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
 
 public class ConnectionsActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, ConnectionListFragment.Callbacks {
@@ -70,7 +66,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String stationId = getIntent().getStringExtra(ARG_STATION_ID);
+        int stationId = getIntent().getIntExtra(ARG_STATION_ID, 0);
         String stationName = getIntent().getStringExtra(ARG_STATION_NAME);
         float stationDistance = getIntent().getFloatExtra(ARG_STATION_DISTANCE, 0.0f);
         boolean stationIsFavorite = getIntent().getBooleanExtra(ARG_STATION_IS_FAVORITE, false);
@@ -152,6 +148,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
                 item.setIcon(R.drawable.ic_action_star_border);
             }
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -160,9 +157,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     }
 
     @Override
-    public void onConnectionSelected(Connection connection) {
-        // handle nav to departures for the selected connexion
-    }
+    public void onConnectionSelected(Connection connection) { }
 
     @Override
     public void onPanelSlide(View panel, float slideOffset) {
@@ -180,14 +175,6 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
 
     @Override
     public void onPanelHidden(View panel) { }
-
-    public FavoritesDataSource getFavoriteDataSource() {
-        return mPresenter.getFavoritesDataSource();
-    }
-
-    public void displayToastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 
     public void showProgressLayout(boolean show) {
         if (show) {

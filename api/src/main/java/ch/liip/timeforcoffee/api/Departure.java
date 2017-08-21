@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.api;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -81,7 +82,7 @@ public class Departure {
         return colorBg;
     }
 
-    public String getScheduledStr() {
+    public String getDepartureScheduledStr() {
 
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         if (departureScheduled != null) {
@@ -90,17 +91,23 @@ public class Departure {
         return null;
     }
 
-    public String getRealtimeStr() {
-
+    public String getDepartureRealtimeStr() {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         if (departureRealtime != null) {
             return dt.format(departureRealtime);
         }
+
         return null;
     }
 
-    public Boolean hasRealtime(){
-        return departureRealtime != null;
+    public String getDepartureStrForZvv() {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        return dateFormatter.format(departureScheduled);
+    }
+
+    public String getArrivalStrForZvv() {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        return dateFormatter.format(arrivalScheduled);
     }
 
     //realtime != schedule time
@@ -112,19 +119,18 @@ public class Departure {
     }
 
     public String departureInMinutes() {
-
-        long timeInterval = getTimeDiffInMinutes();
-
+        long timeInterval = getDepartureTimeDiffInMinutes();
         if (timeInterval < 0){
             return "0'";
         }
         if (timeInterval >= 60){
-            return ">59'";
+            return "> 59'";
         }
+
         return timeInterval +"'";
     }
 
-    long getTimeDiffInMinutes() {
+    long getDepartureTimeDiffInMinutes() {
         long diff = -1;
         Date now = new Date();
         if (departureRealtime != null){
