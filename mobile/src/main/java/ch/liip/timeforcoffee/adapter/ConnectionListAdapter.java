@@ -19,7 +19,6 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
     private static class ConnexionViewHolder {
         TextView stationTextView;
-        TextView typeTextView;
         TextView timeTimeTextView;
         TextView departureTextView;
     }
@@ -41,7 +40,6 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
             viewHolder = new ConnectionListAdapter.ConnexionViewHolder();
             viewHolder.stationTextView = (TextView) convertView.findViewById(R.id.station);
-            viewHolder.typeTextView = (TextView) convertView.findViewById(R.id.type);
             viewHolder.timeTimeTextView = (TextView) convertView.findViewById(R.id.time);
             viewHolder.departureTextView = (TextView) convertView.findViewById(R.id.departure);
 
@@ -51,10 +49,11 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
             viewHolder = (ConnectionListAdapter.ConnexionViewHolder) convertView.getTag();
         }
 
-        final Connection connection = this.mConnexions.get(position);
+        Connection connection = this.mConnexions.get(position);
 
-        viewHolder.stationTextView.setText(connection.getName());
-        // handle other properties
+        viewHolder.stationTextView.setText(connection.getStationName());
+        viewHolder.timeTimeTextView.setText(connection.getTimeStr());
+        viewHolder.departureTextView.setText("0'");
 
         return convertView;
     }

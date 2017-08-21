@@ -1,6 +1,5 @@
 package ch.liip.timeforcoffee.opendata;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,7 +8,7 @@ import java.util.List;
 public class Connection {
     private Checkpoint from;
     private Checkpoint to;
-    private Date duration;
+    private String duration;
     private Service service;
     private List<String> products;
     private float capacity1st;
@@ -25,7 +24,7 @@ public class Connection {
         return to;
     }
 
-    public Date getDuration() {
+    public String getDuration() {
         return duration;
     }
 

@@ -15,7 +15,7 @@
 
         <TextView android:id="@+id/station"
             tools:text="Zürich, Albisrieden"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -25,16 +25,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView android:id="@+id/type"
-                tools:text="Arr / Dep:"
-                android:textSize="14sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"/>
-
-
             <TextView android:id="@+id/time"
-                tools:text="11:29"
+                tools:text="Arr / Dep:"
                 android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
