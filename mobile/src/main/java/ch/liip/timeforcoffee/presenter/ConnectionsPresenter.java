@@ -67,7 +67,7 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchConnectionsEvent(mStation.getName(), mDeparture.getDestination()));
+        mEventBus.post(new FetchConnectionsEvent(mStation, mDeparture));
     }
 
     @Subscribe
