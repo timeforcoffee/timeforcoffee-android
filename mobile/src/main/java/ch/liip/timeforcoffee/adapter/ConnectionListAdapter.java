@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +16,18 @@ import ch.liip.timeforcoffee.api.Connection;
 public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
     private List<Connection> mConnexions;
-    private Context mContext;
 
     private static class ConnexionViewHolder {
         TextView stationTextView;
-        TextView timeTimeTextView;
+        TextView timeLabelTextView;
+        TextView timeTextView;
+        TextView realtimeDepartureTextView;
         TextView departureTextView;
     }
 
     public ConnectionListAdapter(Context context, List<Connection> connexions) {
         super(context, R.layout.fragment_departure_list_row, connexions);
-
         mConnexions = connexions;
-        mContext = context;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -40,8 +40,11 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
             viewHolder = new ConnectionListAdapter.ConnexionViewHolder();
             viewHolder.stationTextView = (TextView) convertView.findViewById(R.id.station);
-            viewHolder.timeTimeTextView = (TextView) convertView.findViewById(R.id.time);
+            viewHolder.timeLabelTextView = (TextView) convertView.findViewById(R.id.time_label);
+            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.time);
+            viewHolder.realtimeDepartureTextView = (TextView) convertView.findViewById(R.id.realtime);
             viewHolder.departureTextView = (TextView) convertView.findViewById(R.id.departure);
+
 
             convertView.setTag(viewHolder);
 
@@ -50,10 +53,19 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
         }
 
         Connection connection = this.mConnexions.get(position);
-
         viewHolder.stationTextView.setText(connection.getName());
-        viewHolder.timeTimeTextView.setText(connection.getTimeStr());
-        viewHolder.departureTextView.setText("0'");
+        viewHolder.timeLabelTextView.setText(connection.getTimeLabel());
+        viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
+        viewHolder.departureTextView.setText(connection.getDepartureInMinutes());
+
+        if (connection.isLate()) {
+            viewHolder.realtimeDepartureTextView.setVisibility(View.VISIBLE);
+            viewHolder.realtimeDepartureTextView.setText(connection.getRealtimeDepartureStr());
+            viewHolder.departureTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            viewHolder.realtimeDepartureTextView.setVisibility(View.GONE);
+            viewHolder.departureTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
 
         return convertView;
     }
@@ -65,6 +77,7 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
     public void setConnexions(List<Connection> connexions) {
         this.mConnexions.clear();
         this.mConnexions.addAll(connexions);
+
         notifyDataSetChanged();
     }
 }

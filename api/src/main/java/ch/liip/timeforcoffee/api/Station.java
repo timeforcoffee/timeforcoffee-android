@@ -10,9 +10,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class Station implements RoutingListener {
+
+    private int id;
     private String name;
     private Location location;
-    private String id;
     private float distance;
     private boolean isFavorite;
 
@@ -31,7 +32,7 @@ public class Station implements RoutingListener {
         onDistanceComputedListener = listener;
     }
 
-    public Station(String id, String name, float distance, Location location, boolean isFavorite) {
+    public Station(int id, String name, float distance, Location location, boolean isFavorite) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -165,8 +166,12 @@ public class Station implements RoutingListener {
         onDistanceComputedListener.onDistanceComputed(null);
     }
 
-    public String getId() {
+    public int getId() {
         return id;
+    }
+
+    public String getIdStr() {
+        return String.valueOf(id);
     }
 
     public String getName() {

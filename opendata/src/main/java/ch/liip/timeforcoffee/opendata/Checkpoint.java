@@ -2,10 +2,8 @@ package ch.liip.timeforcoffee.opendata;
 
 import java.util.Date;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class Checkpoint {
+
     private Location station;
     private Date arrival;
     private Integer arrivalTimestamp;

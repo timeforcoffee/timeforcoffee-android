@@ -3,7 +3,6 @@ package ch.liip.timeforcoffee.api.mappers;
 import android.graphics.Color;
 
 import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.opendata.Journey;
 
 public class DepartureMapper {
 

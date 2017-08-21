@@ -1,9 +1,7 @@
 package ch.liip.timeforcoffee.opendata;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class Location {
+
     private String id;
     private String name;
     private Coordinate coordinate;

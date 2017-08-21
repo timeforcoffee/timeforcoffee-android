@@ -69,12 +69,7 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-        String startDateStr = dateFormatter.format(mDeparture.getDepartureScheduled()) + "T" + timeFormatter.format(mDeparture.getDepartureScheduled());
-        String endDateStr = dateFormatter.format(mDeparture.getArrivalScheduled()) + "T" + timeFormatter.format(mDeparture.getArrivalScheduled());
-
-        mEventBus.post(new FetchConnectionsEvent(mStation.getId(), mDeparture.getDestinationId(), startDateStr, endDateStr));
+        mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationId(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
     }
 
     @Subscribe
@@ -131,9 +126,5 @@ public class ConnectionsPresenter implements Presenter {
             mDeparture.setIsFavorite(true);
             mFavoriteDataSource.insertFavoriteLine(mDeparture);
         }
-    }
-
-    public FavoritesDataSource getFavoritesDataSource() {
-        return mFavoriteDataSource;
     }
 }

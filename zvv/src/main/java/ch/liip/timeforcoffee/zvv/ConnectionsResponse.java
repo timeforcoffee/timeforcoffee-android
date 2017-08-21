@@ -4,11 +4,11 @@ import java.util.List;
 
 public class ConnectionsResponse {
 
-    private List<CheckPoint> checkPoints;
+    private List<List<CheckPoint>> passlist;
 
     public ConnectionsResponse() {}
 
-    public List<CheckPoint> getCheckPoints() {
-        return checkPoints;
+    public List<CheckPoint> getConnections() {
+        return passlist.get(0);
     }
 }

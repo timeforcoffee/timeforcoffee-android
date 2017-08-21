@@ -1,28 +1,31 @@
 package ch.liip.timeforcoffee.api;
 
-import ch.liip.timeforcoffee.api.events.*;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvStationboardEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvStationsEvent;
+import ch.liip.timeforcoffee.api.events.ZvvConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.ZvvStationboardFetchedEvent;
+import ch.liip.timeforcoffee.api.events.ZvvStationsFetchedEvent;
 import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Station;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
 import ch.liip.timeforcoffee.zvv.StationsResponse;
 import ch.liip.timeforcoffee.zvv.ZvvService;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import javax.inject.Inject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class ZvvApiService {
+
     private EventBus eventBus;
     private ZvvService zvvService;
 
@@ -66,7 +69,7 @@ public class ZvvApiService {
 
                     @Override
                     public void onNext(ConnectionsResponse connections) {
-                        eventBus.post(new ZvvConnectionsFetchedEvent(connections.getCheckPoints()));
+                        eventBus.post(new ZvvConnectionsFetchedEvent(connections.getConnections()));
                     }
                 });
     }
