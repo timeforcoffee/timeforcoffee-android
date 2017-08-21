@@ -51,7 +51,7 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
         Connection connection = this.mConnexions.get(position);
 
-        viewHolder.stationTextView.setText(connection.getStationName());
+        viewHolder.stationTextView.setText(connection.getName());
         viewHolder.timeTimeTextView.setText(connection.getTimeStr());
         viewHolder.departureTextView.setText("0'");
 

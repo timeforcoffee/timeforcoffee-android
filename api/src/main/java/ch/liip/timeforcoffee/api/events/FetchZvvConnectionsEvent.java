@@ -1,13 +1,13 @@
 package ch.liip.timeforcoffee.api.events;
 
-public class FetchConnectionsEvent {
+public class FetchZvvConnectionsEvent {
 
     private final String fromStationId;
     private final String toStationId;
     private final String startDateStr;
     private final String endDateStr;
 
-    public FetchConnectionsEvent(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
+    public FetchZvvConnectionsEvent(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
         this.fromStationId = fromStationId;
         this.toStationId = toStationId;
         this.startDateStr = startDateStr;

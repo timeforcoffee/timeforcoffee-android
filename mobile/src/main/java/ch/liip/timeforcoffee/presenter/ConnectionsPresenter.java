@@ -5,6 +5,8 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -67,7 +69,12 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchConnectionsEvent(mStation, mDeparture));
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+        String startDateStr = dateFormatter.format(mDeparture.getDepartureScheduled()) + "T" + timeFormatter.format(mDeparture.getDepartureScheduled());
+        String endDateStr = dateFormatter.format(mDeparture.getArrivalScheduled()) + "T" + timeFormatter.format(mDeparture.getArrivalScheduled());
+
+        mEventBus.post(new FetchConnectionsEvent(mStation.getId(), mDeparture.getDestinationId(), startDateStr, endDateStr));
     }
 
     @Subscribe

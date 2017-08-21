@@ -78,7 +78,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         final Departure departure = this.mDepartures.get(position);
 
         setLineName(viewHolder.lineNameTextView, departure);
-        viewHolder.destinationTextView.setText(departure.getDestination());
+        viewHolder.destinationTextView.setText(departure.getDestinationName());
         viewHolder.departureTextView.setText(departure.departureInMinutes());
 
         if (departure.isLate()) { //realtime != schedule time
@@ -119,7 +119,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 departure.setIsFavorite(!isFavorite);
 
                 String action = isFavorite ? "removed" : "added";
-                ((DeparturesActivity)getContext()).displayToastMessage(departure.getName() + " " + departure.getDestination() + " has been " + action + " from the favorite list");
+                ((DeparturesActivity)getContext()).displayToastMessage(departure.getName() + " " + departure.getDestinationName() + " has been " + action + " from the favorite list");
             }
         });
 

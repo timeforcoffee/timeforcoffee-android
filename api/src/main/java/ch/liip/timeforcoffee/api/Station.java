@@ -9,9 +9,6 @@ import com.directions.route.RoutingListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class Station implements RoutingListener {
     private String name;
     private Location location;
@@ -168,6 +165,9 @@ public class Station implements RoutingListener {
         onDistanceComputedListener.onDistanceComputed(null);
     }
 
+    public String getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -175,10 +175,6 @@ public class Station implements RoutingListener {
 
     public Location getLocation() {
         return location;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public float getDistance() {

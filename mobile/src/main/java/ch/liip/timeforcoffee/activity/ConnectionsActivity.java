@@ -36,13 +36,14 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public static final String ARG_STATION_LATITUDE = "station_latitude";
     public static final String ARG_STATION_IS_FAVORITE = "station_is_favorite";
     public static final String ARG_DEPARTURE_NAME = "departure_name";
-    public static final String ARG_DEPARTURE_LINE_NUMBER = "departure_line_number";
     public static final String ARG_DEPARTURE_TYPE = "departure_type";
     public static final String ARG_DEPARTURE_ACCESSIBLE = "departure_accessible";
-    public static final String ARG_DEPARTURE_DESTINATION = "departure_destination";
+    public static final String ARG_DEPARTURE_DESTINATION_ID = "departure_destination_id";
+    public static final String ARG_DEPARTURE_DESTINATION_NAME = "departure_destination_name";
     public static final String ARG_DEPARTURE_PLATFORM = "departure_platform";
-    public static final String ARG_DEPARTURE_SCHEDULED = "departure_scheduled";
-    public static final String ARG_DEPARTURE_REALTIME = "departure_realtime";
+    public static final String ARG_DEPARTURE_DEPARTURE_SCHEDULED = "departure_departure_scheduled";
+    public static final String ARG_DEPARTURE_DEPARTURE_REALTIME = "departure_departure_realtime";
+    public static final String ARG_DEPARTURE_ARRIVAL_SCHEDULED = "departure_arrival_scheduled";
     public static final String ARG_DEPARTURE_COLOR_FG = "departure_color_fg";
     public static final String ARG_DEPARTURE_COLOR_BG = "departure_color_bg";
     public static final String ARG_DEPARTURE_IS_FAVORITE = "departure_is_favorite";
@@ -79,20 +80,21 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         stationLoc.setLongitude(getIntent().getDoubleExtra(ARG_STATION_LONGITUDE, 0.0));
 
         String departureName = getIntent().getStringExtra(ARG_DEPARTURE_NAME);
-        String departureLineNumber = getIntent().getStringExtra(ARG_DEPARTURE_LINE_NUMBER);
         String departureType = getIntent().getStringExtra(ARG_DEPARTURE_TYPE);
         boolean departureAccessible = getIntent().getBooleanExtra(ARG_DEPARTURE_ACCESSIBLE, true);
-        String departureDestination = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION);
+        String departureDestinationId = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION_ID);
+        String departureDestinationName = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION_NAME);
         String departurePlatform = getIntent().getStringExtra(ARG_DEPARTURE_PLATFORM);
-        Date departureScheduled = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_SCHEDULED);
-        Date departureRealtime = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_REALTIME);
+        Date departureScheduled = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_DEPARTURE_SCHEDULED);
+        Date departureRealtime = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_DEPARTURE_REALTIME);
+        Date arrivalScheduled = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_ARRIVAL_SCHEDULED);
         int departureColorFg = getIntent().getIntExtra(ARG_DEPARTURE_COLOR_FG, 0);
         int departureColorBg = getIntent().getIntExtra(ARG_DEPARTURE_COLOR_BG, 0);
         boolean departureIsFavorite = getIntent().getBooleanExtra(ARG_DEPARTURE_IS_FAVORITE, false);
 
         Station station = new Station(stationId, stationName, stationDistance, stationLoc, stationIsFavorite);
-        Departure departure = new Departure(departureName, departureLineNumber, departureDestination, departurePlatform, departureColorFg, departureColorBg,
-                departureScheduled, departureRealtime, departureAccessible, departureIsFavorite);
+        Departure departure = new Departure(departureName, departureDestinationId, departureDestinationName, departurePlatform, departureColorFg, departureColorBg,
+                departureScheduled, departureRealtime, arrivalScheduled, departureAccessible, departureIsFavorite);
 
         mStationMapFragment.setStation(station);
         mPresenter = new ConnectionsPresenter(this, station, departure);

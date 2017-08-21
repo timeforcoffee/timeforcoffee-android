@@ -25,8 +25,7 @@ public class FavoritesDataSource {
             FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE,
             FavoriteStationColumn.COLUMN_DISTANCE};
 
-    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_DESTINATION,
-            FavoriteLineColumn.COLUMN_LINE_NUMBER};
+    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME};
 
     public FavoritesDataSource(Context context) {
         dbHelper = new FavoritesDatabaseHelper(context);
@@ -59,18 +58,14 @@ public class FavoritesDataSource {
 
     public void insertFavoriteLine(Departure departure) {
         ContentValues values = new ContentValues();
-        values.put(FavoriteLineColumn.COLUMN_LINE_NUMBER, departure.getLineNumber());
-        values.put(FavoriteLineColumn.COLUMN_DESTINATION, departure.getDestination());
+        values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
 
         database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
     }
 
     public void deleteFavoriteLine(Departure departure) {
-        String lineNumber = departure.getLineNumber();
-        String destination = departure.getDestination();
-
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_LINE_NUMBER + " = '" + lineNumber  + "'" +
-                " AND " + FavoriteLineColumn.COLUMN_DESTINATION + " = '" + destination + "'", null);
+        String name = departure.getName();
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + name  + "'", null);
     }
 
     public List<Station> getAllFavoriteStations() {
@@ -121,10 +116,9 @@ public class FavoritesDataSource {
     }
 
     private Departure cursorToLine(Cursor cursor) {
-        String lineNumber = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_LINE_NUMBER));
-        String destination = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION));
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
+        Departure departure = new Departure(name, true);
 
-        Departure departure = new Departure(lineNumber, destination, true);
         return departure;
     }
 }
