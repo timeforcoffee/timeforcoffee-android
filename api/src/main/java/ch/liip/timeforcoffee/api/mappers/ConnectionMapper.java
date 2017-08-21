@@ -1,5 +1,7 @@
 package ch.liip.timeforcoffee.api.mappers;
 
+import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,14 +16,26 @@ public class ConnectionMapper {
         List<Connection> connections = new ArrayList<>();
 
         for(Checkpoint checkpoint : passList) {
+            int stationId = Integer.parseInt(checkpoint.getStation().getId());
             String stationName = checkpoint.getStation().getName();
-            Date scheduledArrival = checkpoint.getArrival();
-            Date scheduledDeparture = checkpoint.getDeparture();
+            Location stationLocation = new Location("reverseGeocoded");
+            stationLocation.setLatitude(checkpoint.getStation().getCoordinate().getX());
+            stationLocation.setLongitude(checkpoint.getStation().getCoordinate().getY());
 
-            connections.add(new Connection(stationName, scheduledArrival, scheduledDeparture));
+            connections.add(new Connection(stationId, stationName, stationLocation, checkpoint.getDeparture(), null, checkpoint.getArrival(), null));
         }
 
         return connections;
+    }
+
+    public static Connection fromZvv(ch.liip.timeforcoffee.zvv.CheckPoint checkPoint) {
+        int checkPointId = Integer.parseInt(checkPoint.getId());
+        Location checkPointLocation = new Location("reverseGeocoded");
+        checkPointLocation.setLongitude(checkPoint.getLocation().getLng());
+        checkPointLocation.setLatitude(checkPoint.getLocation().getLat());
+
+        return new Connection(checkPointId, checkPoint.getName(), checkPointLocation, checkPoint.getDeparture().getScheduled(),
+                checkPoint.getDeparture().getRealtime(), checkPoint.getArrival().getScheduled(), checkPoint.getArrival().getRealtime());
     }
 
 }

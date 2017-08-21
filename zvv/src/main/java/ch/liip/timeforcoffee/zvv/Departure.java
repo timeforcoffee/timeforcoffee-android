@@ -1,22 +1,21 @@
 package ch.liip.timeforcoffee.zvv;
 
-/**
- * Created by fsantschi on 09/03/15.
- */
 public class Departure {
-    private String zvv_id;
+
+    private String id;
     private String name;
     private String type;
     private Colors colors;
     private String to;
     private String platform;
-    private DepartureTime departure;
+    private EventTime departure;
+    private EventTime arrival;
     private Boolean accessible;
 
-    public Departure() {};
+    public Departure() {}
 
-    public String getZvvId() {
-        return zvv_id;
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -35,8 +34,12 @@ public class Departure {
 
     public String getPlatform() { return platform; }
 
-    public DepartureTime getDeparture() {
+    public EventTime getDeparture() {
         return departure;
+    }
+
+    public EventTime getArrival() {
+        return arrival;
     }
 
     public Boolean getAccessible()  {

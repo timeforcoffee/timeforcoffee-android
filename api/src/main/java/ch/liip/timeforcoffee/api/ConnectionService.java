@@ -13,10 +13,16 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
 import ch.liip.timeforcoffee.api.events.FetchOpenDataConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvStationboardEvent;
 import ch.liip.timeforcoffee.api.events.OpenDataConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.ZvvConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.ZvvStationboardFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.ConnectionMapper;
+import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
 
 public class ConnectionService {
 
@@ -30,21 +36,16 @@ public class ConnectionService {
 
     @Subscribe
     public void onEvent(FetchConnectionsEvent event) {
-        Map<String,String> crtMap = new HashMap<>();
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-
-        crtMap.put("from", event.getStation().getName());
-        crtMap.put("to", event.getDeparture().getDestination());
-        crtMap.put("date", dateFormatter.format(event.getDeparture().getScheduled()));
-        crtMap.put("time", timeFormatter.format(event.getDeparture().getScheduled()));
-
-        eventBus.post(new FetchOpenDataConnectionsEvent(crtMap));
+        eventBus.post(new FetchZvvConnectionsEvent(event.getFromStationId(), event.getToStationId(), event.getStartDateStr(), event.getEndDateStr()));
     }
 
     @Subscribe
-    public void onEvent(OpenDataConnectionsFetchedEvent event) {
-        List<Connection> connections = ConnectionMapper.fromOpenData(event.getConnections().get(0));
+    public void onEvent(ZvvConnectionsFetchedEvent event) {
+        List<Connection> connections = new ArrayList<>();
+        for (ch.liip.timeforcoffee.zvv.CheckPoint zvvCheckPoint : event.getCheckPoints()) {
+            connections.add(ConnectionMapper.fromZvv(zvvCheckPoint));
+        }
+
         eventBus.post(new ConnectionsFetchedEvent(connections));
     }
 }

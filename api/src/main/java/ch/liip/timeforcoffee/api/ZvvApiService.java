@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.api;
 
 import ch.liip.timeforcoffee.api.events.*;
+import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Station;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
 import ch.liip.timeforcoffee.zvv.StationsResponse;
@@ -12,6 +13,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import javax.inject.Inject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,11 @@ public class ZvvApiService {
     }
 
     @Subscribe
+    public void onEvent(FetchZvvConnectionsEvent event) {
+        fetchZvvConnections(event.getFromStationId(), event.getToStationId(), event.getStartDateStr(), event.getEndDateStr());
+    }
+
+    @Subscribe
     public void onEvent(FetchZvvStationboardEvent event) {
         fetchZvvStationboard(event.getStationId());
     }
@@ -37,6 +46,29 @@ public class ZvvApiService {
     @Subscribe
     public void onEvent(FetchZvvStationsEvent event) {
         fetchZvvStations(event.getSearchQuery());
+    }
+
+    public void fetchZvvConnections(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
+
+        zvvService.getConnections(fromStationId, toStationId, startDateStr, endDateStr)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ConnectionsResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
+
+                    @Override
+                    public void onNext(ConnectionsResponse connections) {
+                        eventBus.post(new ZvvConnectionsFetchedEvent(connections.getCheckPoints()));
+                    }
+                });
     }
 
     public void fetchZvvStationboard(String stationId) {
@@ -81,7 +113,7 @@ public class ZvvApiService {
 
                     @Override
                     public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e));
+                        eventBus.post(new FetchErrorEvent(e))   ;
                     }
 
                     @Override

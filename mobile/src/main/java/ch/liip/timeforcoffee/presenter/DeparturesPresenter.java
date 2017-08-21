@@ -77,7 +77,7 @@ public class DeparturesPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchDeparturesEvent(mStation));
+        mEventBus.post(new FetchDeparturesEvent(mStation.getId()));
     }
 
     public void updateFavorites() {

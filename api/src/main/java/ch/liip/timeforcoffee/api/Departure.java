@@ -8,42 +8,39 @@ import java.util.concurrent.TimeUnit;
 public class Departure {
 
     private String name;
-    private String lineNumber;
     private String type;
-    private boolean accessible;
-    private String destination;
+    private String destinationId;
+    private String destinationName;
     private String platform;
-    private Date scheduled;
-    private Date realtime;
+    private Date departureScheduled;
+    private Date departureRealtime;
+    private Date arrivalScheduled;
     private int colorFg;
     private int colorBg;
+    private boolean accessible;
     private boolean isFavorite;
 
-    public Departure(String name, String lineNumber, String to, String platform, int colorFg, int colorBg, Date scheduled, Date realtime, boolean accessible, boolean isFavorite) {
+    public Departure(String name, String destinationId, String destinationName, String platform, int colorFg, int colorBg, Date departureScheduled, Date departureRealtime, Date arrivalScheduled, boolean accessible, boolean isFavorite) {
         this.name = name;
-        this.lineNumber = lineNumber;
         this.colorBg = colorBg;
         this.colorFg = colorFg;
-        this.destination = to;
+        this.destinationId = destinationId;
+        this.destinationName = destinationName;
         this.platform = platform;
-        this.scheduled = scheduled;
-        this.realtime = realtime;
+        this.departureScheduled = departureScheduled;
+        this.departureRealtime = departureRealtime;
+        this.arrivalScheduled = arrivalScheduled;
         this.accessible = accessible;
         this.isFavorite = isFavorite;
     }
 
-    public Departure(String lineNumber, String destination, boolean isFavorite) {
-        this.lineNumber = lineNumber;
-        this.destination = destination;
+    public Departure(String name, boolean isFavorite) {
+        this.name = name;
         this.isFavorite = isFavorite;
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getLineNumber() {
-        return lineNumber;
     }
 
     public String getType() {
@@ -54,18 +51,26 @@ public class Departure {
         return accessible;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getDestinationId() {
+        return destinationId;
+    }
+
+    public String getDestinationName() {
+        return destinationName;
     }
 
     public String getPlatform() {return platform;}
 
-    public Date getScheduled() {
-        return scheduled;
+    public Date getDepartureScheduled() {
+        return departureScheduled;
     }
 
-    public Date getRealtime() {
-        return realtime;
+    public Date getDepartureRealtime() {
+        return departureRealtime;
+    }
+
+    public Date getArrivalScheduled() {
+        return arrivalScheduled;
     }
 
     public int getColorFg() {
@@ -79,8 +84,8 @@ public class Departure {
     public String getScheduledStr() {
 
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        if (scheduled != null) {
-            return dt.format(scheduled);
+        if (departureScheduled != null) {
+            return dt.format(departureScheduled);
         }
         return null;
     }
@@ -88,19 +93,19 @@ public class Departure {
     public String getRealtimeStr() {
 
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        if (realtime != null) {
-            return dt.format(realtime);
+        if (departureRealtime != null) {
+            return dt.format(departureRealtime);
         }
         return null;
     }
 
     public Boolean hasRealtime(){
-        return realtime != null;
+        return departureRealtime != null;
     }
 
     //realtime != schedule time
     public Boolean isLate() {
-        if (realtime != null && scheduled != null && realtime.compareTo(scheduled) != 0) {
+        if (departureRealtime != null && departureScheduled != null && departureRealtime.compareTo(departureScheduled) != 0) {
             return true;
         }
         return false;
@@ -122,10 +127,10 @@ public class Departure {
     long getTimeDiffInMinutes() {
         long diff = -1;
         Date now = new Date();
-        if (realtime != null){
-            diff = realtime.getTime() - now.getTime();
-        }else if (scheduled != null){
-            diff = scheduled.getTime() - now.getTime();
+        if (departureRealtime != null){
+            diff = departureRealtime.getTime() - now.getTime();
+        }else if (departureScheduled != null){
+            diff = departureScheduled.getTime() - now.getTime();
         }
         return TimeUnit.MILLISECONDS.toMinutes(diff);
     }
@@ -139,14 +144,11 @@ public class Departure {
     }
 
     public boolean lineEquals(Object object) {
-        boolean sameLineNumber = false;
-        boolean sameDestination = false;
-
+        boolean sameName = false;
         if (object != null && object.getClass() == Departure.class) {
-            sameLineNumber = this.lineNumber.equals(((Departure) object).getLineNumber());
-            sameDestination = this.destination.equals(((Departure) object).getDestination());
+            sameName = this.name.equals(((Departure) object).getName());
         }
 
-        return sameLineNumber && sameDestination;
+        return sameName;
     }
 }

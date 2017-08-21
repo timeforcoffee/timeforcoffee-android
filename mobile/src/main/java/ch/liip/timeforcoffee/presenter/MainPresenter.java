@@ -202,6 +202,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     @Subscribe
     public void onFetchErrorEvent(FetchErrorEvent event) {
+        mActivity.showProgressLayout(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
