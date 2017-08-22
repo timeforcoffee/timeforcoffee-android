@@ -28,6 +28,13 @@
     <string name="timeForCoffee_about_idea">Idee, Website und API von</string>
     <string name="timeForCoffee_about_ios_app">iOS app von</string>
     <string name="timeForCoffee_about_android_app">Android app von</string>
+    <string name="connection_departure">Abf: </string>
+    <string name="connection_arrival">Ank: </string>
+    <string name="departure_fav_message" formatted="false">%s %s wurde %s ihren Favoriten %s</string>
+    <string name="departure_action_add">hinzugefügt</string>
+    <string name="departure_action_add_2">zu</string>
+    <string name="departure_action_remove">gelöscht</string>
+    <string name="departure_action_remove_2">von</string>
 </resources>
 
 

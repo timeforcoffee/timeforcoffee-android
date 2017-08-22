@@ -50,4 +50,11 @@
     <string name="nicolas_dougoud_twitter_name">"@abramov_no7"</string>
     <string name="nicolas_dougoud_twitter_id">"17496639"</string>
     <string name="title_activity_about">About</string>
+    <string name="connection_departure">Dep: </string>
+    <string name="connection_arrival">Arr: </string>
+    <string name="departure_fav_message" formatted="false">%s %s has been %s %s your favorite list</string>
+    <string name="departure_action_add">added</string>
+    <string name="departure_action_add_2">to</string>
+    <string name="departure_action_remove">removed</string>
+    <string name="departure_action_remove_2">from</string>
 </resources>

@@ -37,17 +37,14 @@ public class Connection {
         return location;
     }
 
-    public String getTimeLabel() {
-        DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+    public String getTimeLabel(String departureLabel, String arrivalLabel) {
         if(scheduledArrival != null && scheduledDeparture != null) {
-            String arrivalStr = timeFormatter.format(scheduledArrival);
-            String departureStr = timeFormatter.format(scheduledDeparture);
-            if(arrivalStr.equals(departureStr)) {
-                return "Arr: ";
+            if(scheduledArrival.getTime() == scheduledDeparture.getTime()) {
+                return arrivalLabel;
             }
         }
 
-        return "Dep: ";
+        return departureLabel;
     }
 
     public String getScheduledDepartureStr() {
