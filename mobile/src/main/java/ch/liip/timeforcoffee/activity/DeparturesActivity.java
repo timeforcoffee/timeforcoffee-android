@@ -86,7 +86,7 @@ public class DeparturesActivity extends AppCompatActivity implements
 
         Station station = new Station(id, name, distance, loc, false);
         station.setIsFavorite(isFavorite);
-        mStationMapFragment.setStation(station);
+        mStationMapFragment.setup(station);
 
         // Initialize the ViewPager and set an adapter
         Bundle favoritesFragmentArgs = new Bundle();
