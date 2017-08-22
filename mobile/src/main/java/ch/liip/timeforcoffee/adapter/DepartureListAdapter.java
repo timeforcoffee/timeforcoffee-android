@@ -108,18 +108,22 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             @Override
             public void onClick(View v) {
                 boolean isFavorite = departure.getIsFavorite();
+                String action, action1;
+
                 if (isFavorite) {
-                    //remove from favorites
                     mFavoritesDataSource.deleteFavoriteLine(departure);
+                    action = mContext.getResources().getString(R.string.departure_action_remove);
+                    action1 = mContext.getResources().getString(R.string.departure_action_remove_2);
                 } else {
-                    //add to favorites
                     mFavoritesDataSource.insertFavoriteLine(departure);
+                    action = mContext.getResources().getString(R.string.departure_action_add);
+                    action1 = mContext.getResources().getString(R.string.departure_action_add_2);
                 }
 
                 departure.setIsFavorite(!isFavorite);
-
-                String action = isFavorite ? "removed" : "added";
-                ((DeparturesActivity)getContext()).displayToastMessage(departure.getName() + " " + departure.getDestinationName() + " has been " + action + " from the favorite list");
+                String message = mContext.getResources().getString(R.string.departure_fav_message);
+                String messageFormatted = String.format(message, departure.getName(), departure.getDestinationName(), action, action1);
+                ((DeparturesActivity)getContext()).displayToastMessage(messageFormatted);
             }
         });
 

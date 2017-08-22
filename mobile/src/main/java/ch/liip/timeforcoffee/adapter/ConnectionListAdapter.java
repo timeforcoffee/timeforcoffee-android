@@ -16,6 +16,7 @@ import ch.liip.timeforcoffee.api.Connection;
 public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
     private List<Connection> mConnexions;
+    private Context mContext;
 
     private static class ConnexionViewHolder {
         TextView stationTextView;
@@ -28,6 +29,7 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
     public ConnectionListAdapter(Context context, List<Connection> connexions) {
         super(context, R.layout.fragment_departure_list_row, connexions);
         mConnexions = connexions;
+        mContext = context;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -52,9 +54,12 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
             viewHolder = (ConnectionListAdapter.ConnexionViewHolder) convertView.getTag();
         }
 
+        String departureLabel = mContext.getResources().getString(R.string.connection_departure);
+        String arrivalLabel = mContext.getResources().getString(R.string.connection_arrival);
+
         Connection connection = this.mConnexions.get(position);
         viewHolder.stationTextView.setText(connection.getName());
-        viewHolder.timeLabelTextView.setText(connection.getTimeLabel());
+        viewHolder.timeLabelTextView.setText(connection.getTimeLabel(departureLabel, arrivalLabel));
         viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
         viewHolder.departureTextView.setText(connection.getDepartureInMinutes());
 
