@@ -138,7 +138,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, MainActivity.class));
+            onBackPressed();
             return true;
         } else if (id == R.id.action_fav) {
             mPresenter.toggleFavorite();
