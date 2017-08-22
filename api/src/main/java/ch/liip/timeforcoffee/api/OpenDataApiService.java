@@ -39,7 +39,7 @@ public class OpenDataApiService {
                 .map(new Func1<LocationsResponse, ArrayList<Station>>() {
                     @Override
                     public ArrayList<Station> call(LocationsResponse locations) {
-                        ArrayList<Station> stations = new ArrayList<Station>();
+                        ArrayList<Station> stations = new ArrayList<>();
                         for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
                             Station newStation = StationMapper.fromLocation(location);
                             if (newStation != null) {

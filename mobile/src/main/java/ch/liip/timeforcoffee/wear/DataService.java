@@ -9,6 +9,8 @@ import android.util.Log;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
+import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
@@ -20,6 +22,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import javax.inject.Inject;
@@ -147,16 +150,17 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
                     @Override
                     public void onNext(LocationsResponse locations) {
-
-                        ArrayList<Station> stations = new ArrayList<Station>();
+                        ArrayList<Station> stations = new ArrayList<>();
                         for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
-                            stations.add(StationMapper.fromLocation(location));
+                            Station station = StationMapper.fromLocation(location);
+                            if(station != null) {
+                                stations.add(station);
+                            }
                         }
+
                         sendStations(stations, _sourceNodeId);
                     }
                 });
-
-
     }
 
     void sendStations(ArrayList<Station> stations, String destSourceNodeId) {
