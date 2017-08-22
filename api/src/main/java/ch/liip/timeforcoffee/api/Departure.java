@@ -10,7 +10,7 @@ public class Departure {
 
     private String name;
     private String type;
-    private String destinationId;
+    private int destinationId;
     private String destinationName;
     private String platform;
     private Date departureScheduled;
@@ -21,7 +21,7 @@ public class Departure {
     private boolean accessible;
     private boolean isFavorite;
 
-    public Departure(String name, String destinationId, String destinationName, String platform, int colorFg, int colorBg, Date departureScheduled, Date departureRealtime, Date arrivalScheduled, boolean accessible, boolean isFavorite) {
+    public Departure(String name, int destinationId, String destinationName, String platform, int colorFg, int colorBg, Date departureScheduled, Date departureRealtime, Date arrivalScheduled, boolean accessible, boolean isFavorite) {
         this.name = name;
         this.colorBg = colorBg;
         this.colorFg = colorFg;
@@ -35,8 +35,9 @@ public class Departure {
         this.isFavorite = isFavorite;
     }
 
-    public Departure(String name, boolean isFavorite) {
+    public Departure(String name, int destinationId, boolean isFavorite) {
         this.name = name;
+        this.destinationId = destinationId;
         this.isFavorite = isFavorite;
     }
 
@@ -52,8 +53,12 @@ public class Departure {
         return accessible;
     }
 
-    public String getDestinationId() {
+    public int getDestinationId() {
         return destinationId;
+    }
+
+    public String getDestinationIdStr() {
+        return String.valueOf(destinationId);
     }
 
     public String getDestinationName() {
@@ -151,10 +156,13 @@ public class Departure {
 
     public boolean lineEquals(Object object) {
         boolean sameName = false;
+        boolean sameDestinationId = false;
+
         if (object != null && object.getClass() == Departure.class) {
             sameName = this.name.equals(((Departure) object).getName());
+            sameDestinationId = this.destinationId == ((Departure) object).getDestinationId();
         }
 
-        return sameName;
+        return sameName && sameDestinationId;
     }
 }

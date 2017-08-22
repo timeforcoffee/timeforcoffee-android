@@ -78,7 +78,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         String departureName = getIntent().getStringExtra(ARG_DEPARTURE_NAME);
         String departureType = getIntent().getStringExtra(ARG_DEPARTURE_TYPE);
         boolean departureAccessible = getIntent().getBooleanExtra(ARG_DEPARTURE_ACCESSIBLE, true);
-        String departureDestinationId = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION_ID);
+        int departureDestinationId = getIntent().getIntExtra(ARG_DEPARTURE_DESTINATION_ID, 0);
         String departureDestinationName = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION_NAME);
         String departurePlatform = getIntent().getStringExtra(ARG_DEPARTURE_PLATFORM);
         Date departureScheduled = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_DEPARTURE_SCHEDULED);

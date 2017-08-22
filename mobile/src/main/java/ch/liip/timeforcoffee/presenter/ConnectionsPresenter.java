@@ -69,7 +69,7 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationId(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
     }
 
     @Subscribe
