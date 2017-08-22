@@ -66,10 +66,10 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
         if (connection.isLate()) {
             viewHolder.realtimeDepartureTextView.setVisibility(View.VISIBLE);
             viewHolder.realtimeDepartureTextView.setText(connection.getRealtimeDepartureStr());
-            viewHolder.departureTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             viewHolder.realtimeDepartureTextView.setVisibility(View.GONE);
-            viewHolder.departureTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
         return convertView;
