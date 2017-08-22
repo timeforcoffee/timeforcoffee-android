@@ -17,7 +17,7 @@ public class DepartureMapper {
         }
 
         return new Departure(zvvDeparture.getName(),
-                zvvDeparture.getId(),
+                Integer.parseInt(zvvDeparture.getId()),
                 zvvDeparture.getTo(),
                 zvvDeparture.getPlatform(),
                 colorFg,

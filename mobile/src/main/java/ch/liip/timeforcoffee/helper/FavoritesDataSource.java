@@ -15,7 +15,6 @@ import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteLineColumn;
 import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteStationColumn;
 
-
 public class FavoritesDataSource {
 
     private SQLiteDatabase database;
@@ -25,7 +24,7 @@ public class FavoritesDataSource {
             FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE,
             FavoriteStationColumn.COLUMN_DISTANCE};
 
-    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME};
+    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME, FavoriteLineColumn.COLUMN_DESTINATION_ID};
 
     public FavoritesDataSource(Context context) {
         dbHelper = new FavoritesDatabaseHelper(context);
@@ -58,12 +57,14 @@ public class FavoritesDataSource {
     public void insertFavoriteLine(Departure departure) {
         ContentValues values = new ContentValues();
         values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
+        values.put(FavoriteLineColumn.COLUMN_DESTINATION_ID, departure.getDestinationId());
 
         database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
     }
 
     public void deleteFavoriteLine(Departure departure) {
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "'", null);
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "' AND " +
+                FavoriteLineColumn.COLUMN_DESTINATION_ID + " = " + departure.getDestinationId(), null);
     }
 
     public List<Station> getAllFavoriteStations() {
@@ -109,14 +110,13 @@ public class FavoritesDataSource {
         location.setLatitude(latitude);
         location.setLongitude(longitude);
 
-        Station station = new Station(id, name, distance, location, true);
-        return station;
+        return new Station(id, name, distance, location, true);
     }
 
     private Departure cursorToLine(Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
-        Departure departure = new Departure(name, true);
+        int destinationId = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION_ID));
 
-        return departure;
+        return new Departure(name, destinationId, true);
     }
 }
