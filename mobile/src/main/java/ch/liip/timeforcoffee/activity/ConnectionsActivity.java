@@ -1,6 +1,5 @@
 package ch.liip.timeforcoffee.activity;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -92,7 +91,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         Departure departure = new Departure(departureName, departureDestinationId, departureDestinationName, departurePlatform, departureColorFg, departureColorBg,
                 departureScheduled, departureRealtime, arrivalScheduled, departureAccessible, departureIsFavorite);
 
-        mStationMapFragment.setStation(station);
+        mStationMapFragment.setup(station, departure, getResources().getString(R.string.connection_from));
         mPresenter = new ConnectionsPresenter(this, station, departure);
     }
 

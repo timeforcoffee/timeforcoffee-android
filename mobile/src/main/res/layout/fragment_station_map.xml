@@ -46,7 +46,7 @@
                 android:gravity="center"
                 android:layout_weight="1">
                 <TextView
-                    android:id="@+id/station_title"
+                    android:id="@+id/journey_title"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     tools:text="Zürich, Albisrieden"
@@ -54,7 +54,7 @@
                     android:textStyle="bold"
                     android:gravity="center"/>
                 <TextView
-                    android:id="@+id/station_distance"
+                    android:id="@+id/journey_subtitle"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:textSize="14sp"

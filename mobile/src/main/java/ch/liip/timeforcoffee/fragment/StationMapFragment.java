@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.WalkingDistance;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,7 +30,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
 
     private ImageView gradientOverlay;
     private TextView titleTextView;
-    private TextView distanceTextView;
+    private TextView subtitleTextView;
     private MapFragment mapFragment;
     private GoogleMap map;
     private Station mStation;
@@ -62,8 +63,8 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         mLayoutWidth = view.getWidth();
 
         gradientOverlay = (ImageView) view.findViewById(R.id.gradient_overlay);
-        titleTextView = (TextView) view.findViewById(R.id.station_title);
-        distanceTextView = (TextView) view.findViewById(R.id.station_distance);
+        titleTextView = (TextView) view.findViewById(R.id.journey_title);
+        subtitleTextView = (TextView) view.findViewById(R.id.journey_subtitle);
         mChevron = (ImageView) view.findViewById(R.id.chevron);
 
         return view;
@@ -104,9 +105,15 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void setStation(Station station) {
+    public void setup(Station station) {
         mStation = station;
         titleTextView.setText(mStation.getName());
+    }
+
+    public void setup(Station station, Departure departure, String fromStr) {
+        mStation = station;
+        titleTextView.setText(departure.getDestinationName());
+        subtitleTextView.setText(String.format("%s %s", fromStr, mStation.getName()));
     }
 
     private void drawWalkingPath() {
@@ -124,7 +131,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
                     return;
                 }
 
-                distanceTextView.setText(distance.getWalkingDistance());
+                subtitleTextView.setText(distance.getWalkingDistance());
 
                 if (distance.getWalkingPath() != null) {
                     PolylineOptions polyoptions = new PolylineOptions();
@@ -139,7 +146,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         Location currentLocation = SmartLocation.with(getActivity()).location().getLastLocation();
         WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
         if (distance != null) {
-            distanceTextView.setText(distance.getWalkingDistance());
+            subtitleTextView.setText(distance.getWalkingDistance());
         }
     }
 }
