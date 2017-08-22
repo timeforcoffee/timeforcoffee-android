@@ -19,6 +19,7 @@ import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
 import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
@@ -43,6 +44,9 @@ public class ConnectionsPresenter implements Presenter {
 
     @Inject
     ConnectionService connectionService;
+
+    @Inject
+    ZvvApiService zvvApiService;
 
     public ConnectionsPresenter(ConnectionsActivity activity, Station station, Departure departure) {
         mActivity = activity;
