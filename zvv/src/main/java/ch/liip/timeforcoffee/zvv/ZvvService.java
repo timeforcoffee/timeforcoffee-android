@@ -16,4 +16,9 @@ public interface ZvvService {
     @Headers("Cache-Control:public, max-age=20")
     @GET("/api/ch/stationboard/{id}")
     public Observable<StationboardResponse> getStationboard(@Path("id") String id);
+
+    @Headers("Cache-Control:public, max-age=20")
+    @GET("/api/ch/connections/{from}/{to}/{start_time}/{end_time}")
+    public Observable<ConnectionsResponse> getConnections(@Path("from") String fromStationId, @Path("to") String toStationId,
+                                                          @Path("start_time") String startTimeStr, @Path("end_time")String endTimeStr);
 }

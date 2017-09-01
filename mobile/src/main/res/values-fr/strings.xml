@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_stations">Arrêts</string>
+    <string name="tab_departures">Departs</string>
     <string name="tab_favorites">Favoris</string>
     <string name="action_settings">"Paramètres"</string>
     <string name="action_search">"Recherche</string>
@@ -13,7 +14,7 @@
     <string name="title_add_favorite_start">"Tape sur l'icône"</string>
     <string name="platform">"- Voie: %s"</string>
     <string name="retry">"Réessayer"</string>
-    <string name="network_error">"Problème de connexion"</string>
+    <string name="network_error">"Problème de connection"</string>
     <string name="permission_message">"Nous avons besoin d’accéder à ta position pour pouvoir trouver les arrêtes les
         plus proches."
     </string>
@@ -26,4 +27,12 @@
     <string name="timeForCoffee_about_idea">Idée, website et API par</string>
     <string name="timeForCoffee_about_ios_app">app iOS par</string>
     <string name="timeForCoffee_about_android_app">app Android par</string>
+    <string name="connection_departure">Dép: </string>
+    <string name="connection_arrival">Arr: </string>
+    <string name="connection_from">De</string>
+    <string name="departure_fav_message" formatted="false">%s %s à été %s %s votre liste de favoris</string>
+    <string name="departure_action_add">ajouté</string>
+    <string name="departure_action_add_2">à</string>
+    <string name="departure_action_remove">supprimé</string>
+    <string name="departure_action_remove_2">de</string>
 </resources>
