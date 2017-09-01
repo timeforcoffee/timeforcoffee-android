@@ -68,6 +68,16 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".activity.MainActivity"/>
         </activity>
+        <activity
+            android:name=".activity.ConnectionsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/activity_title"
+            android:parentActivityName=".activity.DeparturesActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.DeparturesActivity"/>
+        </activity>
 
         <meta-data
                 android:name="io.fabric.ApiKey"

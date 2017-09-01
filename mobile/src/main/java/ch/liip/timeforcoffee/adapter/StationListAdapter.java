@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.WalkingDistance;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -97,14 +99,13 @@ public class StationListAdapter extends ArrayAdapter<Station> {
 
             @Override
             public void onClick(View v) {
-
                 boolean isFavorite = currentStation.getIsFavorite();
                 if (isFavorite) {
                     //remove from favorites
-                    favoritesDataSource.deleteFavorite(currentStation);
+                    favoritesDataSource.deleteFavoriteStation(currentStation);
                 } else {
                     //add to favorites
-                    favoritesDataSource.insertFavorites(currentStation);
+                    favoritesDataSource.insertFavoriteStation(currentStation);
                 }
                 currentStation.setIsFavorite(!isFavorite);
             }

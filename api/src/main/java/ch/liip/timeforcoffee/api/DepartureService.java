@@ -1,20 +1,20 @@
 package ch.liip.timeforcoffee.api;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchDeparturesEvent;
 import ch.liip.timeforcoffee.api.events.FetchZvvStationboardEvent;
 import ch.liip.timeforcoffee.api.events.ZvvStationboardFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-
-/**
- * Created by fsantschi on 11/03/15.
- */
 public class DepartureService {
+
     private final EventBus eventBus;
 
     @Inject
@@ -30,12 +30,11 @@ public class DepartureService {
 
     @Subscribe
     public void onEvent(ZvvStationboardFetchedEvent event) {
-        ArrayList<Departure> departures = new ArrayList<Departure>();
+        ArrayList<Departure> departures = new ArrayList<>();
         for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : event.getDepartures()) {
             departures.add(DepartureMapper.fromZvv(zvvDeparture));
         }
+
         eventBus.post(new DeparturesFetchedEvent(departures));
     }
-
-
 }

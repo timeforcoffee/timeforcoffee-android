@@ -9,9 +9,21 @@ import ch.liip.timeforcoffee.wear.DataService;
 import ch.liip.timeforcoffee.zvv.ZvvService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
 import dagger.Module;
 import dagger.Provides;
 import org.greenrobot.eventbus.EventBus;
+
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -25,9 +37,8 @@ import javax.inject.Singleton;
                 DataService.class,
                 MainPresenter.class,
                 DeparturesPresenter.class,
-                StationListPresenter.class,
                 StationSearchPresenter.class,
-                DepartureListPresenter.class
+                ConnectionsPresenter.class
         }
 )
 class TimeForCoffeeModule {
@@ -41,8 +52,14 @@ class TimeForCoffeeModule {
     @Provides
     @Singleton
     TransportService provideTransportService() {
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://transport.opendata.ch")
+                .setConverter(new GsonConverter(gson))
                 .build();
 
         TransportService service = restAdapter.create(TransportService.class);
@@ -53,7 +70,21 @@ class TimeForCoffeeModule {
     @Singleton
     ZvvService provideZvvService() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+
+                    private final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss" };
+
+                    @Override
+                    public Date deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
+                        for (String format : DATE_FORMATS) {
+                            try {
+                                return new SimpleDateFormat(format).parse(jsonElement.getAsString());
+                            } catch (ParseException e) { }
+                        }
+
+                        throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString() + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
+                    }
+                })
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()

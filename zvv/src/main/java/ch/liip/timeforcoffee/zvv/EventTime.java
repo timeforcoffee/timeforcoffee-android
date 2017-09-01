@@ -5,11 +5,11 @@ import java.util.Date;
 /**
  * Created by fsantschi on 09/03/15.
  */
-public class DepartureTime {
+public class EventTime {
     private Date scheduled;
     private Date realtime;
 
-    public DepartureTime() {}
+    public EventTime() {}
 
     public Date getScheduled() {
         return scheduled;

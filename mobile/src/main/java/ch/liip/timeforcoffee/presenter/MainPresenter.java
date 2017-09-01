@@ -10,10 +10,14 @@ import android.view.View;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.MainActivity;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
+import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
 import ch.liip.timeforcoffee.api.events.FetchOpenDataLocationsEvent;
+import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.helper.PermissionsChecker;
 import ch.liip.timeforcoffee.widget.SnackBars;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
@@ -24,7 +28,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +40,10 @@ import java.util.Map;
 public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private MainActivity mActivity;
+
+    private List<Station> mStations;
+    private List<Station> mFavoriteStations;
+    private FavoritesDataSource mFavoriteDataSource;
 
     private Location mLastLocation;
     private boolean mIsCapturingLocation;
@@ -59,6 +70,8 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
         permissionsChecker = new PermissionsChecker(activity);
 
+        mFavoriteDataSource = new FavoritesDataSource(activity);
+        mFavoriteDataSource.open();
     }
 
     public void onResumeView() {
@@ -92,8 +105,23 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
 
         if (mLastLocation != null) {
-            updateStation(mLastLocation);
+            updateStations(mLastLocation);
         }
+    }
+
+    public void updateFavorites() {
+        if(mStations == null || mStations.size() == 0) {
+            return;
+        }
+
+        List<Station> favoriteStations = mFavoriteDataSource.getAllFavoriteStations();
+        for(Station station : mStations) {
+            station.setIsFavorite(favoriteStations.contains(station));
+        }
+
+        mFavoriteStations = favoriteStations;
+        mActivity.updateStations(mStations);
+        mActivity.updateFavorites(mFavoriteStations);
     }
 
     private void startLocation() {
@@ -148,16 +176,33 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     public void onLocationUpdated(Location location) {
         Log.i(TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
         mLastLocation = location;
-        loadStations();
+
+        updateStations(location);
     }
 
-    private void loadStations() {
-        updateStation(mLastLocation);
-        mActivity.updateFavorites();
+    private void updateStations(Location location) {
+        if (location != null) {
+            Map<String, String> query = new HashMap<>();
+            query.put("x", Double.toString(location.getLatitude()));
+            query.put("y", Double.toString(location.getLongitude()));
+            Log.i(TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
+            mEventBus.post(new FetchOpenDataLocationsEvent(query));
+        }
+    }
+
+    @Subscribe
+    public void onStationsFetched(StationsFetchedEvent event) {
+        mActivity.showProgressLayout(false);
+
+        mStations = event.getStations();
+        mActivity.updateStations(mStations);
+
+        updateFavorites();
     }
 
     @Subscribe
     public void onFetchErrorEvent(FetchErrorEvent event) {
+        mActivity.showProgressLayout(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,19 +211,12 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         });
     }
 
-    private void updateStation(Location location) {
-        if (location != null) {
-            Map<String, String> query = new HashMap<String, String>();
-            query.put("x", Double.toString(location.getLatitude()));
-            query.put("y", Double.toString(location.getLongitude()));
-            Log.i(TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
-            mEventBus.post(new FetchOpenDataLocationsEvent(query));
-        }
-    }
-
     public void onDestroy() {
         mActivity = null;
         mEventBus.unregister(this);
     }
 
+    public FavoritesDataSource getFavoritesDataSource() {
+        return mFavoriteDataSource;
+    }
 }
