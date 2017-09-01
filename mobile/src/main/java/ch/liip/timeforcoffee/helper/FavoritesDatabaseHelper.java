@@ -8,6 +8,7 @@ import android.provider.BaseColumns;
 public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
 
     public static abstract class FavoriteStationColumn implements BaseColumns {
+        public static final String OLD_TABLE_NAME = "favorites";
         public static final String TABLE_NAME = "favorite_stations";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_STATION_ID = "station_id";
@@ -49,6 +50,7 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
                     FavoriteLineColumn.COLUMN_DESTINATION_ID + INT_TYPE + " )";
 
     private static final String SQL_DELETE_STATION_TABLE = "DROP TABLE IF EXISTS " + FavoriteStationColumn.TABLE_NAME;
+    private static final String SQL_DELETE_OLD_STATION_TABLE = "DROP TABLE IF EXISTS " + FavoriteStationColumn.OLD_TABLE_NAME;
     private static final String SQL_DELETE_LINE_TABLE = "DROP TABLE IF EXISTS " + FavoriteLineColumn.TABLE_NAME;
 
     public FavoritesDatabaseHelper(Context context) {
@@ -61,9 +63,16 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_STATION_TABLE);
-        db.execSQL(SQL_DELETE_LINE_TABLE);
-        onCreate(db);
+        if(oldVersion == 1 && newVersion == 2) {
+            // the existing favorite stations are removed here
+            // maybe handle a way to store this data in the new DB
+            db.execSQL(SQL_DELETE_OLD_STATION_TABLE);
+            onCreate(db);
+        } else {
+            db.execSQL(SQL_DELETE_STATION_TABLE);
+            db.execSQL(SQL_DELETE_LINE_TABLE);
+            onCreate(db);
+        }
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
