@@ -9,21 +9,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
+import com.astuetz.PagerSlidingTabStrip;
+
+import java.util.List;
+import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
-import com.astuetz.PagerSlidingTabStrip;
-
-import java.util.List;
-import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity
         implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
 
         setContentView(R.layout.activity_station_list);
 
@@ -167,19 +165,11 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onDestroy();
     }
 
-    public FavoritesDataSource getFavoriteDataSource() {
-        return mPresenter.getFavoritesDataSource();
-    }
-
     public void showProgressLayout(boolean show) {
         if (show) {
             mProgressLayout.setVisibility(View.VISIBLE);
         } else {
             mProgressLayout.setVisibility(View.GONE);
         }
-    }
-
-    public void displayToastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

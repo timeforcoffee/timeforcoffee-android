@@ -43,7 +43,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private List<Station> mStations;
     private List<Station> mFavoriteStations;
-    private FavoritesDataSource mFavoriteDataSource;
 
     private Location mLastLocation;
     private boolean mIsCapturingLocation;
@@ -62,6 +61,9 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     @Inject
     OpenDataApiService service;
 
+    @Inject
+    FavoritesDataSource favoritesDataSource;
+
     public MainPresenter(MainActivity activity) {
         mActivity = activity;
 
@@ -69,9 +71,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         mEventBus.register(this);
 
         permissionsChecker = new PermissionsChecker(activity);
-
-        mFavoriteDataSource = new FavoritesDataSource(activity);
-        mFavoriteDataSource.open();
     }
 
     public void onResumeView() {
@@ -114,7 +113,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
             return;
         }
 
-        List<Station> favoriteStations = mFavoriteDataSource.getAllFavoriteStations();
+        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
         for(Station station : mStations) {
             station.setIsFavorite(favoriteStations.contains(station));
         }
@@ -214,9 +213,5 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     public void onDestroy() {
         mActivity = null;
         mEventBus.unregister(this);
-    }
-
-    public FavoritesDataSource getFavoritesDataSource() {
-        return mFavoriteDataSource;
     }
 }

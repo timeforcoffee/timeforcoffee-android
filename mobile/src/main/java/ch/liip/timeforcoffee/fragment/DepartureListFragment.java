@@ -13,10 +13,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
 public class DepartureListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -25,6 +28,9 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Callbacks mCallbacks = sDummyCallbacks;
+
+    @Inject
+    FavoritesDataSource favoritesDataSource;
 
     public interface Callbacks {
         void onDepartureSelected(Departure departure);
@@ -61,8 +67,9 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((TimeForCoffeeApplication) getActivity().getApplication()).inject(this);
 
-        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), ((DeparturesActivity)getActivity()).getFavoriteDataSource());
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), favoritesDataSource);
         setListAdapter(mDepartureListAdapter);
     }
 
