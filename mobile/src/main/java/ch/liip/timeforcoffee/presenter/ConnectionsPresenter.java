@@ -32,12 +32,10 @@ public class ConnectionsPresenter implements Presenter {
 
     private ConnectionsActivity mActivity;
     private Timer mAutoUpdateTimer;
-    public static final int UPDATE_FREQUENCY = 60000;
 
     private Station mStation;
     private Departure mDeparture;
     private List<Connection> mConnections;
-    private FavoritesDataSource mFavoriteDataSource;
 
     @Inject
     EventBus mEventBus;
@@ -48,6 +46,9 @@ public class ConnectionsPresenter implements Presenter {
     @Inject
     ZvvApiService zvvApiService;
 
+    @Inject
+    FavoritesDataSource favoritesDataSource;
+
     public ConnectionsPresenter(ConnectionsActivity activity, Station station, Departure departure) {
         mActivity = activity;
         mStation = station;
@@ -55,9 +56,6 @@ public class ConnectionsPresenter implements Presenter {
 
         ((TimeForCoffeeApplication) activity.getApplication()).inject(this);
         mEventBus.register(this);
-
-        mFavoriteDataSource = new FavoritesDataSource(activity);
-        mFavoriteDataSource.open();
     }
 
     public void onResumeView() {
@@ -104,7 +102,6 @@ public class ConnectionsPresenter implements Presenter {
 
     public void onDestroy() {
         mEventBus.unregister(this);
-        mFavoriteDataSource.close();
         mActivity = null;
     }
 
@@ -124,11 +121,11 @@ public class ConnectionsPresenter implements Presenter {
         if (getIsFavorite()) {
             //Remove from fav
             mDeparture.setIsFavorite(false);
-            mFavoriteDataSource.deleteFavoriteLine(mDeparture);
+            favoritesDataSource.deleteFavoriteLine(mActivity, mDeparture);
         } else {
             //Add to fav
             mDeparture.setIsFavorite(true);
-            mFavoriteDataSource.insertFavoriteLine(mDeparture);
+            favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);
         }
     }
 }

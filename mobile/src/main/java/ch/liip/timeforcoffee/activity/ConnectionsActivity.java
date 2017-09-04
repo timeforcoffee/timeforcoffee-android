@@ -52,7 +52,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
 
         setContentView(R.layout.activity_connection_list);
 

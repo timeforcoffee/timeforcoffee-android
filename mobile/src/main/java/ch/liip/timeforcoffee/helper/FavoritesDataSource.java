@@ -26,50 +26,50 @@ public class FavoritesDataSource {
 
     private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME, FavoriteLineColumn.COLUMN_DESTINATION_ID};
 
-    public FavoritesDataSource(Context context) {
-        dbHelper = new FavoritesDatabaseHelper(context);
-    }
+    public void insertFavoriteStation(Context context, Station station) {
+        open(context);
 
-    public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-    }
-
-    public void close() {
-        dbHelper.close();
-    }
-
-    public void insertFavoriteStation(Station station) {
         ContentValues values = new ContentValues();
-
         values.put(FavoriteStationColumn.COLUMN_STATION_ID, station.getId());
         values.put(FavoriteStationColumn.COLUMN_NAME, station.getName());
         values.put(FavoriteStationColumn.COLUMN_LATITUDE, station.getLocation().getLatitude());
         values.put(FavoriteStationColumn.COLUMN_LONGITUDE, station.getLocation().getLongitude());
         values.put(FavoriteStationColumn.COLUMN_DISTANCE, station.getDistance());
-
         database.insert(FavoriteStationColumn.TABLE_NAME, null, values);
+
+        close();
     }
 
-    public void deleteFavoriteStation(Station station) {
+    public void deleteFavoriteStation(Context context, Station station) {
+        open(context);
         database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_STATION_ID + " = " + station.getId(), null);
+
+        close();
     }
 
-    public void insertFavoriteLine(Departure departure) {
+    public void insertFavoriteLine(Context context, Departure departure) {
+        open(context);
+
         ContentValues values = new ContentValues();
         values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
         values.put(FavoriteLineColumn.COLUMN_DESTINATION_ID, departure.getDestinationId());
-
         database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
+
+        close();
     }
 
-    public void deleteFavoriteLine(Departure departure) {
+    public void deleteFavoriteLine(Context context, Departure departure) {
+        open(context);
         database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "' AND " +
                 FavoriteLineColumn.COLUMN_DESTINATION_ID + " = " + departure.getDestinationId(), null);
+
+        close();
     }
 
-    public List<Station> getAllFavoriteStations() {
-        List<Station> stations = new ArrayList<>();
+    public List<Station> getAllFavoriteStations(Context context) {
+        open(context);
 
+        List<Station> stations = new ArrayList<>();
         Cursor cursor = database.query(FavoriteStationColumn.TABLE_NAME, allStationColumns, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -78,14 +78,16 @@ public class FavoritesDataSource {
             cursor.moveToNext();
         }
 
-        // make sure to close the cursor
         cursor.close();
+        close();
+
         return stations;
     }
 
-    public List<Departure> getAllFavoriteLines() {
-        List<Departure> departures = new ArrayList<>();
+    public List<Departure> getAllFavoriteLines(Context context) {
+        open(context);
 
+        List<Departure> departures = new ArrayList<>();
         Cursor cursor = database.query(FavoriteLineColumn.TABLE_NAME, allLineColumns, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -94,9 +96,21 @@ public class FavoritesDataSource {
             cursor.moveToNext();
         }
 
-        // make sure to close the cursor
         cursor.close();
+        close();
+
         return departures;
+    }
+
+    private void open(Context context) throws SQLException {
+        dbHelper = new FavoritesDatabaseHelper(context);
+        database = dbHelper.getWritableDatabase();
+    }
+
+    private void close() {
+        if (database != null && database.isOpen()) {
+            database.close();
+        }
     }
 
     private Station cursorToStation(Cursor cursor) {
