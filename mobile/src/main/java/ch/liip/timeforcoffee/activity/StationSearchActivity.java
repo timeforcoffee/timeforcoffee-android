@@ -35,8 +35,7 @@ public class StationSearchActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
 
         String searchQuery = null;
         if (savedInstanceState != null) {
@@ -174,9 +173,5 @@ public class StationSearchActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public FavoritesDataSource getFavoriteDataSource() {
-        return mPresenter.getFavoritesDataSource();
     }
 }

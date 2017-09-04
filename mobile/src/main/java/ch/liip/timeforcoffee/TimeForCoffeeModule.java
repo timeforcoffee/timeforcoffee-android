@@ -3,6 +3,10 @@ package ch.liip.timeforcoffee;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
 import ch.liip.timeforcoffee.api.ZvvApiService;
+import ch.liip.timeforcoffee.fragment.DepartureListFragment;
+import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
+import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.opendata.TransportService;
 import ch.liip.timeforcoffee.presenter.*;
 import ch.liip.timeforcoffee.wear.DataService;
@@ -38,7 +42,10 @@ import javax.inject.Singleton;
                 MainPresenter.class,
                 DeparturesPresenter.class,
                 StationSearchPresenter.class,
-                ConnectionsPresenter.class
+                ConnectionsPresenter.class,
+                StationListFragment.class,
+                DepartureListFragment.class,
+                FavoritesListFragment.class
         }
 )
 class TimeForCoffeeModule {
@@ -114,4 +121,9 @@ class TimeForCoffeeModule {
         return new DepartureService(eventBus);
     }
 
+    @Provides
+    @Singleton
+    FavoritesDataSource provideFavoriteDataSource() {
+        return new FavoritesDataSource();
+    }
 }
