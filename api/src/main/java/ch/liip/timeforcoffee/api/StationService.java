@@ -1,15 +1,18 @@
 package ch.liip.timeforcoffee.api;
 
-import ch.liip.timeforcoffee.api.events.FetchStationsEvent;
-import ch.liip.timeforcoffee.api.events.FetchZvvStationsEvent;
-import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
-import ch.liip.timeforcoffee.api.events.ZvvStationsFetchedEvent;
-import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+
+import ch.liip.timeforcoffee.api.events.BackendLocationsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.BackendStationsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.FetchBackendLocationsEvent;
+import ch.liip.timeforcoffee.api.events.FetchBackendStationsEvent;
+import ch.liip.timeforcoffee.api.events.FetchLocationsEvent;
+import ch.liip.timeforcoffee.api.events.FetchStationsEvent;
+import ch.liip.timeforcoffee.api.events.LocationsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
 
 public class StationService {
 
@@ -23,16 +26,21 @@ public class StationService {
 
     @Subscribe
     public void onEvent(FetchStationsEvent event) {
-        eventBus.post(new FetchZvvStationsEvent(event.getSearchQuery()));
+        eventBus.post(new FetchBackendStationsEvent(event.getSearchQuery()));
     }
 
     @Subscribe
-    public void onEvent(ZvvStationsFetchedEvent event) {
-        ArrayList<Station> stations = new ArrayList<>();
-        for (ch.liip.timeforcoffee.zvv.Station zvvStation : event.getStations()) {
-            stations.add(StationMapper.fromZvv(zvvStation));
-        }
+    public void onEvent(FetchLocationsEvent event) {
+        eventBus.post(new FetchBackendLocationsEvent(event.getX(), event.getY()));
+    }
 
-        eventBus.post(new StationsFetchedEvent(stations));
+    @Subscribe
+    public void onEvent(BackendStationsFetchedEvent event) {
+        eventBus.post(new StationsFetchedEvent(event.getStations()));
+    }
+
+    @Subscribe
+    public void onEvent(BackendLocationsFetchedEvent event) {
+        eventBus.post(new LocationsFetchedEvent(event.getStations()));
     }
 }

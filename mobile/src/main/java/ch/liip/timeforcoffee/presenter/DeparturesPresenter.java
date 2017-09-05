@@ -14,10 +14,10 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.api.BackendApiService;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchDeparturesEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
@@ -34,7 +34,6 @@ public class DeparturesPresenter implements Presenter {
     private Station mStation;
     private List<Departure> mDepartures;
     private List<Departure> mFavoriteDepartures;
-    private FavoritesDataSource mFavoriteDataSource;
 
     @Inject
     EventBus mEventBus;
@@ -43,7 +42,10 @@ public class DeparturesPresenter implements Presenter {
     DepartureService departureService;
 
     @Inject
-    ZvvApiService zvvApiService;
+    BackendApiService service;
+
+    @Inject
+    FavoritesDataSource favoritesDataSource;
 
     public DeparturesPresenter(DeparturesActivity activity, Station station) {
         mActivity = activity;
@@ -51,9 +53,6 @@ public class DeparturesPresenter implements Presenter {
 
         ((TimeForCoffeeApplication) activity.getApplication()).inject(this);
         mEventBus.register(this);
-
-        mFavoriteDataSource = new FavoritesDataSource(activity);
-        mFavoriteDataSource.open();
     }
 
     public void onResumeView() {
@@ -89,7 +88,7 @@ public class DeparturesPresenter implements Presenter {
             return;
         }
 
-        List<Departure> favoriteLines = mFavoriteDataSource.getAllFavoriteLines();
+        List<Departure> favoriteLines = favoritesDataSource.getAllFavoriteLines(mActivity);
         List<Departure> favoriteDepartures = new ArrayList<>();
         for(Departure departure : mDepartures) {
             boolean contains = false;
@@ -138,7 +137,6 @@ public class DeparturesPresenter implements Presenter {
 
     public void onDestroy() {
         mEventBus.unregister(this);
-        mFavoriteDataSource.close();
         mActivity = null;
     }
 
@@ -154,15 +152,11 @@ public class DeparturesPresenter implements Presenter {
         if (getIsFavorite()) {
             //Remove from fav
             mStation.setIsFavorite(false);
-            mFavoriteDataSource.deleteFavoriteStation(mStation);
+            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
         } else {
             //Add to fav
             mStation.setIsFavorite(true);
-            mFavoriteDataSource.insertFavoriteStation(mStation);
+            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
         }
-    }
-
-    public FavoritesDataSource getFavoritesDataSource() {
-        return mFavoriteDataSource;
     }
 }

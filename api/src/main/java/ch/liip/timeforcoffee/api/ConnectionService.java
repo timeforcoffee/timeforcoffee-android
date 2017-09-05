@@ -3,16 +3,12 @@ package ch.liip.timeforcoffee.api;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
+import ch.liip.timeforcoffee.api.events.BackendConnectionsFetchedEvent;
 import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.FetchBackendConnectionsEvent;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.FetchZvvConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.ZvvConnectionsFetchedEvent;
-import ch.liip.timeforcoffee.api.mappers.ConnectionMapper;
 
 public class ConnectionService {
 
@@ -26,16 +22,16 @@ public class ConnectionService {
 
     @Subscribe
     public void onEvent(FetchConnectionsEvent event) {
-        eventBus.post(new FetchZvvConnectionsEvent(event.getFromStationId(), event.getToStationId(), event.getStartDateStr(), event.getEndDateStr()));
+        eventBus.post(new FetchBackendConnectionsEvent(
+                event.getFromStationId(),
+                event.getToStationId(),
+                event.getDateStr(),
+                event.getTimeStr()
+        ));
     }
 
     @Subscribe
-    public void onEvent(ZvvConnectionsFetchedEvent event) {
-        List<Connection> connections = new ArrayList<>();
-        for (ch.liip.timeforcoffee.zvv.CheckPoint zvvCheckPoint : event.getCheckPoints()) {
-            connections.add(ConnectionMapper.fromZvv(zvvCheckPoint));
-        }
-
-        eventBus.post(new ConnectionsFetchedEvent(connections));
+    public void onEvent(BackendConnectionsFetchedEvent event) {
+        eventBus.post(new ConnectionsFetchedEvent(event.getConnections()));
     }
 }

@@ -27,7 +27,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(':opendata')
+    compile project(':backend')
     compile project(':api')
     compile project(':common')
 

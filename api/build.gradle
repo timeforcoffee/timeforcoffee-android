@@ -33,6 +33,5 @@ dependencies {
     
     compile 'com.google.android.gms:play-services-location:' + project.PLAY_SERVICES_VERSION
     compile 'com.github.jd-alexander:library:1.0.5'
-    compile project(':opendata')
-    compile project(':zvv')
+    compile project(':backend')
 }

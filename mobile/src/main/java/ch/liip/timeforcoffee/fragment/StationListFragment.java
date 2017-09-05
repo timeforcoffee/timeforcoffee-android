@@ -14,9 +14,10 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.activity.MainActivity;
-import ch.liip.timeforcoffee.activity.StationSearchActivity;
+import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -33,6 +34,9 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private Callbacks mCallbacks = sDummyCallbacks;
+
+    @Inject
+    FavoritesDataSource favoritesDataSource;
 
     public interface Callbacks {
         void onStationSelected(Station station);
@@ -60,12 +64,9 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((TimeForCoffeeApplication) getActivity().getApplication()).inject(this);
 
         mSearchMode = getActivity().getIntent().getBooleanExtra(ARG_SEARCH_MODE, false);
-        FavoritesDataSource favoritesDataSource = mSearchMode
-                ? ((StationSearchActivity)getActivity()).getFavoriteDataSource()
-                : ((MainActivity)getActivity()).getFavoriteDataSource();
-
         mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), favoritesDataSource);
         setListAdapter(mStationListAdapter);
     }

@@ -5,23 +5,19 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.ConnectionsActivity;
+import ch.liip.timeforcoffee.api.BackendApiService;
 import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
-import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
@@ -32,12 +28,10 @@ public class ConnectionsPresenter implements Presenter {
 
     private ConnectionsActivity mActivity;
     private Timer mAutoUpdateTimer;
-    public static final int UPDATE_FREQUENCY = 60000;
 
     private Station mStation;
     private Departure mDeparture;
     private List<Connection> mConnections;
-    private FavoritesDataSource mFavoriteDataSource;
 
     @Inject
     EventBus mEventBus;
@@ -46,7 +40,10 @@ public class ConnectionsPresenter implements Presenter {
     ConnectionService connectionService;
 
     @Inject
-    ZvvApiService zvvApiService;
+    BackendApiService service;
+
+    @Inject
+    FavoritesDataSource favoritesDataSource;
 
     public ConnectionsPresenter(ConnectionsActivity activity, Station station, Departure departure) {
         mActivity = activity;
@@ -55,9 +52,6 @@ public class ConnectionsPresenter implements Presenter {
 
         ((TimeForCoffeeApplication) activity.getApplication()).inject(this);
         mEventBus.register(this);
-
-        mFavoriteDataSource = new FavoritesDataSource(activity);
-        mFavoriteDataSource.open();
     }
 
     public void onResumeView() {
@@ -73,7 +67,12 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        mEventBus.post(new FetchConnectionsEvent(
+                mStation.getIdStr(),
+                mDeparture.getDestinationIdStr(),
+                mDeparture.getDepartureDateStrForBackend(),
+                mDeparture.getDepartureTimeStrForBackend())
+        );
     }
 
     @Subscribe
@@ -104,7 +103,6 @@ public class ConnectionsPresenter implements Presenter {
 
     public void onDestroy() {
         mEventBus.unregister(this);
-        mFavoriteDataSource.close();
         mActivity = null;
     }
 
@@ -124,11 +122,11 @@ public class ConnectionsPresenter implements Presenter {
         if (getIsFavorite()) {
             //Remove from fav
             mDeparture.setIsFavorite(false);
-            mFavoriteDataSource.deleteFavoriteLine(mDeparture);
+            favoritesDataSource.deleteFavoriteLine(mActivity, mDeparture);
         } else {
             //Add to fav
             mDeparture.setIsFavorite(true);
-            mFavoriteDataSource.insertFavoriteLine(mDeparture);
+            favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);
         }
     }
 }
