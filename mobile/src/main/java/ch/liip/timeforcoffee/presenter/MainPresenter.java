@@ -10,11 +10,12 @@ import android.view.View;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.MainActivity;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.OpenDataApiService;
+import ch.liip.timeforcoffee.api.BackendApiService;
 import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.StationService;
+import ch.liip.timeforcoffee.api.events.FetchBackendLocationsEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
-import ch.liip.timeforcoffee.api.events.FetchOpenDataLocationsEvent;
+import ch.liip.timeforcoffee.api.events.LocationsFetchedEvent;
 import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -29,14 +30,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by nicolas on 10/10/16.
- */
 public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private MainActivity mActivity;
@@ -59,7 +54,10 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     EventBus mEventBus;
 
     @Inject
-    OpenDataApiService service;
+    StationService stationService;
+
+    @Inject
+    BackendApiService service;
 
     @Inject
     FavoritesDataSource favoritesDataSource;
@@ -181,16 +179,16 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private void updateStations(Location location) {
         if (location != null) {
-            Map<String, String> query = new HashMap<>();
-            query.put("x", Double.toString(location.getLatitude()));
-            query.put("y", Double.toString(location.getLongitude()));
             Log.i(TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
-            mEventBus.post(new FetchOpenDataLocationsEvent(query));
+            mEventBus.post(new FetchBackendLocationsEvent(
+                    Double.toString(location.getLatitude()),
+                    Double.toString(location.getLongitude())
+            ));
         }
     }
 
     @Subscribe
-    public void onStationsFetched(StationsFetchedEvent event) {
+    public void onLocationsFetched(LocationsFetchedEvent event) {
         mActivity.showProgressLayout(false);
 
         mStations = event.getStations();

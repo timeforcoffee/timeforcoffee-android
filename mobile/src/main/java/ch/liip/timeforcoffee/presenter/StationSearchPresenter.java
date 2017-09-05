@@ -1,23 +1,25 @@
 package ch.liip.timeforcoffee.presenter;
 
 import android.view.View;
-import ch.liip.timeforcoffee.TimeForCoffeeApplication;
-import ch.liip.timeforcoffee.activity.StationSearchActivity;
-import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.StationService;
-import ch.liip.timeforcoffee.api.ZvvApiService;
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
-import ch.liip.timeforcoffee.api.events.FetchStationsEvent;
-import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
-import ch.liip.timeforcoffee.common.presenter.Presenter;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
-import ch.liip.timeforcoffee.widget.SnackBars;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import ch.liip.timeforcoffee.TimeForCoffeeApplication;
+import ch.liip.timeforcoffee.activity.StationSearchActivity;
+import ch.liip.timeforcoffee.api.BackendApiService;
+import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.StationService;
+import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
+import ch.liip.timeforcoffee.api.events.FetchStationsEvent;
+import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
+import ch.liip.timeforcoffee.common.presenter.Presenter;
+import ch.liip.timeforcoffee.helper.FavoritesDataSource;
+import ch.liip.timeforcoffee.widget.SnackBars;
 
 /**
  * Created by nicolas on 02/01/17.
@@ -35,7 +37,7 @@ public class StationSearchPresenter implements Presenter {
     StationService stationService;
 
     @Inject
-    ZvvApiService zvvApiService;
+    BackendApiService service;
 
     @Inject
     FavoritesDataSource favoritesDataSource;

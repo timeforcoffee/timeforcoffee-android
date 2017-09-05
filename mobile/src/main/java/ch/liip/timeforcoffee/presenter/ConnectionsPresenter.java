@@ -5,23 +5,19 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.ConnectionsActivity;
+import ch.liip.timeforcoffee.api.BackendApiService;
 import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
-import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
@@ -44,7 +40,7 @@ public class ConnectionsPresenter implements Presenter {
     ConnectionService connectionService;
 
     @Inject
-    ZvvApiService zvvApiService;
+    BackendApiService service;
 
     @Inject
     FavoritesDataSource favoritesDataSource;
@@ -71,7 +67,12 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        mEventBus.post(new FetchConnectionsEvent(
+                mStation.getIdStr(),
+                mDeparture.getDestinationIdStr(),
+                mDeparture.getDepartureDateStrForBackend(),
+                mDeparture.getDepartureTimeStrForBackend())
+        );
     }
 
     @Subscribe

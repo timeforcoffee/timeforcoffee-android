@@ -14,10 +14,10 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.api.BackendApiService;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
 import ch.liip.timeforcoffee.api.events.FetchDeparturesEvent;
 import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
@@ -42,7 +42,7 @@ public class DeparturesPresenter implements Presenter {
     DepartureService departureService;
 
     @Inject
-    ZvvApiService zvvApiService;
+    BackendApiService service;
 
     @Inject
     FavoritesDataSource favoritesDataSource;

@@ -6,33 +6,27 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Wearable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
-import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
+import ch.liip.timeforcoffee.backend.BackendService;
+import ch.liip.timeforcoffee.backend.Journey;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
-import ch.liip.timeforcoffee.opendata.LocationsResponse;
-import ch.liip.timeforcoffee.opendata.TransportService;
-import ch.liip.timeforcoffee.zvv.StationboardResponse;
-import ch.liip.timeforcoffee.zvv.ZvvService;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.Wearable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Created by nicolas on 30/01/17.
- */
 public class DataService extends Service implements GoogleApiClient.ConnectionCallbacks {
 
     final String TAG = "timeforcoffee";
@@ -50,10 +44,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
     private String _sourceNodeId;
 
     @Inject
-    TransportService transportService;
-
-    @Inject
-    ZvvService zvvService;
+    BackendService backendService;
 
     @Nullable
     @Override
@@ -128,15 +119,11 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
         Log.d(TAG, "WearService: getStations");
 
-        Map<String, String> query = new HashMap<String, String>();
-        query.put("x", Double.toString(latitude));
-        query.put("y", Double.toString(longitude));
-
         _gettingStations = true;
-        transportService.getLocations(query)
+        backendService.getLocations(Double.toString(latitude), Double.toString(longitude))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LocationsResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
 
                     @Override
                     public void onCompleted() {
@@ -149,16 +136,13 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(LocationsResponse locations) {
-                        ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.opendata.Location location : locations.getStations()) {
-                            Station station = StationMapper.fromLocation(location);
-                            if(station != null) {
-                                stations.add(station);
-                            }
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> stations) {
+                        ArrayList<Station> finalStations = new ArrayList<>();
+                        for (ch.liip.timeforcoffee.backend.Station location : stations) {
+                            finalStations.add(StationMapper.fromBackend(location));
                         }
 
-                        sendStations(stations, _sourceNodeId);
+                        sendStations(finalStations, _sourceNodeId);
                     }
                 });
     }
@@ -181,10 +165,10 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         Log.d(TAG, "DataService: getStationBoard");
 
         _gettingStationBoard = true;
-        zvvService.getStationboard(stationId)
+        backendService.getStationboard(stationId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationboardResponse>() {
+                .subscribe(new Subscriber<List<Journey>>() {
                     @Override
                     public void onCompleted() {
                         _gettingStations = false;
@@ -196,11 +180,12 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(StationboardResponse stationboard) {
-                        ArrayList<Departure> departures = new ArrayList<Departure>();
-                        for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : stationboard.getDepartures()) {
-                            departures.add(DepartureMapper.fromZvv(zvvDeparture));
+                    public void onNext(List<Journey> journeys) {
+                        ArrayList<Departure> departures = new ArrayList<>();
+                        for (Journey journey : journeys) {
+                            departures.add(DepartureMapper.fromBackend(journey));
                         }
+
                         sendDepartures(departures, _sourceNodeId);
                     }
                 });
@@ -230,5 +215,4 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         //Stop the service
         stopSelf();
     }
-
 }

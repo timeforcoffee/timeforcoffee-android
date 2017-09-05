@@ -4,14 +4,14 @@ public class FetchConnectionsEvent {
 
     private final String fromStationId;
     private final String toStationId;
-    private final String startDateStr;
-    private final String endDateStr;
+    private final String dateStr;
+    private final String timeStr;
 
-    public FetchConnectionsEvent(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
+    public FetchConnectionsEvent(String fromStationId, String toStationId, String dateStr, String timeStr) {
         this.fromStationId = fromStationId;
         this.toStationId = toStationId;
-        this.startDateStr = startDateStr;
-        this.endDateStr = endDateStr;
+        this.dateStr = dateStr;
+        this.timeStr = timeStr;
     }
 
     public String getFromStationId() {
@@ -22,11 +22,11 @@ public class FetchConnectionsEvent {
         return toStationId;
     }
 
-    public String getStartDateStr() {
-        return startDateStr;
+    public String getDateStr() {
+        return dateStr;
     }
 
-    public String getEndDateStr() {
-        return endDateStr;
+    public String getTimeStr() {
+        return timeStr;
     }
 }

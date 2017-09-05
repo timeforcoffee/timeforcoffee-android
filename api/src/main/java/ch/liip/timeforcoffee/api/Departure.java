@@ -105,14 +105,14 @@ public class Departure {
         return null;
     }
 
-    public String getDepartureStrForZvv() {
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        return dateFormatter.format(departureScheduled);
+    public String getDepartureDateStrForBackend() {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormatter.format(arrivalScheduled);
     }
 
-    public String getArrivalStrForZvv() {
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        return dateFormatter.format(arrivalScheduled);
+    public String getDepartureTimeStrForBackend() {
+        DateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+        return dateFormatter.format(departureScheduled);
     }
 
     //realtime != schedule time
