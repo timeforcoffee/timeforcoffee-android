@@ -73,19 +73,19 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
             // get old favorite stations
             List<Station> oldFavoriteStations = new ArrayList<>();
 
-            Cursor cursor = db.query("favorites", new String[] {"id", "station_id", "name", "latitude", "longitude", "distance"}, null, null, null, null, null);
+            Cursor cursor = db.query("favorites", new String[] {"id", "station_id", "name", "latitude", "longitude"}, null, null, null, null, null);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_STATION_ID));
-                String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_NAME));
-                double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LATITUDE));
-                double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LONGITUDE));
+                String id = cursor.getString(cursor.getColumnIndexOrThrow("station_id"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("latitude"));
+                double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("longitude"));
 
                 Location location = new Location("fav");
                 location.setLatitude(latitude);
                 location.setLongitude(longitude);
 
-                oldFavoriteStations.add(new Station(id, name, 0, location, true));
+                oldFavoriteStations.add(new Station(Integer.parseInt(id), name, 0, location, true));
                 cursor.moveToNext();
             }
             cursor.close();
