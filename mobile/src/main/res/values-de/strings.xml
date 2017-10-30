@@ -32,10 +32,10 @@
     <string name="connection_arrival">Ank: </string>
     <string name="connection_from">Von</string>
     <string name="departure_fav_message" formatted="false">%s %s wurde %s ihren Favoriten %s</string>
-    <string name="departure_action_add">hinzugefügt</string>
-    <string name="departure_action_add_2">zu</string>
-    <string name="departure_action_remove">gelöscht</string>
-    <string name="departure_action_remove_2">von</string>
+    <string name="departure_action_add">zu</string>
+    <string name="departure_action_add_2">hinzugefügt</string>
+    <string name="departure_action_remove">von</string>
+    <string name="departure_action_remove_2">gelöscht</string>
 </resources>
 
 
