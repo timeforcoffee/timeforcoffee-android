@@ -1,9 +1,17 @@
 package ch.liip.timeforcoffee.helper;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 import android.provider.BaseColumns;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.liip.timeforcoffee.api.Station;
 
 public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
 
@@ -15,7 +23,6 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
-        public static final String COLUMN_DISTANCE = "distance";
     }
 
     public static abstract class FavoriteLineColumn implements BaseColumns {
@@ -40,8 +47,7 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
                     FavoriteStationColumn.COLUMN_STATION_ID + INT_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     FavoriteStationColumn.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    FavoriteStationColumn.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    FavoriteStationColumn.COLUMN_DISTANCE + FLOAT_TYPE + " )";
+                    FavoriteStationColumn.COLUMN_LONGITUDE + DOUBLE_TYPE + " )";
 
     private static final String SQL_CREATE_LINE_TABLE =
             "CREATE TABLE " + FavoriteLineColumn.TABLE_NAME + " (" +
@@ -64,10 +70,41 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if(oldVersion == 1 && newVersion == 2) {
-            // the existing favorite stations are removed here
-            // maybe handle a way to store this data in the new DB
+            // get old favorite stations
+            List<Station> oldFavoriteStations = new ArrayList<>();
+
+            Cursor cursor = db.query("favorites", new String[] {"id", "station_id", "name", "latitude", "longitude", "distance"}, null, null, null, null, null);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_STATION_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_NAME));
+                double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LATITUDE));
+                double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LONGITUDE));
+
+                Location location = new Location("fav");
+                location.setLatitude(latitude);
+                location.setLongitude(longitude);
+
+                oldFavoriteStations.add(new Station(id, name, 0, location, true));
+                cursor.moveToNext();
+            }
+            cursor.close();
+
+            // remove old table and create the new ones
             db.execSQL(SQL_DELETE_OLD_STATION_TABLE);
             onCreate(db);
+
+            // add old favorite stations in the new table
+            for(Station oldFavoriteStation : oldFavoriteStations) {
+                ContentValues values = new ContentValues();
+
+                values.put(FavoriteStationColumn.COLUMN_STATION_ID, oldFavoriteStation.getId());
+                values.put(FavoriteStationColumn.COLUMN_NAME, oldFavoriteStation.getName());
+                values.put(FavoriteStationColumn.COLUMN_LATITUDE, oldFavoriteStation.getLocation().getLatitude());
+                values.put(FavoriteStationColumn.COLUMN_LONGITUDE, oldFavoriteStation.getLocation().getLongitude());
+
+                db.insert(FavoriteStationColumn.TABLE_NAME, null, values);
+            }
         } else {
             db.execSQL(SQL_DELETE_STATION_TABLE);
             db.execSQL(SQL_DELETE_LINE_TABLE);
