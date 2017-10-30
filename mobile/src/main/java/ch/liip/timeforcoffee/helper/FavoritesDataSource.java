@@ -21,8 +21,7 @@ public class FavoritesDataSource {
     private FavoritesDatabaseHelper dbHelper;
 
     private String[] allStationColumns = {FavoriteStationColumn.COLUMN_ID, FavoriteStationColumn.COLUMN_STATION_ID,
-            FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE,
-            FavoriteStationColumn.COLUMN_DISTANCE};
+            FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE};
 
     private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME, FavoriteLineColumn.COLUMN_DESTINATION_ID};
 
@@ -34,7 +33,6 @@ public class FavoritesDataSource {
         values.put(FavoriteStationColumn.COLUMN_NAME, station.getName());
         values.put(FavoriteStationColumn.COLUMN_LATITUDE, station.getLocation().getLatitude());
         values.put(FavoriteStationColumn.COLUMN_LONGITUDE, station.getLocation().getLongitude());
-        values.put(FavoriteStationColumn.COLUMN_DISTANCE, station.getDistance());
         database.insert(FavoriteStationColumn.TABLE_NAME, null, values);
 
         close();
@@ -118,13 +116,12 @@ public class FavoritesDataSource {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_NAME));
         double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LONGITUDE));
-        float distance = cursor.getFloat(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_DISTANCE));
 
         Location location = new Location("fav");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
 
-        return new Station(id, name, distance, location, true);
+        return new Station(id, name, 0, location, true);
     }
 
     private Departure cursorToLine(Cursor cursor) {
