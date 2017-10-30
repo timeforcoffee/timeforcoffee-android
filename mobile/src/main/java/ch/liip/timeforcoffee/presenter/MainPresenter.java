@@ -113,7 +113,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
             return;
         }
 
-        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations();
         for(Station station : mStations) {
             station.setIsFavorite(favoriteStations.contains(station));
         }

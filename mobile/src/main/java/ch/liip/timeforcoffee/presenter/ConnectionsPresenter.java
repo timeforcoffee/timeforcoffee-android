@@ -121,11 +121,11 @@ public class ConnectionsPresenter implements Presenter {
         if (getIsFavorite()) {
             //Remove from fav
             mDeparture.setIsFavorite(false);
-            favoritesDataSource.deleteFavoriteLine(mActivity, mDeparture);
+            favoritesDataSource.deleteFavoriteLine(mDeparture);
         } else {
             //Add to fav
             mDeparture.setIsFavorite(true);
-            favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);
+            favoritesDataSource.insertFavoriteLine(mDeparture);
         }
     }
 }
