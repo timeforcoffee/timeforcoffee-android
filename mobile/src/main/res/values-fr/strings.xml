@@ -30,7 +30,7 @@
     <string name="connection_departure">Dép: </string>
     <string name="connection_arrival">Arr: </string>
     <string name="connection_from">De</string>
-    <string name="departure_fav_message" formatted="false">%s %s à été %s %s votre liste de favoris</string>
+    <string name="departure_fav_message" formatted="false">%s %s a été %s %s votre liste de favoris</string>
     <string name="departure_action_add">ajouté</string>
     <string name="departure_action_add_2">à</string>
     <string name="departure_action_remove">supprimé</string>
