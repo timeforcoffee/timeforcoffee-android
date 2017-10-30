@@ -14,9 +14,9 @@ buildscript {
 
 ext {
     MIN_SDK = 19
-    COMPILE_SDK = 23
-    TARGET_SDK = 23
-    BUILD_TOOL = "21.1.2"
+    COMPILE_SDK = 26
+    TARGET_SDK = 26
+    BUILD_TOOL = "26.0.2"
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
