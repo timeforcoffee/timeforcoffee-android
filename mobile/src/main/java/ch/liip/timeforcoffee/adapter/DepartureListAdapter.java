@@ -111,11 +111,11 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 String action, action1;
 
                 if (isFavorite) {
-                    mFavoritesDataSource.deleteFavoriteLine(mContext, departure);
+                    mFavoritesDataSource.deleteFavoriteLine(departure);
                     action = mContext.getResources().getString(R.string.departure_action_remove);
                     action1 = mContext.getResources().getString(R.string.departure_action_remove_2);
                 } else {
-                    mFavoritesDataSource.insertFavoriteLine(mContext, departure);
+                    mFavoritesDataSource.insertFavoriteLine(departure);
                     action = mContext.getResources().getString(R.string.departure_action_add);
                     action1 = mContext.getResources().getString(R.string.departure_action_add_2);
                 }
