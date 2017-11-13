@@ -52,7 +52,7 @@ public class DeparturesActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(null);
+        super.onCreate(savedInstanceState);
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {

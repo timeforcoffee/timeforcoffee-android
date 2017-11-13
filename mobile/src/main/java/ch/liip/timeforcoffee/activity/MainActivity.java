@@ -34,9 +34,12 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
     private RelativeLayout mProgressLayout;
 
+    public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
+    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(null);
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_station_list);
 
@@ -44,15 +47,21 @@ public class MainActivity extends AppCompatActivity
         Bundle favoritesFragmentArgs = new Bundle();
         favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
-        mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName());
-        mFavoriteListFragment = (FavoritesListFragment)  Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        if (savedInstanceState == null) {
+            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName());
+            mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        } else{
+            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+        }
 
         List fragments = new Vector();
         fragments.add(mStationListFragment);
         fragments.add(mFavoriteListFragment);
 
-        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
         mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
+        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
+
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
 
@@ -68,6 +77,13 @@ public class MainActivity extends AppCompatActivity
         });
 
         mPresenter = new MainPresenter(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
+        getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
     }
 
     @Override
