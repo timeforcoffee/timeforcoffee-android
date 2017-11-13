@@ -6,83 +6,128 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteColumn;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by nicolas on 22/08/15.
- */
+import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteLineColumn;
+import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteStationColumn;
+
 public class FavoritesDataSource {
 
     private SQLiteDatabase database;
     private FavoritesDatabaseHelper dbHelper;
-    private String[] allColumns = {FavoriteColumn.COLUMN_ID, FavoriteColumn.COLUMN_STATION_ID,
-            FavoriteColumn.COLUMN_NAME, FavoriteColumn.COLUMN_LATITUDE, FavoriteColumn.COLUMN_LONGITUDE,
-            FavoriteColumn.COLUMN_DISTANCE};
 
-    public FavoritesDataSource(Context context) {
-        dbHelper = new FavoritesDatabaseHelper(context);
-    }
+    private String[] allStationColumns = {FavoriteStationColumn.COLUMN_ID, FavoriteStationColumn.COLUMN_STATION_ID,
+            FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE};
 
-    public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-    }
+    private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME, FavoriteLineColumn.COLUMN_DESTINATION_ID};
 
-    public void close() {
-        dbHelper.close();
-    }
+    public void insertFavoriteStation(Context context, Station station) {
+        open(context);
 
-    public void insertFavorites(Station station) {
         ContentValues values = new ContentValues();
+        values.put(FavoriteStationColumn.COLUMN_STATION_ID, station.getId());
+        values.put(FavoriteStationColumn.COLUMN_NAME, station.getName());
+        values.put(FavoriteStationColumn.COLUMN_LATITUDE, station.getLocation().getLatitude());
+        values.put(FavoriteStationColumn.COLUMN_LONGITUDE, station.getLocation().getLongitude());
+        database.insert(FavoriteStationColumn.TABLE_NAME, null, values);
 
-        values.put(FavoriteColumn.COLUMN_STATION_ID, station.getId());
-        values.put(FavoriteColumn.COLUMN_NAME, station.getName());
-        values.put(FavoriteColumn.COLUMN_LATITUDE, station.getLocation().getLatitude());
-        values.put(FavoriteColumn.COLUMN_LONGITUDE, station.getLocation().getLongitude());
-        values.put(FavoriteColumn.COLUMN_DISTANCE, station.getDistance());
-
-        database.insert(FavoriteColumn.TABLE_NAME, null, values);
+        close();
     }
 
-    public void deleteFavorite(Station station) {
-        String id = station.getId();
-        database.delete(FavoriteColumn.TABLE_NAME, FavoriteColumn.COLUMN_STATION_ID + " = " + id, null);
+    public void deleteFavoriteStation(Context context, Station station) {
+        open(context);
+        database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_STATION_ID + " = " + station.getId(), null);
+
+        close();
     }
 
-    public List<Station> getAllFavorites() {
-        List<Station> stations = new ArrayList<Station>();
+    public void insertFavoriteLine(Context context, Departure departure) {
+        open(context);
 
-        Cursor cursor = database.query(FavoriteColumn.TABLE_NAME,
-                allColumns, null, null, null, null, null);
+        ContentValues values = new ContentValues();
+        values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
+        values.put(FavoriteLineColumn.COLUMN_DESTINATION_ID, departure.getDestinationId());
+        database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
 
+        close();
+    }
+
+    public void deleteFavoriteLine(Context context, Departure departure) {
+        open(context);
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "' AND " +
+                FavoriteLineColumn.COLUMN_DESTINATION_ID + " = " + departure.getDestinationId(), null);
+
+        close();
+    }
+
+    public List<Station> getAllFavoriteStations(Context context) {
+        open(context);
+
+        List<Station> stations = new ArrayList<>();
+        Cursor cursor = database.query(FavoriteStationColumn.TABLE_NAME, allStationColumns, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Station station = cursorToStation(cursor);
             stations.add(station);
             cursor.moveToNext();
         }
-        // make sure to close the cursor
+
         cursor.close();
+        close();
+
         return stations;
     }
 
-    private Station cursorToStation(Cursor cursor) {
+    public List<Departure> getAllFavoriteLines(Context context) {
+        open(context);
 
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteColumn.COLUMN_STATION_ID));
-        String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteColumn.COLUMN_NAME));
-        double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteColumn.COLUMN_LATITUDE));
-        double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteColumn.COLUMN_LONGITUDE));
-        float distance = cursor.getFloat(cursor.getColumnIndexOrThrow(FavoriteColumn.COLUMN_DISTANCE));
+        List<Departure> departures = new ArrayList<>();
+        Cursor cursor = database.query(FavoriteLineColumn.TABLE_NAME, allLineColumns, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Departure departure = cursorToLine(cursor);
+            departures.add(departure);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        close();
+
+        return departures;
+    }
+
+    private void open(Context context) throws SQLException {
+        dbHelper = new FavoritesDatabaseHelper(context);
+        database = dbHelper.getWritableDatabase();
+    }
+
+    private void close() {
+        if (database != null && database.isOpen()) {
+            database.close();
+        }
+    }
+
+    private Station cursorToStation(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_STATION_ID));
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_NAME));
+        double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LATITUDE));
+        double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(FavoriteStationColumn.COLUMN_LONGITUDE));
 
         Location location = new Location("fav");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
 
-        Station station = new Station(id, name, distance, location, true);
-        return station;
+        return new Station(id, name, 0, location, true);
     }
 
+    private Departure cursorToLine(Cursor cursor) {
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
+        int destinationId = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION_ID));
+
+        return new Departure(name, destinationId, true);
+    }
 }

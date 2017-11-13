@@ -11,10 +11,8 @@ import org.greenrobot.eventbus.Subscribe;
 import javax.inject.Inject;
 import java.util.ArrayList;
 
-/**
- * Created by fsantschi on 11/03/15.
- */
 public class StationService {
+
     private final EventBus eventBus;
 
     @Inject
@@ -30,10 +28,11 @@ public class StationService {
 
     @Subscribe
     public void onEvent(ZvvStationsFetchedEvent event) {
-        ArrayList<Station> stations = new ArrayList<Station>();
+        ArrayList<Station> stations = new ArrayList<>();
         for (ch.liip.timeforcoffee.zvv.Station zvvStation : event.getStations()) {
             stations.add(StationMapper.fromZvv(zvvStation));
         }
+
         eventBus.post(new StationsFetchedEvent(stations));
     }
 }
