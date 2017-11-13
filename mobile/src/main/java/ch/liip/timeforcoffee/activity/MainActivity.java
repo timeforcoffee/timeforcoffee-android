@@ -9,21 +9,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
+import com.astuetz.PagerSlidingTabStrip;
+
+import java.util.List;
+import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
-import com.astuetz.PagerSlidingTabStrip;
-
-import java.util.List;
-import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity
         implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
@@ -36,6 +34,9 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
     private RelativeLayout mProgressLayout;
 
+    public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
+    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,15 +47,21 @@ public class MainActivity extends AppCompatActivity
         Bundle favoritesFragmentArgs = new Bundle();
         favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
-        mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName());
-        mFavoriteListFragment = (FavoritesListFragment)  Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        if (savedInstanceState == null) {
+            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName());
+            mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        } else{
+            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+        }
 
         List fragments = new Vector();
         fragments.add(mStationListFragment);
         fragments.add(mFavoriteListFragment);
 
-        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
         mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
+        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
+
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
 
@@ -70,6 +77,13 @@ public class MainActivity extends AppCompatActivity
         });
 
         mPresenter = new MainPresenter(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
+        getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
     }
 
     @Override
@@ -167,19 +181,11 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onDestroy();
     }
 
-    public FavoritesDataSource getFavoriteDataSource() {
-        return mPresenter.getFavoritesDataSource();
-    }
-
     public void showProgressLayout(boolean show) {
         if (show) {
             mProgressLayout.setVisibility(View.VISIBLE);
         } else {
             mProgressLayout.setVisibility(View.GONE);
         }
-    }
-
-    public void displayToastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

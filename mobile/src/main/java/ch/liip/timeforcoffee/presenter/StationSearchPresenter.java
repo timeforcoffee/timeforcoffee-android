@@ -25,8 +25,6 @@ import javax.inject.Inject;
 public class StationSearchPresenter implements Presenter {
 
     private StationSearchActivity mActivity;
-    private FavoritesDataSource mFavoriteDataSource;
-
     private List<Station> mStations;
     private String mSearchQuery;
 
@@ -39,15 +37,15 @@ public class StationSearchPresenter implements Presenter {
     @Inject
     ZvvApiService zvvApiService;
 
+    @Inject
+    FavoritesDataSource favoritesDataSource;
+
     public StationSearchPresenter(StationSearchActivity activity, String searchQuery) {
         mActivity = activity;
         mSearchQuery = searchQuery;
 
         ((TimeForCoffeeApplication) activity.getApplication()).inject(this);
         mEventBus.register(this);
-
-        mFavoriteDataSource = new FavoritesDataSource(activity);
-        mFavoriteDataSource.open();
     }
 
     @Override
@@ -75,7 +73,7 @@ public class StationSearchPresenter implements Presenter {
         mActivity.showProgressLayout(false);
         mStations = event.getStations();
 
-        List<Station> favoriteStations = mFavoriteDataSource.getAllFavoriteStations();
+        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
         for(Station station : mStations) {
             station.setIsFavorite(favoriteStations.contains(station));
         }
@@ -106,9 +104,5 @@ public class StationSearchPresenter implements Presenter {
 
     public String getSearchQuery() {
         return mSearchQuery;
-    }
-
-    public FavoritesDataSource getFavoritesDataSource() {
-        return mFavoriteDataSource;
     }
 }
