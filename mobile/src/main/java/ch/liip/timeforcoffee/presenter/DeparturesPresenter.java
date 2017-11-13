@@ -88,7 +88,7 @@ public class DeparturesPresenter implements Presenter {
             return;
         }
 
-        List<Departure> favoriteLines = favoritesDataSource.getAllFavoriteLines();
+        List<Departure> favoriteLines = favoritesDataSource.getAllFavoriteLines(mActivity);
         List<Departure> favoriteDepartures = new ArrayList<>();
         for(Departure departure : mDepartures) {
             boolean contains = false;
@@ -152,11 +152,11 @@ public class DeparturesPresenter implements Presenter {
         if (getIsFavorite()) {
             //Remove from fav
             mStation.setIsFavorite(false);
-            favoritesDataSource.deleteFavoriteStation(mStation);
+            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
         } else {
             //Add to fav
             mStation.setIsFavorite(true);
-            favoritesDataSource.insertFavoriteStation(mStation);
+            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
         }
     }
 }

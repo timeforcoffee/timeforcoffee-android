@@ -17,8 +17,7 @@ import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteStationColum
 
 public class FavoritesDataSource {
 
-    private Context mContext;
-    private SQLiteDatabase mDatabase;
+    private SQLiteDatabase database;
     private FavoritesDatabaseHelper dbHelper;
 
     private String[] allStationColumns = {FavoriteStationColumn.COLUMN_ID, FavoriteStationColumn.COLUMN_STATION_ID,
@@ -27,12 +26,8 @@ public class FavoritesDataSource {
 
     private String[] allLineColumns = {FavoriteLineColumn.COLUMN_ID, FavoriteLineColumn.COLUMN_NAME, FavoriteLineColumn.COLUMN_DESTINATION_ID};
 
-    public FavoritesDataSource(Context context) {
-        mContext = context;
-    }
-
-    public void insertFavoriteStation(Station station) {
-        open(mContext);
+    public void insertFavoriteStation(Context context, Station station) {
+        open(context);
 
         ContentValues values = new ContentValues();
         values.put(FavoriteStationColumn.COLUMN_STATION_ID, station.getId());
@@ -40,42 +35,42 @@ public class FavoritesDataSource {
         values.put(FavoriteStationColumn.COLUMN_LATITUDE, station.getLocation().getLatitude());
         values.put(FavoriteStationColumn.COLUMN_LONGITUDE, station.getLocation().getLongitude());
         values.put(FavoriteStationColumn.COLUMN_DISTANCE, station.getDistance());
-        mDatabase.insert(FavoriteStationColumn.TABLE_NAME, null, values);
+        database.insert(FavoriteStationColumn.TABLE_NAME, null, values);
 
         close();
     }
 
-    public void deleteFavoriteStation(Station station) {
-        open(mContext);
-        mDatabase.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_STATION_ID + " = " + station.getId(), null);
+    public void deleteFavoriteStation(Context context, Station station) {
+        open(context);
+        database.delete(FavoriteStationColumn.TABLE_NAME, FavoriteStationColumn.COLUMN_STATION_ID + " = " + station.getId(), null);
 
         close();
     }
 
-    public void insertFavoriteLine(Departure departure) {
-        open(mContext);
+    public void insertFavoriteLine(Context context, Departure departure) {
+        open(context);
 
         ContentValues values = new ContentValues();
         values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
         values.put(FavoriteLineColumn.COLUMN_DESTINATION_ID, departure.getDestinationId());
-        mDatabase.insert(FavoriteLineColumn.TABLE_NAME, null, values);
+        database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
 
         close();
     }
 
-    public void deleteFavoriteLine(Departure departure) {
-        open(mContext);
-        mDatabase.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "' AND " +
+    public void deleteFavoriteLine(Context context, Departure departure) {
+        open(context);
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "' AND " +
                 FavoriteLineColumn.COLUMN_DESTINATION_ID + " = " + departure.getDestinationId(), null);
 
         close();
     }
 
-    public List<Station> getAllFavoriteStations() {
-        open(mContext);
+    public List<Station> getAllFavoriteStations(Context context) {
+        open(context);
 
         List<Station> stations = new ArrayList<>();
-        Cursor cursor = mDatabase.query(FavoriteStationColumn.TABLE_NAME, allStationColumns, null, null, null, null, null);
+        Cursor cursor = database.query(FavoriteStationColumn.TABLE_NAME, allStationColumns, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Station station = cursorToStation(cursor);
@@ -89,11 +84,11 @@ public class FavoritesDataSource {
         return stations;
     }
 
-    public List<Departure> getAllFavoriteLines() {
-        open(mContext);
+    public List<Departure> getAllFavoriteLines(Context context) {
+        open(context);
 
         List<Departure> departures = new ArrayList<>();
-        Cursor cursor = mDatabase.query(FavoriteLineColumn.TABLE_NAME, allLineColumns, null, null, null, null, null);
+        Cursor cursor = database.query(FavoriteLineColumn.TABLE_NAME, allLineColumns, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Departure departure = cursorToLine(cursor);
@@ -109,12 +104,12 @@ public class FavoritesDataSource {
 
     private void open(Context context) throws SQLException {
         dbHelper = new FavoritesDatabaseHelper(context);
-        mDatabase = dbHelper.getWritableDatabase();
+        database = dbHelper.getWritableDatabase();
     }
 
     private void close() {
-        if (mDatabase != null && mDatabase.isOpen()) {
-            mDatabase.close();
+        if (database != null && database.isOpen()) {
+            database.close();
         }
     }
 
