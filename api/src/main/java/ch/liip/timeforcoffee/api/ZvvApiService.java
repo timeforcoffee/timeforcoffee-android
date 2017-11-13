@@ -1,24 +1,31 @@
 package ch.liip.timeforcoffee.api;
 
-import ch.liip.timeforcoffee.api.events.*;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvStationboardEvent;
+import ch.liip.timeforcoffee.api.events.FetchZvvStationsEvent;
+import ch.liip.timeforcoffee.api.events.ZvvConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.ZvvStationboardFetchedEvent;
+import ch.liip.timeforcoffee.api.events.ZvvStationsFetchedEvent;
+import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Station;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
 import ch.liip.timeforcoffee.zvv.StationsResponse;
 import ch.liip.timeforcoffee.zvv.ZvvService;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class ZvvApiService {
+
     private EventBus eventBus;
     private ZvvService zvvService;
 
@@ -30,6 +37,11 @@ public class ZvvApiService {
     }
 
     @Subscribe
+    public void onEvent(FetchZvvConnectionsEvent event) {
+        fetchZvvConnections(event.getFromStationId(), event.getToStationId(), event.getStartDateStr(), event.getEndDateStr());
+    }
+
+    @Subscribe
     public void onEvent(FetchZvvStationboardEvent event) {
         fetchZvvStationboard(event.getStationId());
     }
@@ -37,6 +49,29 @@ public class ZvvApiService {
     @Subscribe
     public void onEvent(FetchZvvStationsEvent event) {
         fetchZvvStations(event.getSearchQuery());
+    }
+
+    public void fetchZvvConnections(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
+
+        zvvService.getConnections(fromStationId, toStationId, startDateStr, endDateStr)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ConnectionsResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchErrorEvent(e));
+                    }
+
+                    @Override
+                    public void onNext(ConnectionsResponse connections) {
+                        eventBus.post(new ZvvConnectionsFetchedEvent(connections.getConnections()));
+                    }
+                });
     }
 
     public void fetchZvvStationboard(String stationId) {
@@ -81,7 +116,7 @@ public class ZvvApiService {
 
                     @Override
                     public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e));
+                        eventBus.post(new FetchErrorEvent(e))   ;
                     }
 
                     @Override
