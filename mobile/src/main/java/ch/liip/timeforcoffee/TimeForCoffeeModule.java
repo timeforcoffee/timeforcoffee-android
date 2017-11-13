@@ -1,22 +1,5 @@
 package ch.liip.timeforcoffee;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-
-import javax.inject.Singleton;
-
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
 import ch.liip.timeforcoffee.api.ZvvApiService;
@@ -25,16 +8,30 @@ import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.opendata.TransportService;
-import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
-import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
-import ch.liip.timeforcoffee.presenter.MainPresenter;
-import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
+import ch.liip.timeforcoffee.presenter.*;
 import ch.liip.timeforcoffee.wear.DataService;
 import ch.liip.timeforcoffee.zvv.ZvvService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
 import dagger.Module;
 import dagger.Provides;
+import org.greenrobot.eventbus.EventBus;
+
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
+
+import javax.inject.Singleton;
 
 /**
  * Created by fsantschi on 08/03/15.
@@ -127,6 +124,6 @@ class TimeForCoffeeModule {
     @Provides
     @Singleton
     FavoritesDataSource provideFavoriteDataSource() {
-        return new FavoritesDataSource(TimeForCoffeeApplication.getAppContext());
+        return new FavoritesDataSource();
     }
 }
