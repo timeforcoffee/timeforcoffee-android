@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.activity;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +53,13 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(null);
+        super.onCreate(savedInstanceState);
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            //we don't want to restore this activity => go back to default activity
+            navigateUpTo(new Intent(this, MainActivity.class));
+        }
 
         setContentView(R.layout.activity_connection_list);
 
