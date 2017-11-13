@@ -16,7 +16,6 @@ import java.util.List;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
 
 public class StationSearchActivity extends AppCompatActivity
@@ -35,7 +34,6 @@ public class StationSearchActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         String searchQuery = null;
@@ -174,9 +172,5 @@ public class StationSearchActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public FavoritesDataSource getFavoriteDataSource() {
-        return mPresenter.getFavoritesDataSource();
     }
 }

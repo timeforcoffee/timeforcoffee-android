@@ -13,24 +13,20 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import java.util.List;
+import java.util.Vector;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
-import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
-
-import com.astuetz.PagerSlidingTabStrip;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 public class DeparturesActivity extends AppCompatActivity implements
         SlidingUpPanelLayout.PanelSlideListener, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
@@ -236,10 +232,6 @@ public class DeparturesActivity extends AppCompatActivity implements
 
     @Override
     public void onPanelHidden(View panel) { }
-
-    public FavoritesDataSource getFavoriteDataSource() {
-        return mPresenter.getFavoritesDataSource();
-    }
 
     public void displayToastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
