@@ -70,17 +70,17 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         Departure departure = this.mDepartures.get(position);
 
         setLineName(viewHolder.lineNameTextView, departure);
-        viewHolder.toTextView.setText(departure.getTo());
+        viewHolder.toTextView.setText(departure.getDestinationName());
         viewHolder.departureTextView.setText(departure.departureInMinutes());
 
         if (departure.isLate()) {
             viewHolder.realtimeTextView.setVisibility(View.VISIBLE);
-            viewHolder.realtimeTextView.setText(departure.getRealtimeStr());
-            viewHolder.scheduledTimeTextView.setText(departure.getScheduledStr());
+            viewHolder.realtimeTextView.setText(departure.getDepartureRealtimeStr());
+            viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(viewHolder.scheduledTimeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             viewHolder.realtimeTextView.setVisibility(View.GONE);
-            viewHolder.scheduledTimeTextView.setText(departure.getScheduledStr());
+            viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(viewHolder.scheduledTimeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 

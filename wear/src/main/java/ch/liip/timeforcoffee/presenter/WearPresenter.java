@@ -277,7 +277,7 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
             //Select first station in the list and load departures for it
             Station station = stations.get(0);
             mActivity.setStation(station);
-            loadDepartures(station.getId());
+            loadDepartures(station.getIdStr());
 
             //Display station list
             mActivity.setStations(stations);
@@ -293,7 +293,7 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
 
     public void selectStation(Station station) {
         mSelectedStation = station;
-        loadDepartures(station.getId());
+        loadDepartures(station.getIdStr());
     }
 
     @Override

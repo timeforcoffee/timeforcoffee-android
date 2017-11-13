@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.WalkingDistance;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -22,9 +24,9 @@ import java.util.List;
  */
 public class StationListAdapter extends ArrayAdapter<Station> {
 
-    private List<Station> stations;
-    private FavoritesDataSource favoritesDataSource;
-    private Context context;
+    private List<Station> mStations;
+    private FavoritesDataSource mFavoritesDataSource;
+    private Context mContext;
 
     private static class StationViewHolder {
         TextView nameTextView;
@@ -35,10 +37,9 @@ public class StationListAdapter extends ArrayAdapter<Station> {
     public StationListAdapter(Context context, List<Station> stations, FavoritesDataSource dataSource) {
         super(context, R.layout.fragment_station_list_row, stations);
 
-        this.stations = stations;
-        this.favoritesDataSource = dataSource;
-        this.context = context;
-
+        this.mStations = stations;
+        this.mFavoritesDataSource = dataSource;
+        this.mContext = context;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -63,7 +64,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
         }
 
 
-        final Station currentStation = this.stations.get(position);
+        final Station currentStation = this.mStations.get(position);
 
         viewHolder.nameTextView.setText(currentStation.getName());
 
@@ -74,7 +75,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
             location.setLatitude(46.803);
             location.setLongitude(7.145);
         } else {
-            location = SmartLocation.with(context).location().getLastLocation();
+            location = SmartLocation.with(mContext).location().getLastLocation();
         }
         final Location currentLocation = location;
 
@@ -97,14 +98,13 @@ public class StationListAdapter extends ArrayAdapter<Station> {
 
             @Override
             public void onClick(View v) {
-
                 boolean isFavorite = currentStation.getIsFavorite();
                 if (isFavorite) {
                     //remove from favorites
-                    favoritesDataSource.deleteFavorite(currentStation);
+                    mFavoritesDataSource.deleteFavoriteStation(mContext, currentStation);
                 } else {
                     //add to favorites
-                    favoritesDataSource.insertFavorites(currentStation);
+                    mFavoritesDataSource.insertFavoriteStation(mContext, currentStation);
                 }
                 currentStation.setIsFavorite(!isFavorite);
             }
@@ -115,7 +115,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
     }
 
     public Station getStation(int position) {
-        return this.stations.get(position);
+        return this.mStations.get(position);
     }
 
     @Override
@@ -125,17 +125,17 @@ public class StationListAdapter extends ArrayAdapter<Station> {
 
     @Override
     public Station getItem(int position) {
-        return this.stations.get(position);
+        return this.mStations.get(position);
     }
 
     @Override
     public int getCount() {
-        return this.stations.size();
+        return this.mStations.size();
     }
 
     public void setStations(List<Station> stations) {
-        this.stations.clear();
-        this.stations.addAll(stations);
+        this.mStations.clear();
+        this.mStations.addAll(stations);
         notifyDataSetChanged();
     }
 }

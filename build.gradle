@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -14,14 +14,14 @@ buildscript {
 
 ext {
     MIN_SDK = 19
-    COMPILE_SDK = 23
-    TARGET_SDK = 23
-    BUILD_TOOL = "21.1.2"
+    COMPILE_SDK = 26
+    TARGET_SDK = 26
+    BUILD_TOOL = "26.0.2"
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
-    VERSION = "1.0.22"
-    VERSION_CODE = 22
+    VERSION = "1.1.1"
+    VERSION_CODE = 25
 
     RELEASE_MAP_API_KEY = "AIzaSyD1a4ATVxYCJdzxlhVq8Qcpa7okxSo1sxU"
     DEBUG_MAP_API_KEY = "AIzaSyAwy5pW4FeqNbBJpFVTdAoYXeadLNeKSDE"

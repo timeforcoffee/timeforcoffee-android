@@ -7,25 +7,35 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.TabsAdapter;
-import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.fragment.DepartureListFragment;
-import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
-import ch.liip.timeforcoffee.fragment.StationListFragment;
-import ch.liip.timeforcoffee.presenter.MainPresenter;
+import android.view.View;
+import android.widget.RelativeLayout;
+
 import com.astuetz.PagerSlidingTabStrip;
 
 import java.util.List;
 import java.util.Vector;
 
+import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.adapter.TabsAdapter;
+import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
+import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.presenter.MainPresenter;
+
 public class MainActivity extends AppCompatActivity
         implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
 
     private MainPresenter mPresenter;
+    private StationListFragment mStationListFragment;
+    private FavoritesListFragment mFavoriteListFragment;
 
     private TabsAdapter mPagerAdapter;
     private ViewPager mViewPager;
+    private RelativeLayout mProgressLayout;
+
+    public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
+    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +44,24 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_station_list);
 
         // Initialize the ViewPager and set an adapter
-        List fragments = new Vector();
-        fragments.add(Fragment.instantiate(this, StationListFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, FavoritesListFragment.class.getName()));
+        Bundle favoritesFragmentArgs = new Bundle();
+        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
-        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), fragments);
+        if (savedInstanceState == null) {
+            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName());
+            mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        } else{
+            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+        }
+
+        List fragments = new Vector();
+        fragments.add(mStationListFragment);
+        fragments.add(mFavoriteListFragment);
+
+        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
+        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
+
         mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
 
@@ -47,22 +70,20 @@ public class MainActivity extends AppCompatActivity
         tabs.setViewPager(mViewPager);
 
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-
             @Override
             public void onPageSelected(int position) {
-
-                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(
-                        "android:switcher:" + R.id.viewpager + ":" + mViewPager.getCurrentItem());
-
-                if (currentFragment instanceof FavoritesListFragment) {
-                    ((FavoritesListFragment) currentFragment).updateFavorites();
-                } else if (currentFragment instanceof StationListFragment) {
-                    ((StationListFragment) currentFragment).updateFavorites();
-                }
+                mPresenter.updateFavorites();
             }
         });
 
         mPresenter = new MainPresenter(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
+        getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
     }
 
     @Override
@@ -83,14 +104,12 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void updateFavorites() {
+    public void updateStations(List<Station> stations) {
+        mStationListFragment.setStations(stations);
+    }
 
-        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(
-                "android:switcher:" + R.id.viewpager + ":" + mViewPager.getCurrentItem());
-
-        if (currentFragment instanceof FavoritesListFragment) {
-            ((FavoritesListFragment) currentFragment).updateFavorites();
-        }
+    public void updateFavorites(List<Station> favoriteStations) {
+        mFavoriteListFragment.setStations(favoriteStations);
     }
 
     public void refresh() {
@@ -112,18 +131,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onFavoriteDepartureSelected(Departure departure) { }
+
+    @Override
     public void onRefresh() {
         mPresenter.onRefreshView();
     }
 
     private void selectStation(Station station) {
         Intent detailIntent = new Intent(this, DeparturesActivity.class);
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_ID, station.getId());
-        detailIntent.putExtra(DepartureListFragment.ARG__STATION_NAME, station.getName());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_DISTANCE, station.getDistance());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
-        detailIntent.putExtra(DepartureListFragment.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
-        detailIntent.putExtra(DepartureListFragment.ARG_IS_FAVORITE, station.getIsFavorite());
+
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
+        detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+        detailIntent.putExtra(DeparturesActivity.ARG_IS_FAVORITE, station.getIsFavorite());
+
         startActivity(detailIntent);
     }
 
@@ -155,5 +179,13 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy();
+    }
+
+    public void showProgressLayout(boolean show) {
+        if (show) {
+            mProgressLayout.setVisibility(View.VISIBLE);
+        } else {
+            mProgressLayout.setVisibility(View.GONE);
+        }
     }
 }

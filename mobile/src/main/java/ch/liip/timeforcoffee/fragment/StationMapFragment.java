@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.WalkingDistance;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,16 +28,15 @@ import io.nlopez.smartlocation.SmartLocation;
 
 public class StationMapFragment extends Fragment implements OnMapReadyCallback {
 
-    private ImageView gradientOverlay;
-    private TextView titleTextView;
-    private TextView distanceTextView;
     private MapFragment mapFragment;
     private GoogleMap map;
-    private Station mStation;
+    private ImageView gradientOverlay;
+    private TextView titleTextView;
+    private TextView subtitleTextView;
     private ImageView mChevron;
 
-    private float mLayoutHeight;
-    private float mLayoutWidth;
+    private Station mStation;
+    private Departure mDeparture;
 
     public StationMapFragment() {
         // Required empty public constructor
@@ -58,12 +58,9 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         transaction.commit();
 
         View view = inflater.inflate(R.layout.fragment_station_map, container, false);
-        mLayoutHeight = view.getHeight();
-        mLayoutWidth = view.getWidth();
-
         gradientOverlay = (ImageView) view.findViewById(R.id.gradient_overlay);
-        titleTextView = (TextView) view.findViewById(R.id.station_title);
-        distanceTextView = (TextView) view.findViewById(R.id.station_distance);
+        titleTextView = (TextView) view.findViewById(R.id.journey_title);
+        subtitleTextView = (TextView) view.findViewById(R.id.journey_subtitle);
         mChevron = (ImageView) view.findViewById(R.id.chevron);
 
         return view;
@@ -77,18 +74,31 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
 
         LatLng latLng = new LatLng(mStation.getLocation().getLatitude(), mStation.getLocation().getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-
         map.addMarker(new MarkerOptions().position(latLng).title(mStation.getName()));
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
         }
 
-        drawWalkingPath();
+        if(mDeparture == null) {
+            drawWalkingPath();
+        } else {
+            drawTransportPath();
+        }
     }
 
-    public void onMeasure() {
 
+    public void setup(Station station) {
+        mStation = station;
+        titleTextView.setText(mStation.getName());
+    }
+
+    public void setup(Station station, Departure departure, String fromStr) {
+        mStation = station;
+        mDeparture = departure;
+
+        titleTextView.setText(mDeparture.getDestinationName());
+        subtitleTextView.setText(String.format("%s %s", fromStr, mStation.getName()));
     }
 
     public void updateGradientOverlay(float alpha, int height) {
@@ -100,13 +110,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
             mChevron.setBackgroundResource(R.drawable.chevron_up);
         } else {
             mChevron.setBackgroundResource(R.drawable.chevron_down);
-
         }
-    }
-
-    public void setStation(Station station) {
-        mStation = station;
-        titleTextView.setText(mStation.getName());
     }
 
     private void drawWalkingPath() {
@@ -124,7 +128,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
                     return;
                 }
 
-                distanceTextView.setText(distance.getWalkingDistance());
+                subtitleTextView.setText(distance.getWalkingDistance());
 
                 if (distance.getWalkingPath() != null) {
                     PolylineOptions polyoptions = new PolylineOptions();
@@ -139,7 +143,16 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback {
         Location currentLocation = SmartLocation.with(getActivity()).location().getLastLocation();
         WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
         if (distance != null) {
-            distanceTextView.setText(distance.getWalkingDistance());
+            subtitleTextView.setText(distance.getWalkingDistance());
         }
+    }
+
+    private void drawTransportPath() {
+
+        if (mStation == null || mDeparture == null) {
+            return;
+        }
+
+        // handle this somehow
     }
 }
