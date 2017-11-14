@@ -20,9 +20,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
-    compile 'com.squareup.retrofit:retrofit:' + project.RETROFIT_VERSION
-    compile 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
-    compile 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
+    api 'com.squareup.retrofit:retrofit:' + project.RETROFIT_VERSION
+    api 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
+    api 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
 }
