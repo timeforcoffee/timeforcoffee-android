@@ -49,6 +49,8 @@
     <string name="nicolas_dougoud">Nicolas Dougoud /</string>
     <string name="nicolas_dougoud_twitter_name">"@abramov_no7"</string>
     <string name="nicolas_dougoud_twitter_id">"17496639"</string>
+    <string name="luca_sardonini">Luca Sardonini /</string>
+    <string name="luca_sardonini_github_username">"@lucasardonini"</string>
     <string name="title_activity_about">About</string>
     <string name="connection_departure">Dep: </string>
     <string name="connection_arrival">Arr: </string>
