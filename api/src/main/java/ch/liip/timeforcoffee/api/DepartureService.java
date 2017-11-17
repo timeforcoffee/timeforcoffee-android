@@ -32,7 +32,10 @@ public class DepartureService {
     public void onEvent(ZvvStationboardFetchedEvent event) {
         ArrayList<Departure> departures = new ArrayList<>();
         for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : event.getDepartures()) {
-            departures.add(DepartureMapper.fromZvv(zvvDeparture));
+            Departure departure = DepartureMapper.fromZvv(zvvDeparture);
+            if(departure != null) {
+                departures.add(departure);
+            }
         }
 
         eventBus.post(new DeparturesFetchedEvent(departures));
