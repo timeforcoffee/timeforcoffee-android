@@ -7,6 +7,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
+
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
@@ -50,29 +51,30 @@ dependencies {
     repositories {
         mavenCentral()
     }
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    annotationProcessor 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     wearApp project(':wear')
-    provided 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
-    compile project(':opendata')
-    compile project(':api')
-    compile project(':common')
+    implementation project(':opendata')
+    implementation project(':api')
+    implementation project(':common')
 
-    compile 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
-    compile 'com.android.support:support-v4:' + project.SUPPORT_VERSION
-    compile 'com.android.support:design:' + project.SUPPORT_VERSION
-    compile 'com.google.android.gms:play-services-wearable:' + project.PLAY_SERVICES_VERSION
-    compile 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
-    compile 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
-    compile 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
-    compile 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
-    compile 'com.sothree.slidinguppanel:library:3.0.0'
-    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
+    implementation 'com.android.support:support-v4:' + project.SUPPORT_VERSION
+    implementation 'com.android.support:design:' + project.SUPPORT_VERSION
+    implementation 'com.google.android.gms:play-services-wearable:' + project.PLAY_SERVICES_VERSION
+    implementation 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
+    implementation 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
+    implementation 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
+    implementation 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
+    implementation 'com.sothree.slidinguppanel:library:3.0.0'
+    implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
-    compile('io.nlopez.smartlocation:library:3.2.7') {
+    implementation('io.nlopez.smartlocation:library:3.2.7') {
         transitive = false
     }
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }
-
 }
