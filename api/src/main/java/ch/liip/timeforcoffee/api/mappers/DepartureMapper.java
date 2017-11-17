@@ -7,6 +7,10 @@ import ch.liip.timeforcoffee.api.Departure;
 public class DepartureMapper {
 
     public static Departure fromZvv(ch.liip.timeforcoffee.zvv.Departure zvvDeparture) {
+        if(zvvDeparture.getId() == null) {
+            return null;
+        }
+
         int colorBg = Color.WHITE;
         int colorFg = Color.BLACK;
         try {
