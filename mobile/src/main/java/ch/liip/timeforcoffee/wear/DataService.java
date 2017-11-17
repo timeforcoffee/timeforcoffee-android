@@ -6,11 +6,19 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Wearable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
-import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
@@ -18,17 +26,9 @@ import ch.liip.timeforcoffee.opendata.LocationsResponse;
 import ch.liip.timeforcoffee.opendata.TransportService;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
 import ch.liip.timeforcoffee.zvv.ZvvService;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.Wearable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by nicolas on 30/01/17.
@@ -197,10 +197,14 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
                     @Override
                     public void onNext(StationboardResponse stationboard) {
-                        ArrayList<Departure> departures = new ArrayList<Departure>();
+                        ArrayList<Departure> departures = new ArrayList<>();
                         for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : stationboard.getDepartures()) {
-                            departures.add(DepartureMapper.fromZvv(zvvDeparture));
+                            Departure departure = DepartureMapper.fromZvv(zvvDeparture);
+                            if(departure != null) {
+                                departures.add(departure);
+                            }
                         }
+
                         sendDepartures(departures, _sourceNodeId);
                     }
                 });
