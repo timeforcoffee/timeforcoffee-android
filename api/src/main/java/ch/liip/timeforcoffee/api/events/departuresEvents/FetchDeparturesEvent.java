@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.departuresEvents;
 
 /**
  * Created by fsantschi on 11/03/15.

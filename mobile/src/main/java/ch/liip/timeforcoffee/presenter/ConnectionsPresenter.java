@@ -5,25 +5,21 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.ConnectionsActivity;
-import ch.liip.timeforcoffee.api.Connection;
 import ch.liip.timeforcoffee.api.ConnectionService;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.ZvvApiService;
-import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
-import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
-import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.ConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsErrorEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsEvent;
+import ch.liip.timeforcoffee.api.models.Connection;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.widget.SnackBars;
@@ -83,7 +79,7 @@ public class ConnectionsPresenter implements Presenter {
     }
 
     @Subscribe
-    public void onFetchErrorEvent(FetchErrorEvent event) {
+    public void onFetchErrorEvent(FetchConnectionsErrorEvent event) {
         mActivity.showProgressLayout(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override

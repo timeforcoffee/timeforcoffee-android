@@ -1,12 +1,7 @@
-package ch.liip.timeforcoffee.api;
+package ch.liip.timeforcoffee.api.models;
 
-import android.location.Location;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-/**
- * Created by nicolas on 29/04/16.
- */
 public class WalkingDistance {
 
     private String walkingDistance;

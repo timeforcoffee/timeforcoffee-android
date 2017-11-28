@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
@@ -75,20 +75,24 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_station_list, container, false);
 
-        mNoStationsLayout = (RelativeLayout) rootView.findViewById(R.id.noStationsLayout);
-        mEnterSearchLayout = (RelativeLayout) rootView.findViewById(R.id.enterSearchLayout);
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mNoStationsLayout = rootView.findViewById(R.id.noStationsLayout);
+        mEnterSearchLayout = rootView.findViewById(R.id.enterSearchLayout);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mNoStationsLayout.setVisibility(View.GONE);
         if (mSearchMode) {
-            mNoStationsLayout.setVisibility(View.GONE);
             mEnterSearchLayout.setVisibility(View.VISIBLE);
         } else {
-            mNoStationsLayout.setVisibility(View.GONE);
             mEnterSearchLayout.setVisibility(View.GONE);
         }
-
-        return rootView;
     }
 
     @Override
@@ -98,22 +102,6 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
         mCallbacks = (Callbacks) context;
-    }
-
-    public void showNoStationsLayout(boolean show) {
-        mEnterSearchLayout.setVisibility(View.GONE);
-        if (show) {
-            mNoStationsLayout.setVisibility(View.VISIBLE);
-        } else {
-            mNoStationsLayout.setVisibility(View.GONE);
-        }
-    }
-
-    public void setStations(List<Station> stations) {
-        showNoStationsLayout(stations.size() == 0);
-
-        mEnterSearchLayout.setVisibility(View.GONE);
-        mStationListAdapter.setStations(stations);
     }
 
     @Override
@@ -138,5 +126,21 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         super.onDetach();
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
+    }
+
+    public void showNoStationsLayout(boolean show) {
+        mEnterSearchLayout.setVisibility(View.GONE);
+        if (show) {
+            mNoStationsLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoStationsLayout.setVisibility(View.GONE);
+        }
+    }
+
+    public void setStations(List<Station> stations) {
+        showNoStationsLayout(stations.size() == 0);
+
+        mEnterSearchLayout.setVisibility(View.GONE);
+        mStationListAdapter.setStations(stations);
     }
 }
