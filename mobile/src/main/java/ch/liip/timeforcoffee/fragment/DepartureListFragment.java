@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
-import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 

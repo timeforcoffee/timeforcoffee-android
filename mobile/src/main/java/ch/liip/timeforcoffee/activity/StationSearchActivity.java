@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
 
@@ -30,7 +30,6 @@ public class StationSearchActivity extends AppCompatActivity
     private Runnable mSearchRunnable;
 
     public static final String ARG_SEARCH_QUERY = "search_query";
-    final String TAG = "timeforcoffee";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +54,12 @@ public class StationSearchActivity extends AppCompatActivity
 
         mStationListFragment = (StationListFragment) getSupportFragmentManager().findFragmentById(R.id.station_list);
 
-        mSearchEditText = (EditText) actionBar.getCustomView().findViewById(R.id.searchField);
+        mSearchEditText = actionBar.getCustomView().findViewById(R.id.searchField);
         mSearchEditText.addTextChangedListener(new SearchWatcher());
         mSearchEditText.setText(searchQuery);
         mSearchEditText.requestFocus();
 
-        mSearchProgressBar = (ProgressBar) actionBar.getCustomView().findViewById(R.id.search_progress_bar);
+        mSearchProgressBar = actionBar.getCustomView().findViewById(R.id.search_progress_bar);
         mSearchProgressBar.setVisibility(View.GONE);
     }
 
