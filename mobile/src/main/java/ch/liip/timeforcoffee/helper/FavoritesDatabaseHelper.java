@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Station;
 
 public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
 

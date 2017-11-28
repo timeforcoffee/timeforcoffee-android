@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 

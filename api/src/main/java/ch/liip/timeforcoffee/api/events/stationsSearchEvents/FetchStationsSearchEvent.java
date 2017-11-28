@@ -1,12 +1,10 @@
 package ch.liip.timeforcoffee.api.events;
 
-/**
- * Created by fsantschi on 11/03/15.
- */
-public class FetchStationsEvent {
+public class FetchStationsSearchEvent {
+
     private String searchQuery;
 
-    public FetchStationsEvent(String searchQuery) {
+    public FetchStationsSearchEvent(String searchQuery) {
         this.searchQuery = searchQuery;
     }
 

@@ -8,11 +8,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ch.liip.timeforcoffee.api.events.ConnectionsFetchedEvent;
-import ch.liip.timeforcoffee.api.events.FetchConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.FetchZvvConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.ZvvConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.ConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchZvvConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.ZvvConnectionsFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.ConnectionMapper;
+import ch.liip.timeforcoffee.api.models.Connection;
 
 public class ConnectionService {
 

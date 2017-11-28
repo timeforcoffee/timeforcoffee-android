@@ -16,9 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.api.Connection;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Connection;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;

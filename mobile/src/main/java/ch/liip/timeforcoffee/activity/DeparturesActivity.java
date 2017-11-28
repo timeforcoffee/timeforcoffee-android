@@ -21,8 +21,8 @@ import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;

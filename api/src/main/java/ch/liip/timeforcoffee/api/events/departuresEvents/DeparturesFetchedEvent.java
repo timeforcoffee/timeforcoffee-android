@@ -1,8 +1,8 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.departuresEvents;
 
 import java.util.List;
 
-import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.models.Departure;
 
 /**
  * Created by fsantschi on 13/03/15.

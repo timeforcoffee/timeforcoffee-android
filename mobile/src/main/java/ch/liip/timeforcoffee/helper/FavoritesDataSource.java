@@ -10,8 +10,8 @@ import android.location.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteLineColumn;
 import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteStationColumn;
 

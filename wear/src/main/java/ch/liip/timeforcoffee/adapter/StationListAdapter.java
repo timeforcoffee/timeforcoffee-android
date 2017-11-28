@@ -5,7 +5,7 @@ import android.support.wearable.view.WearableListView;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.view.StationItemView;
 
 import java.util.List;
