@@ -9,12 +9,16 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchOpenDataStationsLocationEvent;
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchStationsLocationEvent;
-import ch.liip.timeforcoffee.api.events.FetchStationsSearchEvent;
-import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchZvvStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.OpenDataStationsLocationFetchedEvent;
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.StationsLocationFetchedEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchZvvStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.StationsSearchFetchedEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.ZvvStationsSearchFetchedEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchStationsSearchOneEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchZvvStationsSearchOneEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.StationsSearchOneFetchedEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.ZvvStationsSearchOneFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Station;
 
@@ -34,6 +38,11 @@ public class StationService {
     }
 
     @Subscribe
+    public void onEvent(FetchStationsSearchOneEvent event) {
+        eventBus.post(new FetchZvvStationsSearchOneEvent(event.getSearchQuery()));
+    }
+
+    @Subscribe
     public void onEvent(FetchStationsLocationEvent event) {
         eventBus.post(new FetchOpenDataStationsLocationEvent(event.getQuery()));
     }
@@ -46,6 +55,12 @@ public class StationService {
         }
 
         eventBus.post(new StationsSearchFetchedEvent(stations));
+    }
+
+    @Subscribe
+    public void onEvent(ZvvStationsSearchOneFetchedEvent event) {
+        Station station = StationMapper.fromZvv(event.getStation());
+        eventBus.post(new StationsSearchOneFetchedEvent(station));
     }
 
     @Subscribe
