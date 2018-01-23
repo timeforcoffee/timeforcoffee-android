@@ -1,9 +1,8 @@
-package ch.liip.timeforcoffee.api;
+package ch.liip.timeforcoffee.api.models;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Departure {

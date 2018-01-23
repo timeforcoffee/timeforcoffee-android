@@ -8,13 +8,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
-import ch.liip.timeforcoffee.api.events.FetchZvvConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.FetchZvvStationboardEvent;
-import ch.liip.timeforcoffee.api.events.FetchZvvStationsEvent;
-import ch.liip.timeforcoffee.api.events.ZvvConnectionsFetchedEvent;
-import ch.liip.timeforcoffee.api.events.ZvvStationboardFetchedEvent;
-import ch.liip.timeforcoffee.api.events.ZvvStationsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsErrorEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchZvvConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.connectionsEvents.ZvvConnectionsFetchedEvent;
+import ch.liip.timeforcoffee.api.events.departuresEvents.FetchDeparturesErrorEvent;
+import ch.liip.timeforcoffee.api.events.departuresEvents.FetchZvvDeparturesEvent;
+import ch.liip.timeforcoffee.api.events.departuresEvents.ZvvDeparturesFetchedEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchErrorEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchZvvStationsSearchEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchEvents.ZvvStationsSearchFetchedEvent;
 import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Station;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
@@ -42,12 +44,12 @@ public class ZvvApiService {
     }
 
     @Subscribe
-    public void onEvent(FetchZvvStationboardEvent event) {
-        fetchZvvStationboard(event.getStationId());
+    public void onEvent(FetchZvvDeparturesEvent event) {
+        fetchZvvDepartures(event.getStationId());
     }
 
     @Subscribe
-    public void onEvent(FetchZvvStationsEvent event) {
+    public void onEvent(FetchZvvStationsSearchEvent event) {
         fetchZvvStations(event.getSearchQuery());
     }
 
@@ -64,7 +66,7 @@ public class ZvvApiService {
 
                     @Override
                     public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e));
+                        eventBus.post(new FetchConnectionsErrorEvent(e));
                     }
 
                     @Override
@@ -74,9 +76,9 @@ public class ZvvApiService {
                 });
     }
 
-    public void fetchZvvStationboard(String stationId) {
+    public void fetchZvvDepartures(String stationId) {
 
-        zvvService.getStationboard(stationId)
+        zvvService.getDepartures(stationId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<StationboardResponse>() {
@@ -87,12 +89,12 @@ public class ZvvApiService {
 
                     @Override
                     public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e));
+                        eventBus.post(new FetchDeparturesErrorEvent(e));
                     }
 
                     @Override
                     public void onNext(StationboardResponse stationboard) {
-                        eventBus.post(new ZvvStationboardFetchedEvent(stationboard.getDepartures()));
+                        eventBus.post(new ZvvDeparturesFetchedEvent(stationboard.getDepartures()));
                     }
                 });
     }
@@ -101,7 +103,7 @@ public class ZvvApiService {
 
         if (searchQuery.isEmpty()) { //search query is empty =>  return an empty station list
             List<Station> stations = new ArrayList<Station>();
-            eventBus.post(new ZvvStationsFetchedEvent(stations));
+            eventBus.post(new ZvvStationsSearchFetchedEvent(stations));
             return;
         }
 
@@ -116,12 +118,12 @@ public class ZvvApiService {
 
                     @Override
                     public void onError(Throwable e) {
-                        eventBus.post(new FetchErrorEvent(e))   ;
+                        eventBus.post(new FetchStationsSearchErrorEvent(e))   ;
                     }
 
                     @Override
                     public void onNext(StationsResponse stationsResponse) {
-                        eventBus.post(new ZvvStationsFetchedEvent(stationsResponse.getStations()));
+                        eventBus.post(new ZvvStationsSearchFetchedEvent(stationsResponse.getStations()));
                     }
                 });
     }

@@ -9,14 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.ConnectionListAdapter;
-import ch.liip.timeforcoffee.api.Connection;
+import ch.liip.timeforcoffee.api.models.Connection;
 
 public class ConnectionListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
