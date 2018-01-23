@@ -60,6 +60,10 @@ public class Departure {
         return String.valueOf(destinationId);
     }
 
+    public void setDestinationId(int destinationId) {
+        this.destinationId = destinationId;
+    }
+
     public String getDestinationName() {
         return destinationName;
     }

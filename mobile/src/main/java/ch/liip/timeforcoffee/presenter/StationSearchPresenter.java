@@ -13,8 +13,8 @@ import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.StationSearchActivity;
 import ch.liip.timeforcoffee.api.StationService;
 import ch.liip.timeforcoffee.api.ZvvApiService;
-import ch.liip.timeforcoffee.api.events.FetchStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchErrorEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.StationsSearchFetchedEvent;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
@@ -49,14 +49,7 @@ public class StationSearchPresenter implements Presenter {
 
     @Override
     public void onResumeView() {
-
-    }
-
-    public void search() {
-        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
-            mActivity.showProgressLayout(true);
-            mEventBus.post(new FetchStationsSearchEvent(mSearchQuery));
-        }
+        search();
     }
 
     @Override
@@ -66,6 +59,13 @@ public class StationSearchPresenter implements Presenter {
 
     @Override
     public void onPauseView() { }
+
+    public void search() {
+        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+            mActivity.showProgressLayout(true);
+            mEventBus.post(new FetchStationsSearchEvent(mSearchQuery));
+        }
+    }
 
     @Subscribe
     public void onStationsFetchedEvent(StationsSearchFetchedEvent event) {
