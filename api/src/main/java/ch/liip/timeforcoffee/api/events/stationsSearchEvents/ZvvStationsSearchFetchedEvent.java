@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.stationsSearchEvents;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import ch.liip.timeforcoffee.zvv.Station;
 /**
  * Created by fsantschi on 11/03/15.
  */
-public class ZvvStationsFetchedEvent {
+public class ZvvStationsSearchFetchedEvent {
 
     private final List<Station> stations;
 
-    public ZvvStationsFetchedEvent(List<Station> stations) {
+    public ZvvStationsSearchFetchedEvent(List<Station> stations) {
         this.stations = stations;
     }
 

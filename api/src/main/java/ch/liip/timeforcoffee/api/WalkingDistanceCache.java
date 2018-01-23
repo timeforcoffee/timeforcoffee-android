@@ -2,6 +2,8 @@ package ch.liip.timeforcoffee.api;
 
 import android.util.LruCache;
 
+import ch.liip.timeforcoffee.api.models.WalkingDistance;
+
 /* Created by nicolas on 16/05/16.
  */
 public class WalkingDistanceCache {

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -17,8 +18,8 @@ import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mPresenter = new MainPresenter(this);
         setContentView(R.layout.activity_station_list);
 
         // Initialize the ViewPager and set an adapter
@@ -60,23 +62,20 @@ public class MainActivity extends AppCompatActivity
         fragments.add(mFavoriteListFragment);
 
         mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
-        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
+        mProgressLayout = findViewById(R.id.progressLayout);
 
-        mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
+        mViewPager = findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
 
         // Bind the tabs to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
         tabs.setViewPager(mViewPager);
-
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 mPresenter.updateFavorites();
             }
         });
-
-        mPresenter = new MainPresenter(this);
     }
 
     @Override
@@ -104,22 +103,6 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void updateStations(List<Station> stations) {
-        mStationListFragment.setStations(stations);
-    }
-
-    public void updateFavorites(List<Station> favoriteStations) {
-        mFavoriteListFragment.setStations(favoriteStations);
-    }
-
-    public void refresh() {
-        mPresenter.onRefreshView();
-    }
-
-    /**
-     * Callback method from {@link StationListFragment.Callbacks}
-     * indicating that the item with the given ID was selected.
-     */
     @Override
     public void onStationSelected(Station station) {
         selectStation(station);
@@ -181,10 +164,20 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onDestroy();
     }
 
-    public void showProgressLayout(boolean show) {
+    public void updateStations(List<Station> stations) {
+        mStationListFragment.setStations(stations);
+    }
+
+    public void updateFavorites(List<Station> favoriteStations) {
+        mFavoriteListFragment.setStations(favoriteStations);
+    }
+
+    public void setIsLoading(boolean show) {
         if (show) {
+            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             mProgressLayout.setVisibility(View.VISIBLE);
         } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             mProgressLayout.setVisibility(View.GONE);
         }
     }

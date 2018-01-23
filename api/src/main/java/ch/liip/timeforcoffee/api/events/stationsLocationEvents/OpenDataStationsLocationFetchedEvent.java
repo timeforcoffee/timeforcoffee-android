@@ -1,16 +1,14 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.stationsLocationEvents;
 
 import java.util.List;
 
 import ch.liip.timeforcoffee.opendata.Location;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
-public class OpenDataLocationsFetchedEvent {
+public class OpenDataStationsLocationFetchedEvent {
+
     private List<Location> locations;
 
-    public OpenDataLocationsFetchedEvent(List<Location> locations) {
+    public OpenDataStationsLocationFetchedEvent(List<Location> locations) {
         this.locations = locations;
     }
 
