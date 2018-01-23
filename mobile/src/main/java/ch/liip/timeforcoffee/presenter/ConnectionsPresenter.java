@@ -17,6 +17,8 @@ import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.ConnectionsFetchedEvent;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsErrorEvent;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchStationsSearchOneEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.StationsSearchOneFetchedEvent;
 import ch.liip.timeforcoffee.api.models.Connection;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
@@ -67,7 +69,19 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        if (mDeparture.getDestinationId() == 0) {
+            mEventBus.post(new FetchStationsSearchOneEvent(mDeparture.getDestinationName()));
+        } else {
+            mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        }
+    }
+
+    @Subscribe
+    public void onStationsFetchedEvent(StationsSearchOneFetchedEvent event) {
+        int destinationId = event.getStation().getId();
+        mDeparture.setDestinationId(destinationId);
+
+        updateConnections();
     }
 
     @Subscribe

@@ -17,6 +17,8 @@ import ch.liip.timeforcoffee.api.events.departuresEvents.ZvvDeparturesFetchedEve
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchErrorEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchZvvStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.ZvvStationsSearchFetchedEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchZvvStationsSearchOneEvent;
+import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.ZvvStationsSearchOneFetchedEvent;
 import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Station;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
@@ -53,8 +55,12 @@ public class ZvvApiService {
         fetchZvvStations(event.getSearchQuery());
     }
 
-    public void fetchZvvConnections(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
+    @Subscribe
+    public void onEvent(FetchZvvStationsSearchOneEvent event) {
+        fetchZvvStation(event.getSearchQuery());
+    }
 
+    public void fetchZvvConnections(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
         zvvService.getConnections(fromStationId, toStationId, startDateStr, endDateStr)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -77,7 +83,6 @@ public class ZvvApiService {
     }
 
     public void fetchZvvDepartures(String stationId) {
-
         zvvService.getDepartures(stationId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -100,9 +105,8 @@ public class ZvvApiService {
     }
 
     public void fetchZvvStations(String searchQuery) {
-
         if (searchQuery.isEmpty()) { //search query is empty =>  return an empty station list
-            List<Station> stations = new ArrayList<Station>();
+            List<Station> stations = new ArrayList<>();
             eventBus.post(new ZvvStationsSearchFetchedEvent(stations));
             return;
         }
@@ -124,6 +128,33 @@ public class ZvvApiService {
                     @Override
                     public void onNext(StationsResponse stationsResponse) {
                         eventBus.post(new ZvvStationsSearchFetchedEvent(stationsResponse.getStations()));
+                    }
+                });
+    }
+
+    public void fetchZvvStation(String searchQuery) {
+        if (searchQuery.isEmpty()) { //search query is empty =>  return null
+            eventBus.post(new ZvvStationsSearchOneFetchedEvent(null));
+            return;
+        }
+
+        zvvService.getStations(searchQuery)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<StationsResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        eventBus.post(new FetchStationsSearchErrorEvent(e))   ;
+                    }
+
+                    @Override
+                    public void onNext(StationsResponse stationsResponse) {
+                        eventBus.post(new ZvvStationsSearchOneFetchedEvent(stationsResponse.getStations().get(0)));
                     }
                 });
     }

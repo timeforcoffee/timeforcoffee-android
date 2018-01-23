@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.stationsSearchEvents;
 
 public class FetchStationsSearchEvent {
 
