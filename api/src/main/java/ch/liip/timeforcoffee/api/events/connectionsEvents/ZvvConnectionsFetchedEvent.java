@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.connectionsEvents;
 
 import java.util.List;
 
@@ -15,5 +15,4 @@ public class ZvvConnectionsFetchedEvent {
     public List<CheckPoint> getCheckPoints() {
         return checkPoints;
     }
-
 }

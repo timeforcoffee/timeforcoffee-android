@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.api;
+package ch.liip.timeforcoffee.api.models;
 
 import android.location.Location;
 import android.os.Build;
@@ -8,6 +8,8 @@ import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import ch.liip.timeforcoffee.api.WalkingDistanceCache;
 
 public class Station implements RoutingListener {
 

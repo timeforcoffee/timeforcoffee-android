@@ -1,8 +1,8 @@
-package ch.liip.timeforcoffee.api.events;
+package ch.liip.timeforcoffee.api.events.connectionsEvents;
 
 import java.util.List;
 
-import ch.liip.timeforcoffee.api.Connection;
+import ch.liip.timeforcoffee.api.models.Connection;
 
 public class ConnectionsFetchedEvent {
 

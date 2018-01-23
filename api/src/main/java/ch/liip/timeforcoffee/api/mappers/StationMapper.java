@@ -3,7 +3,7 @@ package ch.liip.timeforcoffee.api.mappers;
 import android.location.Location;
 
 import android.support.annotation.Nullable;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Station;
 
 public class StationMapper {
 

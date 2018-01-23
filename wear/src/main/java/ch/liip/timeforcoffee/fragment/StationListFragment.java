@@ -12,7 +12,7 @@ import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.activity.WearActivity;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;
