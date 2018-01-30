@@ -14,15 +14,10 @@
         sothree:umanoShadowHeight="0dp"
         sothree:umanoDragView="@+id/overlay">
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/connection_list"
-            android:name="ch.liip.timeforcoffee.fragment.ConnectionListFragment"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="ch.liip.timeforcoffee.ConnectionListActivity"
-            tools:layout="@android:layout/list_content"
-            android:gravity="center|top"/>
+            android:layout_height="match_parent"/>
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"

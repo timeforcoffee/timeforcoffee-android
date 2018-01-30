@@ -148,11 +148,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 if (departure.getColorBg() != Color.WHITE) {
                     textView.setBackgroundColor(departure.getColorBg());
                 } else {
-                    if (departure.getType() != null && departure.getType().equals("train")) {
-                        textView.setBackgroundColor(Color.WHITE);
-                    } else {
-                        textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
-                    }
+                    textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                 }
             }
         } catch (Exception ex) {

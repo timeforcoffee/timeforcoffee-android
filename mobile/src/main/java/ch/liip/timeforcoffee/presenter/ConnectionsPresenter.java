@@ -6,7 +6,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
-import java.util.Timer;
 
 import javax.inject.Inject;
 
@@ -29,8 +28,6 @@ import ch.liip.timeforcoffee.widget.SnackBars;
 public class ConnectionsPresenter implements Presenter {
 
     private ConnectionsActivity mActivity;
-    private Timer mAutoUpdateTimer;
-
     private Station mStation;
     private Departure mDeparture;
     private List<Connection> mConnections;
@@ -56,12 +53,29 @@ public class ConnectionsPresenter implements Presenter {
         mEventBus.register(this);
     }
 
-    public void onResumeView() {
-        updateConnections();
-    }
+    public void onResumeView() { }
 
     public void onRefreshView() {
         updateConnections();
+    }
+
+    public void onPauseView() { }
+
+    public void onDestroy() {
+        mEventBus.unregister(this);
+        mActivity = null;
+    }
+
+    public Station getStation() {
+        return mStation;
+    }
+
+    public Departure getDeparture() {
+        return mDeparture;
+    }
+
+    public boolean getIsFavorite() {
+        return mDeparture.getIsFavorite();
     }
 
     public void updateConnections() {
@@ -73,6 +87,18 @@ public class ConnectionsPresenter implements Presenter {
             mEventBus.post(new FetchStationsSearchOneEvent(mDeparture.getDestinationName()));
         } else {
             mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        }
+    }
+
+    public void toggleFavorite() {
+        if (getIsFavorite()) {
+            //Remove from fav
+            mDeparture.setIsFavorite(false);
+            favoritesDataSource.deleteFavoriteLine(mActivity, mDeparture);
+        } else {
+            //Add to fav
+            mDeparture.setIsFavorite(true);
+            favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);
         }
     }
 
@@ -101,41 +127,5 @@ public class ConnectionsPresenter implements Presenter {
                 updateConnections();
             }
         });
-    }
-
-    public void onPauseView() {
-        if (mAutoUpdateTimer != null) {
-            mAutoUpdateTimer.cancel();
-            mAutoUpdateTimer = null;
-        }
-    }
-
-    public void onDestroy() {
-        mEventBus.unregister(this);
-        mActivity = null;
-    }
-
-    public Station getStation() {
-        return mStation;
-    }
-
-    public Departure getDeparture() {
-        return mDeparture;
-    }
-
-    public boolean getIsFavorite() {
-        return mDeparture.getIsFavorite();
-    }
-
-    public void toggleFavorite() {
-        if (getIsFavorite()) {
-            //Remove from fav
-            mDeparture.setIsFavorite(false);
-            favoritesDataSource.deleteFavoriteLine(mActivity, mDeparture);
-        } else {
-            //Add to fav
-            mDeparture.setIsFavorite(true);
-            favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);
-        }
     }
 }
