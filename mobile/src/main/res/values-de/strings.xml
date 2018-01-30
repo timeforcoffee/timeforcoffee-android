@@ -7,6 +7,7 @@
     <string name="action_search">Suche</string>
     <string name="action_about">Über</string>
     <string name="action_favorite">Zu Favoriten hinzufügen</string>
+    <string name="title_loading_position">Wir versuchen sie zu lokalisieren...</string>
     <string name="title_no_stations">Keine Stationen gefunden</string>
     <string name="title_enter_search">"Geben Sie Ihre Suche ein"</string>
     <string name="title_no_favorites">Keine Favoriten</string>

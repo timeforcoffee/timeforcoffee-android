@@ -11,6 +11,7 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,6 @@ import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
 import ch.liip.timeforcoffee.api.StationService;
-import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchOpenDataStationsLocationEvent;
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchStationsLocationErrorEvent;
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchStationsLocationEvent;
 import ch.liip.timeforcoffee.api.events.stationsLocationEvents.StationsLocationFetchedEvent;
@@ -75,35 +75,34 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         permissionsChecker = new PermissionsChecker(activity);
     }
 
-    public void onResumeView() {
-        if (Build.FINGERPRINT.contains("generic")) { //emulator
-            updateStationsWithLastPosition();
-        } else if (!mIsCapturingLocation) {
-            startLocation();
-        }
-    }
+    @Override
+    public void onResumeView() { }
 
+    @Override
     public void onPauseView() {
         if (mIsCapturingLocation) {
             stopLocation();
         }
     }
 
+    @Override
     public void onRefreshView() {
+        // Empty list before reloading
+        mActivity.updateStations(new ArrayList<Station>());
+
         updateStationsWithLastPosition();
     }
 
-    public void updateStationsWithLastPosition() {
-        mActivity.setIsLoading(true);
+    public void onDestroy() {
+        mActivity = null;
+        mEventBus.unregister(this);
+    }
 
+    public void updateStations() {
         if (Build.FINGERPRINT.contains("generic")) { //emulator
-            mLastLocation = new Location("emulator");
-            mLastLocation.setLatitude(46.8017);
-            mLastLocation.setLongitude(7.1456);
-        }
-
-        if (mLastLocation != null) {
-            updateStations(mLastLocation);
+            updateStationsWithLastPosition();
+        } else if (!mIsCapturingLocation) {
+            startLocation();
         }
     }
 
@@ -122,9 +121,23 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         mActivity.updateFavorites(mFavoriteStations);
     }
 
+    private void updateStationsWithLastPosition() {
+        mActivity.setIsPositionLoading(true);
+
+        if (Build.FINGERPRINT.contains("generic")) { //emulator
+            mLastLocation = new Location("emulator");
+            mLastLocation.setLatitude(46.8017);
+            mLastLocation.setLongitude(7.1456);
+        }
+
+        if (mLastLocation != null) {
+            updateStations(mLastLocation);
+        }
+    }
+
     private void startLocation() {
         if (!permissionsChecker.LacksPermission(locationPermission)) {
-            mActivity.setIsLoading(true);
+            mActivity.setIsPositionLoading(true);
 
             if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
                 SnackBars.showLocalisationServiceOff(mActivity, new View.OnClickListener() {
@@ -134,13 +147,12 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
                     }
                 });
 
-                mActivity.setIsLoading(false);
+                mActivity.setIsPositionLoading(false);
                 return;
             }
 
             mIsCapturingLocation = true;
 
-            // if this still doesn't work, use this: https://stackoverflow.com/questions/42412729/android-studio-get-current-location-with-googleapiclient
             LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
             SmartLocation.with(mActivity).location()
                     .config(locationParams)
@@ -152,7 +164,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
         if (requestCode == PERMISSION_REQUEST_CODE) {
             for (int i = 0; i < permissions.length; i++) {
                 String permission = permissions[i];
@@ -165,7 +176,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
                     startLocation();
                 } else {
-                    mActivity.setIsLoading(false); // Also HANDLE in PermissionChecker.java
+                    mActivity.setIsPositionLoading(false);
                     SnackBars.showLocalisationSettings(mActivity);
                 }
             }
@@ -175,14 +186,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     private void stopLocation() {
         mIsCapturingLocation = false;
         SmartLocation.with(mActivity).location().stop();
-    }
-
-    @Override
-    public void onLocationUpdated(Location location) {
-        Log.i(LOG_TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
-        mLastLocation = location;
-
-        updateStations(location);
     }
 
     private void updateStations(Location location) {
@@ -196,29 +199,30 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
     }
 
+    @Override
+    public void onLocationUpdated(Location location) {
+        Log.i(LOG_TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
+        mLastLocation = location;
+
+        updateStations(location);
+    }
+
     @Subscribe
     public void onStationsFetched(StationsLocationFetchedEvent event) {
-        mActivity.setIsLoading(false);
+        mActivity.setIsPositionLoading(false);
 
         mStations = event.getStations();
         mActivity.updateStations(mStations);
-
-        updateFavorites();
     }
 
     @Subscribe
     public void onFetchErrorEvent(FetchStationsLocationErrorEvent event) {
-        mActivity.setIsLoading(false);
+        mActivity.setIsPositionLoading(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updateStationsWithLastPosition();
             }
         });
-    }
-
-    public void onDestroy() {
-        mActivity = null;
-        mEventBus.unregister(this);
     }
 }

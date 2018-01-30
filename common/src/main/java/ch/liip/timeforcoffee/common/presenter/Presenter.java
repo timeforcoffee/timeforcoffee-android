@@ -1,9 +1,7 @@
 package ch.liip.timeforcoffee.common.presenter;
 
-/**
- * Created by nicolas on 23/12/16.
- */
 public interface Presenter {
+
     void onResumeView();
 
     void onRefreshView();
@@ -11,4 +9,5 @@ public interface Presenter {
     void onPauseView();
 
     void onDestroy();
+
 }
