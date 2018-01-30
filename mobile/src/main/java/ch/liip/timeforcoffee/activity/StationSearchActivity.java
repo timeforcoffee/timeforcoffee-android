@@ -46,7 +46,7 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
 
         mPresenter = new StationSearchPresenter(this, searchQuery);
 
-        // Set custom view on action bar.
+        // Action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setCustomView(R.layout.search_bar);
@@ -76,45 +76,6 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
                 .commit();
     }
 
-    /**
-     * Responsible for handling changes in search edit text.
-     */
-    private class SearchWatcher implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence c, int i, int i2, int i3) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence c, int i, int i2, int i3) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-            //Stop current handler since we have a new text entered
-            if (mSearchHandler != null && mSearchRunnable != null) {
-                //Log.i(TAG, "Stop current search");
-                mSearchHandler.removeCallbacks(mSearchRunnable);
-                mSearchHandler = null;
-                mSearchRunnable = null;
-            }
-
-            //Search afer 1 sec. This allow to stop the search is user is still entering
-            //new letters
-            mSearchRunnable = new Runnable() {
-                public void run() {
-                    mPresenter.setSearchQuery(mSearchEditText.getText().toString());
-                    mPresenter.search();
-                }
-            };
-            mSearchHandler = new android.os.Handler();
-            mSearchHandler.postDelayed(mSearchRunnable, 1000);
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -139,9 +100,41 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
     }
 
     @Override
+    public void onRefresh() {
+        mPresenter.onRefreshView();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStationSelected(Station station) {
+        selectStation(station);
+    }
+
+    private void selectStation(Station station) {
+        Intent detailIntent = new Intent(this, DeparturesActivity.class);
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
+        detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
+        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+
+        startActivity(detailIntent);
     }
 
     public void updateStations(List<Station> stations) {
@@ -156,35 +149,38 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         }
     }
 
-    @Override
-    public void onStationSelected(Station station) {
-        selectStation(station);
-    }
+    /**
+     * Responsible for handling changes in search edit text.
+     */
+    private class SearchWatcher implements TextWatcher {
 
-    @Override
-    public void onRefresh() {
-        mPresenter.onRefreshView();
-    }
+        @Override
+        public void beforeTextChanged(CharSequence c, int i, int i2, int i3) { }
 
-    private void selectStation(Station station) {
-        Intent detailIntent = new Intent(this, DeparturesActivity.class);
-        detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
-        detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
-        detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
-        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
-        detailIntent.putExtra(DeparturesActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+        @Override
+        public void onTextChanged(CharSequence c, int i, int i2, int i3) { }
 
-        startActivity(detailIntent);
-    }
+        @Override
+        public void afterTextChanged(Editable editable) {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
+            //Stop current handler since we have a new text entered
+            if (mSearchHandler != null && mSearchRunnable != null) {
+                //Log.i(TAG, "Stop current search");
+                mSearchHandler.removeCallbacks(mSearchRunnable);
+                mSearchHandler = null;
+                mSearchRunnable = null;
+            }
+
+            //Search afer 1 sec. This allow to stop the search is user is still entering
+            //new letters
+            mSearchRunnable = new Runnable() {
+                public void run() {
+                    mPresenter.setSearchQuery(mSearchEditText.getText().toString());
+                    mPresenter.search();
+                }
+            };
+            mSearchHandler = new android.os.Handler();
+            mSearchHandler.postDelayed(mSearchRunnable, 1000);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
