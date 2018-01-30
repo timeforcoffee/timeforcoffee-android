@@ -82,7 +82,7 @@ public class DeparturesPresenter implements Presenter {
     }
 
     // TODO maybe handle this
-    public void initDepartureUpdate() {
+    /*public void initDepartureUpdate() {
         //timer to refresh departures each 60 secs
         mAutoUpdateTimer = new Timer();
         mAutoUpdateTimer.schedule(new TimerTask() {
@@ -95,7 +95,7 @@ public class DeparturesPresenter implements Presenter {
                 });
             }
         }, 0, UPDATE_FREQUENCY);
-    }
+    }*/
 
     public void updateDepartures() {
         if (mDepartures == null || mDepartures.size() == 0) {

@@ -215,7 +215,6 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         detailIntent.putExtra(ConnectionsActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
         detailIntent.putExtra(ConnectionsActivity.ARG_STATION_IS_FAVORITE, station.getIsFavorite());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_NAME, departure.getName());
-        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_TYPE, departure.getType());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DESTINATION_ID, departure.getDestinationId());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DESTINATION_NAME, departure.getDestinationName());
