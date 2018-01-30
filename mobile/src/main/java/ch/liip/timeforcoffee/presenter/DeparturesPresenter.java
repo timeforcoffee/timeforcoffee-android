@@ -28,12 +28,12 @@ import ch.liip.timeforcoffee.widget.SnackBars;
 public class DeparturesPresenter implements Presenter {
 
     private DeparturesActivity mActivity;
-    private Timer mAutoUpdateTimer;
-    public static final int UPDATE_FREQUENCY = 60000;
-
     private Station mStation;
     private List<Departure> mDepartures;
     private List<Departure> mFavoriteDepartures;
+    private Timer mAutoUpdateTimer;
+
+    public static final int UPDATE_FREQUENCY = 60000;
 
     @Inject
     EventBus mEventBus;
@@ -55,7 +55,34 @@ public class DeparturesPresenter implements Presenter {
         mEventBus.register(this);
     }
 
-    public void onResumeView() {
+    public void onResumeView() { }
+
+    public void onRefreshView() {
+        updateDepartures();
+    }
+
+    public void onPauseView() {
+        if (mAutoUpdateTimer != null) {
+            mAutoUpdateTimer.cancel();
+            mAutoUpdateTimer = null;
+        }
+    }
+
+    public void onDestroy() {
+        mEventBus.unregister(this);
+        mActivity = null;
+    }
+
+    public Station getStation() {
+        return mStation;
+    }
+
+    public boolean getIsFavorite() {
+        return mStation.getIsFavorite();
+    }
+
+    // TODO maybe handle this
+    public void initDepartureUpdate() {
         //timer to refresh departures each 60 secs
         mAutoUpdateTimer = new Timer();
         mAutoUpdateTimer.schedule(new TimerTask() {
@@ -68,11 +95,6 @@ public class DeparturesPresenter implements Presenter {
                 });
             }
         }, 0, UPDATE_FREQUENCY);
-
-    }
-
-    public void onRefreshView() {
-        updateDepartures();
     }
 
     public void updateDepartures() {
@@ -107,6 +129,18 @@ public class DeparturesPresenter implements Presenter {
         mActivity.updateFavorites(mFavoriteDepartures);
     }
 
+    public void toggleFavorite() {
+        if (getIsFavorite()) {
+            //Remove from fav
+            mStation.setIsFavorite(false);
+            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
+        } else {
+            //Add to fav
+            mStation.setIsFavorite(true);
+            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
+        }
+    }
+
     @Subscribe
     public void onDeparturesFetchedEvent(DeparturesFetchedEvent event) {
         mActivity.showProgressLayout(false);
@@ -126,37 +160,5 @@ public class DeparturesPresenter implements Presenter {
                 updateDepartures();
             }
         });
-    }
-
-    public void onPauseView() {
-        if (mAutoUpdateTimer != null) {
-            mAutoUpdateTimer.cancel();
-            mAutoUpdateTimer = null;
-        }
-    }
-
-    public void onDestroy() {
-        mEventBus.unregister(this);
-        mActivity = null;
-    }
-
-    public Station getStation() {
-        return mStation;
-    }
-
-    public boolean getIsFavorite() {
-        return mStation.getIsFavorite();
-    }
-
-    public void toggleFavorite() {
-        if (getIsFavorite()) {
-            //Remove from fav
-            mStation.setIsFavorite(false);
-            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
-        } else {
-            //Add to fav
-            mStation.setIsFavorite(true);
-            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
-        }
     }
 }

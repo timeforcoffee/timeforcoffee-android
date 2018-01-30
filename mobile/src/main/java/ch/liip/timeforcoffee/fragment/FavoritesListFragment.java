@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
@@ -104,6 +105,9 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         super.onResume();
         if(mActivity instanceof MainActivity) {
             ((MainActivity)mActivity).performFavoritesUpdate();
+        }
+        else if(mActivity instanceof DeparturesActivity) {
+            ((DeparturesActivity)mActivity).performFavoritesUpdate();
         }
     }
 
