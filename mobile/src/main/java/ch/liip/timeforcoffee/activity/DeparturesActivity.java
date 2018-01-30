@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,8 +29,18 @@ import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
 
-public class DeparturesActivity extends AppCompatActivity implements
-        SlidingUpPanelLayout.PanelSlideListener, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
+public class DeparturesActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
+
+    private SlidingUpPanelLayout mSlidingLayout;
+    private StationMapFragment mStationMapFragment;
+    private RelativeLayout mProgressLayout;
+
+    private DeparturesPresenter mPresenter;
+    private DepartureListFragment mDepartureListFragment;
+    private FavoritesListFragment mFavoriteListFragment;
+
+    public static final String DEPARTURE_LIST_FRAGMENT_KEY = "departure_list";
+    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
 
     public static final String ARG_STATION_ID = "station_id";
     public static final String ARG__STATION_NAME = "station_name";
@@ -38,79 +49,73 @@ public class DeparturesActivity extends AppCompatActivity implements
     public static final String ARG_STATION_LATITUDE = "station_latitude";
     public static final String ARG_IS_FAVORITE = "station_is_favorite";
 
-    private SlidingUpPanelLayout mSlidingLayout;
-    private StationMapFragment mStationMapFragment;
-    private TabsAdapter mPagerAdapter;
-    private ViewPager mViewPager;
-    private RelativeLayout mProgressLayout;
-
-    private DeparturesPresenter mPresenter;
-    private DepartureListFragment mDepartureListFragment;
-    private FavoritesListFragment mFavoriteListFragment;
-
-    public static final String ARG_FROM_SEARCH = "from_search";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Check whether we're recreating a previously destroyed instance
-        if (savedInstanceState != null) {
-            //we don't want to restore this activity => go back to default activity
-            navigateUpTo(new Intent(this, MainActivity.class));
-        }
-
         setContentView(R.layout.activity_departure_list);
 
-        mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
-        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
-        mSlidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        mSlidingLayout.setPanelSlideListener(this);
-
-        // Show the Up button in the action bar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        // Presenter
         int id = getIntent().getIntExtra(ARG_STATION_ID, 0);
         String name = getIntent().getStringExtra(ARG__STATION_NAME);
         float distance = getIntent().getFloatExtra(ARG_STATION_DISTANCE, 0.0f);
+        boolean isFavorite = getIntent().getBooleanExtra(ARG_IS_FAVORITE, false);
 
         Location loc = new Location("reverseGeocoded");
         loc.setLatitude(getIntent().getDoubleExtra(ARG_STATION_LATITUDE, 0.0));
         loc.setLongitude(getIntent().getDoubleExtra(ARG_STATION_LONGITUDE, 0.0));
 
-        boolean isFavorite = getIntent().getBooleanExtra(ARG_IS_FAVORITE, false);
-
         Station station = new Station(id, name, distance, loc, false);
         station.setIsFavorite(isFavorite);
+
+        mPresenter = new DeparturesPresenter(this, station);
+
+        // Action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
         mStationMapFragment.setup(station);
 
-        // Initialize the ViewPager and set an adapter
+        mProgressLayout = findViewById(R.id.progressLayout);
+        mSlidingLayout = findViewById(R.id.sliding_layout);
+        mSlidingLayout.setPanelSlideListener(this);
+
+        // Fragments
         Bundle favoritesFragmentArgs = new Bundle();
         favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_DEPARTURES);
 
-        mDepartureListFragment = (DepartureListFragment) Fragment.instantiate(this, DepartureListFragment.class.getName());
-        mFavoriteListFragment = (FavoritesListFragment)  Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        if (savedInstanceState == null) {
+            mDepartureListFragment = (DepartureListFragment) Fragment.instantiate(this, DepartureListFragment.class.getName());
+            mFavoriteListFragment = (FavoritesListFragment)  Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
+        } else{
+            mDepartureListFragment = (DepartureListFragment) getSupportFragmentManager().getFragment(savedInstanceState, DEPARTURE_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+        }
 
         List fragments = new Vector();
         fragments.add(mDepartureListFragment);
         fragments.add(mFavoriteListFragment);
 
-        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_departures, R.string.tab_favorites }, fragments);
-        mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
-        mViewPager.setAdapter(mPagerAdapter);
+        // Initialize the ViewPager and bind to tabs
+        TabsAdapter pagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_departures, R.string.tab_favorites }, fragments);
+        ViewPager viewPager = super.findViewById(R.id.viewpager);
+        viewPager.setAdapter(pagerAdapter);
 
-        // Bind the tabs to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        tabs.setViewPager(mViewPager);
-
+        PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
+        tabs.setViewPager(viewPager);
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 mPresenter.updateFavorites();
             }
         });
+    }
 
-        mPresenter = new DeparturesPresenter(this, station);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, DEPARTURE_LIST_FRAGMENT_KEY, mDepartureListFragment);
+        getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
     }
 
     @Override
@@ -126,14 +131,14 @@ public class DeparturesActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
+    public void onRefresh() {
+        mPresenter.onRefreshView();
     }
 
     @Override
-    public void onRefresh() {
-        mPresenter.onRefreshView();
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
     }
 
     @Override
@@ -169,13 +174,22 @@ public class DeparturesActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateDepartures(List<Departure> departures) {
-        mDepartureListFragment.setDepartures(departures);
+    @Override
+    public void onPanelSlide(View panel, float slideOffset) {
+        mStationMapFragment.updateGradientOverlay(1 - slideOffset, mSlidingLayout.getLayoutParams().height);
     }
 
-    public void updateFavorites(List<Departure> favoriteDepartures) {
-        mFavoriteListFragment.setDepartures(favoriteDepartures);
-    }
+    @Override
+    public void onPanelExpanded(View panel) { }
+
+    @Override
+    public void onPanelCollapsed(View panel) { }
+
+    @Override
+    public void onPanelAnchored(View panel) { }
+
+    @Override
+    public void onPanelHidden(View panel) { }
 
     @Override
     public void onDepartureSelected(Departure departure) {
@@ -216,22 +230,21 @@ public class DeparturesActivity extends AppCompatActivity implements
         startActivity(detailIntent);
     }
 
-    @Override
-    public void onPanelSlide(View panel, float slideOffset) {
-        mStationMapFragment.updateGradientOverlay(1 - slideOffset, mSlidingLayout.getLayoutParams().height);
+    public void performDepartureUpdate() {
+        mPresenter.updateDepartures();
     }
 
-    @Override
-    public void onPanelExpanded(View panel) { }
+    public void performFavoritesUpdate() {
+        mPresenter.updateFavorites();
+    }
 
-    @Override
-    public void onPanelCollapsed(View panel) { }
+    public void updateDepartures(List<Departure> departures) {
+        mDepartureListFragment.setDepartures(departures);
+    }
 
-    @Override
-    public void onPanelAnchored(View panel) { }
-
-    @Override
-    public void onPanelHidden(View panel) { }
+    public void updateFavorites(List<Departure> favoriteDepartures) {
+        mFavoriteListFragment.setDepartures(favoriteDepartures);
+    }
 
     public void displayToastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

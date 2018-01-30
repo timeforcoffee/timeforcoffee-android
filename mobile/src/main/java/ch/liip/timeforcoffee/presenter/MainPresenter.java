@@ -213,6 +213,8 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
         mStations = event.getStations();
         mActivity.updateStations(mStations);
+
+        updateFavorites();
     }
 
     @Subscribe
