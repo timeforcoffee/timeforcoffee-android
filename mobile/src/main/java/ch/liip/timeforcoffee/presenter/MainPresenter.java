@@ -139,9 +139,13 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
             }
 
             mIsCapturingLocation = true;
-            SmartLocation smartLocation = new SmartLocation.Builder(mActivity).logging(true).build();
+
+            // if this still doesn't work, use this: https://stackoverflow.com/questions/42412729/android-studio-get-current-location-with-googleapiclient
             LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
-            smartLocation.location().config(locationParams).start(this);
+            SmartLocation.with(mActivity).location()
+                    .config(locationParams)
+                    .oneFix()
+                    .start(this);
         } else {
             permissionsChecker.RequestPermission(mActivity, locationPermission, PERMISSION_REQUEST_CODE, mActivity.getResources().getString(R.string.permission_message));
         }
