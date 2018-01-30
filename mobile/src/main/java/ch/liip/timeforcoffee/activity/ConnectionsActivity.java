@@ -1,8 +1,9 @@
 package ch.liip.timeforcoffee.activity;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,15 @@ import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
 
 public class ConnectionsActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, ConnectionListFragment.Callbacks {
 
+    private SlidingUpPanelLayout mSlidingLayout;
+    private StationMapFragment mStationMapFragment;
+    private RelativeLayout mProgressLayout;
+
+    private ConnectionsPresenter mPresenter;
+    private ConnectionListFragment mConnectionListFragment;
+
+    public static final String CONNECTION_LIST_FRAGMENT_KEY = "connection_list";
+
     public static final String ARG_STATION_ID = "station_id";
     public static final String ARG_STATION_NAME = "station_name";
     public static final String ARG_STATION_DISTANCE = "station_distance";
@@ -32,7 +42,6 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public static final String ARG_STATION_LATITUDE = "station_latitude";
     public static final String ARG_STATION_IS_FAVORITE = "station_is_favorite";
     public static final String ARG_DEPARTURE_NAME = "departure_name";
-    public static final String ARG_DEPARTURE_TYPE = "departure_type";
     public static final String ARG_DEPARTURE_ACCESSIBLE = "departure_accessible";
     public static final String ARG_DEPARTURE_DESTINATION_ID = "departure_destination_id";
     public static final String ARG_DEPARTURE_DESTINATION_NAME = "departure_destination_name";
@@ -44,34 +53,12 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public static final String ARG_DEPARTURE_COLOR_BG = "departure_color_bg";
     public static final String ARG_DEPARTURE_IS_FAVORITE = "departure_is_favorite";
 
-    private SlidingUpPanelLayout mSlidingLayout;
-    private StationMapFragment mStationMapFragment;
-    private RelativeLayout mProgressLayout;
-
-    private ConnectionsPresenter mPresenter;
-    private ConnectionListFragment mConnectionListFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Check whether we're recreating a previously destroyed instance
-        if (savedInstanceState != null) {
-            //we don't want to restore this activity => go back to default activity
-            navigateUpTo(new Intent(this, MainActivity.class));
-        }
-
         setContentView(R.layout.activity_connection_list);
 
-        mConnectionListFragment = (ConnectionListFragment) getSupportFragmentManager().findFragmentById(R.id.connection_list);
-        mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
-        mProgressLayout = (RelativeLayout) findViewById(R.id.progressLayout);
-        mSlidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        mSlidingLayout.setPanelSlideListener(this);
-
-        // Show the Up button in the action bar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        // Presenter
         int stationId = getIntent().getIntExtra(ARG_STATION_ID, 0);
         String stationName = getIntent().getStringExtra(ARG_STATION_NAME);
         float stationDistance = getIntent().getFloatExtra(ARG_STATION_DISTANCE, 0.0f);
@@ -82,7 +69,6 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         stationLoc.setLongitude(getIntent().getDoubleExtra(ARG_STATION_LONGITUDE, 0.0));
 
         String departureName = getIntent().getStringExtra(ARG_DEPARTURE_NAME);
-        String departureType = getIntent().getStringExtra(ARG_DEPARTURE_TYPE);
         boolean departureAccessible = getIntent().getBooleanExtra(ARG_DEPARTURE_ACCESSIBLE, true);
         int departureDestinationId = getIntent().getIntExtra(ARG_DEPARTURE_DESTINATION_ID, 0);
         String departureDestinationName = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION_NAME);
@@ -98,8 +84,36 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         Departure departure = new Departure(departureName, departureDestinationId, departureDestinationName, departurePlatform, departureColorFg, departureColorBg,
                 departureScheduled, departureRealtime, arrivalScheduled, departureAccessible, departureIsFavorite);
 
-        mStationMapFragment.setup(station, departure, getResources().getString(R.string.connection_from));
         mPresenter = new ConnectionsPresenter(this, station, departure);
+
+        // Action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
+        mStationMapFragment.setup(station, departure, getResources().getString(R.string.connection_from));
+
+        mProgressLayout = findViewById(R.id.progressLayout);
+        mSlidingLayout = findViewById(R.id.sliding_layout);
+        mSlidingLayout.setPanelSlideListener(this);
+
+        // Fragments
+        if (savedInstanceState == null) {
+            mConnectionListFragment = (ConnectionListFragment) Fragment.instantiate(this, ConnectionListFragment.class.getName());
+        } else{
+            mConnectionListFragment = (ConnectionListFragment) getSupportFragmentManager().getFragment(savedInstanceState, CONNECTION_LIST_FRAGMENT_KEY);
+        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_frame, mConnectionListFragment)
+                .commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, CONNECTION_LIST_FRAGMENT_KEY, mConnectionListFragment);
     }
 
     @Override
@@ -158,13 +172,6 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateConnections(List<Connection> connections) {
-        mConnectionListFragment.setConnections(connections);
-    }
-
-    @Override
-    public void onConnectionSelected(Connection connection) { }
-
     @Override
     public void onPanelSlide(View panel, float slideOffset) {
         mStationMapFragment.updateGradientOverlay(1 - slideOffset, mSlidingLayout.getLayoutParams().height);
@@ -181,6 +188,17 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
 
     @Override
     public void onPanelHidden(View panel) { }
+
+    @Override
+    public void onConnectionSelected(Connection connection) { }
+
+    public void performConnectionsUpdate() {
+        mPresenter.updateConnections();
+    }
+
+    public void updateConnections(List<Connection> connections) {
+        mConnectionListFragment.setConnections(connections);
+    }
 
     public void showProgressLayout(boolean show) {
         if (show) {

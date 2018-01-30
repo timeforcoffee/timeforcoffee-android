@@ -72,7 +72,7 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content, mStationListFragment)
+                .replace(R.id.content_frame, mStationListFragment)
                 .commit();
     }
 
