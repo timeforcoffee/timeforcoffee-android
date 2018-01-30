@@ -71,7 +71,7 @@ dependencies {
     implementation 'com.sothree.slidinguppanel:library:3.0.0'
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
-    implementation('io.nlopez.smartlocation:library:3.2.7') {
+    implementation('io.nlopez.smartlocation:library:3.3.3') {
         transitive = false
     }
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
