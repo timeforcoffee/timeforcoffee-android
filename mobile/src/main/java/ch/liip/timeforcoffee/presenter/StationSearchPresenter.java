@@ -48,9 +48,7 @@ public class StationSearchPresenter implements Presenter {
     }
 
     @Override
-    public void onResumeView() {
-        search();
-    }
+    public void onResumeView() { }
 
     @Override
     public void onRefreshView() {
@@ -59,6 +57,20 @@ public class StationSearchPresenter implements Presenter {
 
     @Override
     public void onPauseView() { }
+
+    @Override
+    public void onDestroy() {
+        mActivity = null;
+        mEventBus.unregister(this);
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        mSearchQuery = searchQuery;
+    }
+
+    public String getSearchQuery() {
+        return mSearchQuery;
+    }
 
     public void search() {
         if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
@@ -89,19 +101,5 @@ public class StationSearchPresenter implements Presenter {
                 search();
             }
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        mActivity = null;
-        mEventBus.unregister(this);
-    }
-
-    public void setSearchQuery(String searchQuery) {
-        mSearchQuery = searchQuery;
-    }
-
-    public String getSearchQuery() {
-        return mSearchQuery;
     }
 }
