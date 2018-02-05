@@ -9,6 +9,7 @@
     <string name="action_search">Search</string>
     <string name="action_about">About</string>
     <string name="action_favorite">Add to favorites</string>
+    <string name="title_loading_position">We are trying to locate you...</string>
     <string name="title_no_stations">No stations found</string>
     <string name="title_enter_search">"Enter your search"</string>
     <string name="title_no_favorites">No favorites</string>
@@ -25,6 +26,8 @@
     <string name="grant">Grant</string>
     <string name="activate">Activate</string>
     <string name="location_service_off">Localisation service is deactivated</string>
+    <string name="location_service_gps_only">Localisation service is set to use only the GPS. Please use another location mode.</string>
+    <string name="location_service_gps_only_settings">Go to settings</string>
     <string name="timeForCoffee_url">http://app.timeforcoffee.ch/</string>
     <string name="timeForCoffee_twitter_name">"@time4coffeeApp"</string>
     <string name="timeForCoffee_twitter_id">"3043101919"</string>

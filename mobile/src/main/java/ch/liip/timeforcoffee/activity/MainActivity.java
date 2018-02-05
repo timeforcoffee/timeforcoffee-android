@@ -7,9 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -24,16 +21,11 @@ import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
 
-public class MainActivity extends AppCompatActivity
-        implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
+public class MainActivity extends AppCompatActivity implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
 
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
-
-    private TabsAdapter mPagerAdapter;
-    private ViewPager mViewPager;
-    private RelativeLayout mProgressLayout;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
@@ -41,16 +33,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mPresenter = new MainPresenter(this);
         setContentView(R.layout.activity_station_list);
 
-        // Initialize the ViewPager and set an adapter
+        // Presenter
+        mPresenter = new MainPresenter(this);
+
+        // Fragments
         Bundle favoritesFragmentArgs = new Bundle();
         favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
+        Bundle stationsFragmentArgs = new Bundle();
+        stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, false);
+
         if (savedInstanceState == null) {
-            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName());
+            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
             mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
         } else{
             mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
@@ -61,21 +57,13 @@ public class MainActivity extends AppCompatActivity
         fragments.add(mStationListFragment);
         fragments.add(mFavoriteListFragment);
 
-        mPagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
-        mProgressLayout = findViewById(R.id.progressLayout);
+        // Initialize the ViewPager and bind to tabs
+        TabsAdapter pagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(pagerAdapter);
 
-        mViewPager = findViewById(R.id.viewpager);
-        mViewPager.setAdapter(mPagerAdapter);
-
-        // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(mViewPager);
-        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mPresenter.updateFavorites();
-            }
-        });
+        tabs.setViewPager(viewPager);
     }
 
     @Override
@@ -91,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         mPresenter.onResumeView();
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
@@ -98,9 +87,45 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onRefresh() {
+        mPresenter.onRefreshView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                navigateUpTo(new Intent(this, MainActivity.class));
+                return true;
+            case R.id.action_search:
+                Intent stationSearchIntent = new Intent(this, StationSearchActivity.class);
+                startActivity(stationSearchIntent);
+                return true;
+            case R.id.action_about:
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -116,14 +141,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFavoriteDepartureSelected(Departure departure) { }
 
-    @Override
-    public void onRefresh() {
-        mPresenter.onRefreshView();
-    }
-
     private void selectStation(Station station) {
         Intent detailIntent = new Intent(this, DeparturesActivity.class);
-
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
         detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
@@ -134,34 +153,12 @@ public class MainActivity extends AppCompatActivity
         startActivity(detailIntent);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void performStationsUpdate() {
+        mPresenter.updateStations();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, MainActivity.class));
-            return true;
-        } else if (id == R.id.action_search) {
-            Intent intent = new Intent(this, StationSearchActivity.class);
-            intent.putExtra(StationListFragment.ARG_SEARCH_MODE, true);
-            startActivity(intent);
-        } else if (id == R.id.action_about) {
-            Intent intent = new Intent(this, AboutActivity.class);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
+    public void performFavoritesUpdate() {
+        mPresenter.updateFavorites();
     }
 
     public void updateStations(List<Station> stations) {
@@ -172,13 +169,7 @@ public class MainActivity extends AppCompatActivity
         mFavoriteListFragment.setStations(favoriteStations);
     }
 
-    public void setIsLoading(boolean show) {
-        if (show) {
-            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            mProgressLayout.setVisibility(View.VISIBLE);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            mProgressLayout.setVisibility(View.GONE);
-        }
+    public void setIsPositionLoading(boolean loading) {
+        mStationListFragment.showLoadingPositionLayout(loading);
     }
 }

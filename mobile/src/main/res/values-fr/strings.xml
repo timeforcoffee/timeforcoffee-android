@@ -7,6 +7,7 @@
     <string name="action_search">"Recherche</string>
     <string name="action_about">"A propos de cette appli"</string>
     <string name="action_favorite">"Ajouter aux favoris"</string>
+    <string name="title_loading_position">Nous essayons de vous localiser...</string>
     <string name="title_no_stations">"Pas d'arrêts trouvés"</string>
     <string name="title_enter_search">"Entrer votre recherche"</string>
     <string name="title_no_favorites">"Pas de favoris</string>
@@ -24,6 +25,8 @@
     <string name="grant">"Autoriser"</string>
     <string name="activate">"Activer"</string>
     <string name="location_service_off">"Le service de localisation est désactivé"</string>
+    <string name="location_service_gps_only">Le service de localisation est en mode GPS uniquement. Utilisez un autre mode de localisation.</string>
+    <string name="location_service_gps_only_settings">Paramètres</string>
     <string name="timeForCoffee_about_idea">Idée, website et API par</string>
     <string name="timeForCoffee_about_ios_app">app iOS par</string>
     <string name="timeForCoffee_about_android_app">app Android par</string>
