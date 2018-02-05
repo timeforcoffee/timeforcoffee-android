@@ -64,6 +64,12 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
         PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
         tabs.setViewPager(viewPager);
+        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                mPresenter.updateFavorites();
+            }
+        });
     }
 
     @Override
@@ -155,10 +161,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     public void performStationsUpdate() {
         mPresenter.updateStations();
-    }
-
-    public void performFavoritesUpdate() {
-        mPresenter.updateFavorites();
     }
 
     public void updateStations(List<Station> stations) {
