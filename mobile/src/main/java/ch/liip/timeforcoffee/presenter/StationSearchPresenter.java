@@ -60,6 +60,20 @@ public class StationSearchPresenter implements Presenter {
     @Override
     public void onPauseView() { }
 
+    @Override
+    public void onDestroy() {
+        mActivity = null;
+        mEventBus.unregister(this);
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        mSearchQuery = searchQuery;
+    }
+
+    public String getSearchQuery() {
+        return mSearchQuery;
+    }
+
     public void search() {
         if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
             mActivity.showProgressLayout(true);
@@ -89,19 +103,5 @@ public class StationSearchPresenter implements Presenter {
                 search();
             }
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        mActivity = null;
-        mEventBus.unregister(this);
-    }
-
-    public void setSearchQuery(String searchQuery) {
-        mSearchQuery = searchQuery;
-    }
-
-    public String getSearchQuery() {
-        return mSearchQuery;
     }
 }

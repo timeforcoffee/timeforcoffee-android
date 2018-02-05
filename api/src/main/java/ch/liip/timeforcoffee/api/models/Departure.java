@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 public class Departure {
 
     private String name;
-    private String type;
     private int destinationId;
     private String destinationName;
     private String platform;
@@ -42,10 +41,6 @@ public class Departure {
 
     public String getName() {
         return name;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public boolean isAccessible() {
