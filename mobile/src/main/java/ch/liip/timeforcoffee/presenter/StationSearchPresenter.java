@@ -48,7 +48,9 @@ public class StationSearchPresenter implements Presenter {
     }
 
     @Override
-    public void onResumeView() { }
+    public void onResumeView() {
+        search();
+    }
 
     @Override
     public void onRefreshView() {

@@ -133,6 +133,7 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
+        detailIntent.putExtra(DeparturesActivity.ARG_IS_FAVORITE, station.getIsFavorite());
 
         startActivity(detailIntent);
     }

@@ -132,6 +132,8 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
         if (mLastLocation != null) {
             updateStations(mLastLocation);
+        } else {
+            startLocation();
         }
     }
 
@@ -140,19 +142,16 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
             mActivity.setIsPositionLoading(true);
 
             if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
-                SnackBars.showLocalisationServiceOff(mActivity, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mActivity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                });
-
+                SnackBars.showLocalisationServiceOff(mActivity);
+                mActivity.setIsPositionLoading(false);
+                return;
+            } else if(SmartLocation.with(mActivity).location().state().isGpsAvailable() && !SmartLocation.with(mActivity).location().state().isNetworkAvailable()) {
+                SnackBars.showLocalisationServiceSetToDeviceOnly(mActivity);
                 mActivity.setIsPositionLoading(false);
                 return;
             }
 
             mIsCapturingLocation = true;
-
             LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
             SmartLocation.with(mActivity).location()
                     .config(locationParams)
