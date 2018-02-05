@@ -8,33 +8,43 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import ch.liip.timeforcoffee.R;
 
-/**
- * Created by nicolas on 06/03/16.
- */
 public class SnackBars {
 
     public static void showNetworkError(Activity activity, View.OnClickListener listener) {
-
         Snackbar snackbar = Snackbar
                 .make(activity.findViewById(R.id.content), activity.getResources().getString(R.string.network_error), Snackbar.LENGTH_INDEFINITE)
                 .setAction(activity.getResources().getString(R.string.retry), listener);
 
         snackbar.show();
-
     }
 
-
-    public static void showLocalisationServiceOff(Activity activity, View.OnClickListener listener) {
-
+    public static void showLocalisationServiceOff(final Activity activity) {
         Snackbar snackbar = Snackbar
                 .make(activity.findViewById(R.id.content), activity.getResources().getString(R.string.location_service_off), Snackbar.LENGTH_INDEFINITE)
-                .setAction(activity.getResources().getString(R.string.activate), listener);
+                .setAction(activity.getResources().getString(R.string.activate), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        activity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                });
+
+        snackbar.show();
+    }
+
+    public static void showLocalisationServiceSetToDeviceOnly(final Activity activity) {
+        Snackbar snackbar = Snackbar
+                .make(activity.findViewById(R.id.content), activity.getResources().getString(R.string.location_service_gps_only), Snackbar.LENGTH_INDEFINITE)
+                .setAction(activity.getResources().getString(R.string.location_service_gps_only_settings), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        activity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                });
 
         snackbar.show();
     }
 
     public static void showLocalisationSettings(final Activity activity) {
-
         Snackbar snackbar = Snackbar
                 .make(activity.findViewById(R.id.content), activity.getResources().getString(R.string.permission_no_location), Snackbar.LENGTH_INDEFINITE)
                 .setAction(activity.getResources().getString(R.string.grant), new View.OnClickListener() {

@@ -26,6 +26,8 @@
     <string name="grant">Erlaube</string>
     <string name="activate">Aktivieren</string>
     <string name="location_service_off">Standort Service ist ausgeschaltet</string>
+    <string name="location_service_gps_only">Das lokalisierungs service is im modus "GPS only". Bitte benutzen sie ein anderes lokalisierungs modus.</string>
+    <string name="location_service_gps_only_settings">Einstellungen</string>
     <string name="timeForCoffee_about_idea">Idee, Website und API von</string>
     <string name="timeForCoffee_about_ios_app">iOS app von</string>
     <string name="timeForCoffee_about_android_app">Android app von</string>
