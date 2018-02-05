@@ -8,7 +8,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -32,8 +31,6 @@ public class DeparturesPresenter implements Presenter {
     private List<Departure> mDepartures;
     private List<Departure> mFavoriteDepartures;
     private Timer mAutoUpdateTimer;
-
-    public static final int UPDATE_FREQUENCY = 60000;
 
     @Inject
     EventBus mEventBus;
@@ -80,22 +77,6 @@ public class DeparturesPresenter implements Presenter {
     public boolean getIsFavorite() {
         return mStation.getIsFavorite();
     }
-
-    // TODO maybe handle this
-    /*public void initDepartureUpdate() {
-        //timer to refresh departures each 60 secs
-        mAutoUpdateTimer = new Timer();
-        mAutoUpdateTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateDepartures();
-                    }
-                });
-            }
-        }, 0, UPDATE_FREQUENCY);
-    }*/
 
     public void updateDepartures() {
         if (mDepartures == null || mDepartures.size() == 0) {
