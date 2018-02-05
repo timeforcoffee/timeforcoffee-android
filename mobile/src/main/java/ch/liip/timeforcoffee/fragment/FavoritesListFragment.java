@@ -19,8 +19,6 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
-import ch.liip.timeforcoffee.activity.DeparturesActivity;
-import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
@@ -35,7 +33,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     public static final int ARG_MODE_DEPARTURES = 1;
     private int mFavoriteMode;
 
-    private FragmentActivity mActivity;
     private StationListAdapter mStationListAdapter;
     private DepartureListAdapter mDepartureListAdapter;
     private LinearLayout mNoFavoritesLayout;
@@ -72,9 +69,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         super.onCreate(savedInstanceState);
         ((TimeForCoffeeApplication) getActivity().getApplication()).inject(this);
 
-        mActivity = getActivity();
         Bundle args = getArguments();
-
         if(args == null) {
             return;
         }
@@ -98,17 +93,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mActivity instanceof MainActivity) {
-            ((MainActivity)mActivity).performFavoritesUpdate();
-        }
-        else if(mActivity instanceof DeparturesActivity) {
-            ((DeparturesActivity)mActivity).performFavoritesUpdate();
-        }
     }
 
     @Override

@@ -233,10 +233,6 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         mPresenter.updateDepartures();
     }
 
-    public void performFavoritesUpdate() {
-        mPresenter.updateFavorites();
-    }
-
     public void updateDepartures(List<Departure> departures) {
         mDepartureListFragment.setDepartures(departures);
     }
