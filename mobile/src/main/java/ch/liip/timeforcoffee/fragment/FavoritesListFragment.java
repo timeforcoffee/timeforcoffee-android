@@ -3,6 +3,7 @@ package ch.liip.timeforcoffee.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
@@ -27,17 +30,18 @@ import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 public class FavoritesListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    public static final String ARG_MODE = "fav_mode";
+    public static final String ARG_MODE = "favorite_mode";
     public static final int ARG_MODE_STATIONS = 0;
     public static final int ARG_MODE_DEPARTURES = 1;
-
     private int mFavoriteMode;
-    private Callbacks mCallbacks = sDummyCallbacks;
 
+    private FragmentActivity mActivity;
     private StationListAdapter mStationListAdapter;
     private DepartureListAdapter mDepartureListAdapter;
     private LinearLayout mNoFavoritesLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private Callbacks mCallbacks = sDummyCallbacks;
 
     @Inject
     FavoritesDataSource favoritesDataSource;
@@ -49,11 +53,10 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onFavoriteStationSelected(Station station) {
-        }
+        public void onFavoriteStationSelected(Station station) { }
+
         @Override
-        public void onFavoriteDepartureSelected(Departure departure) {
-        }
+        public void onFavoriteDepartureSelected(Departure departure) { }
     };
 
     /**
@@ -69,7 +72,9 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         super.onCreate(savedInstanceState);
         ((TimeForCoffeeApplication) getActivity().getApplication()).inject(this);
 
+        mActivity = getActivity();
         Bundle args = getArguments();
+
         if(args == null) {
             return;
         }
@@ -88,11 +93,22 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favorites_list, container, false);
 
-        mNoFavoritesLayout = (LinearLayout) rootView.findViewById(R.id.noFavoritesLayout);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mNoFavoritesLayout = rootView.findViewById(R.id.noFavoritesLayout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mActivity instanceof MainActivity) {
+            ((MainActivity)mActivity).performFavoritesUpdate();
+        }
+        else if(mActivity instanceof DeparturesActivity) {
+            ((DeparturesActivity)mActivity).performFavoritesUpdate();
+        }
     }
 
     @Override
@@ -105,6 +121,13 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         }
 
         mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        // Reset the active callbacks interface to the dummy implementation.
+        mCallbacks = sDummyCallbacks;
     }
 
     @Override
@@ -127,14 +150,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         }
     }
 
-    public void showNoFavoritesLayout(boolean show) {
-        if (show) {
-            mNoFavoritesLayout.setVisibility(View.VISIBLE);
-        } else {
-            mNoFavoritesLayout.setVisibility(View.GONE);
-        }
-    }
-
     public void setStations(List<Station> stations) {
         showNoFavoritesLayout(stations.size() == 0);
         mStationListAdapter.setStations(stations);
@@ -145,10 +160,11 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         mDepartureListAdapter.setDepartures(departures);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
+    public void showNoFavoritesLayout(boolean show) {
+        if (show) {
+            mNoFavoritesLayout.setVisibility(View.VISIBLE);
+        } else {
+            mNoFavoritesLayout.setVisibility(View.GONE);
+        }
     }
 }
