@@ -25,17 +25,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(':opendata')
-    compile project(':api')
-    compile project(':common')
+    implementation project(':opendata')
+    implementation project(':api')
+    implementation project(':common')
 
-    compile 'com.google.android.gms:play-services-location:' +project.PLAY_SERVICES_VERSION
-    compile 'com.google.android.gms:play-services-wearable:' +project.PLAY_SERVICES_VERSION
-    compile 'com.google.android.gms:play-services-maps:' +project.PLAY_SERVICES_VERSION
-    compile 'com.android.support:support-v13:' +project.SUPPORT_VERSION
-
-    compile 'com.google.android.support:wearable:' +project.SUPPORT_WEARABLE_VERSION
+    implementation 'com.google.android.gms:play-services-location:' + project.PLAY_SERVICES_VERSION
+    implementation 'com.google.android.gms:play-services-wearable:' + project.PLAY_SERVICES_VERSION
+    implementation 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
+    implementation 'com.android.support:support-v13:' + project.SUPPORT_VERSION
+    implementation 'com.google.android.support:wearable:' + project.SUPPORT_WEARABLE_VERSION
 
 }

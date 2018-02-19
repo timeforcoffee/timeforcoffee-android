@@ -22,7 +22,7 @@ public class AboutActivity extends AppCompatActivity {
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView appLink = (TextView) findViewById(R.id.appLink);
+        TextView appLink = findViewById(R.id.appLink);
         appLink.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         appLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,12 +31,11 @@ public class AboutActivity extends AppCompatActivity {
                     Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.timeForCoffee_url)));
                     myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(myIntent);
-                } catch (ActivityNotFoundException e) {
-                }
+                } catch (ActivityNotFoundException e) { }
             }
         });
 
-        TextView appTwitterLink = (TextView) findViewById(R.id.appTwitterLink);
+        TextView appTwitterLink = findViewById(R.id.appTwitterLink);
         appTwitterLink.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         appTwitterLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +44,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView francoisTwitter = (TextView) findViewById(R.id.francoisTwitter);
+        TextView francoisTwitter = findViewById(R.id.francoisTwitter);
         francoisTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         francoisTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +53,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView christianTwitter = (TextView) findViewById(R.id.christianTwitter);
+        TextView christianTwitter = findViewById(R.id.christianTwitter);
         christianTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         christianTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +62,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView janTwitter = (TextView) findViewById(R.id.janTwitter);
+        TextView janTwitter = findViewById(R.id.janTwitter);
         janTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         janTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +71,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView cyrilTwitter = (TextView) findViewById(R.id.cyrilTwitter);
+        TextView cyrilTwitter = findViewById(R.id.cyrilTwitter);
         cyrilTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         cyrilTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +80,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView fabioTwitter = (TextView) findViewById(R.id.fabioTwitter);
+        TextView fabioTwitter = findViewById(R.id.fabioTwitter);
         fabioTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         fabioTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +89,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView nicolasTwitter = (TextView) findViewById(R.id.nicolasTwitter);
+        TextView nicolasTwitter = findViewById(R.id.nicolasTwitter);
         nicolasTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         nicolasTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,10 +98,17 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
+        TextView lucaGithub = findViewById(R.id.lucaGithub);
+        lucaGithub.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        lucaGithub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGithub(getResources().getString(R.string.luca_sardonini_github_username));
+            }
+        });
     }
 
     private void openTwitter(String twitterId, String twitterName) {
-
         Intent intent;
 
         try {
@@ -116,6 +122,14 @@ public class AboutActivity extends AppCompatActivity {
         }
         startActivity(intent);
 
+    }
+
+    private void openGithub(String username) {
+        // Remove the @ before the username to build the link
+        username = username.replace("@", "");
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + username));
+        startActivity(intent);
     }
 
     @Override

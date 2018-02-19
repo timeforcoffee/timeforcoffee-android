@@ -14,7 +14,7 @@ Time for Coffee for Android with Wear App. Real-time departure info for Switzerl
 
 - François Terrier: original idea, API ([@fterrier](https://twitter.com/@fterrier))
 - Christian Stocker ([@chregu](https://twitter.com/@chregu)), Jan Hug ([@dulnan](https://twitter.com/@dulnan)), Cyril Gabathuler ([@gabac](https://twitter.com/@gabac)): iOS app
-- Fabio Santschi ([@kimchiverse](https://twitter.com/@kimchiverse)), Nicolas Dougoud ([@abramov_no7](https://twitter.com/@abramov_no7)): Android app
+- Fabio Santschi ([@kimchiverse](https://twitter.com/@kimchiverse)), Nicolas Dougoud ([@abramov_no7](https://twitter.com/@abramov_no7)), Luca Sardonini ([@lucasardonini](https://github.com/lucasardonini)): Android app
 
 ## License
 

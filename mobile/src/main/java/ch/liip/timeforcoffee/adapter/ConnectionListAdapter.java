@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.api.Connection;
+import ch.liip.timeforcoffee.api.models.Connection;
 
 public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
