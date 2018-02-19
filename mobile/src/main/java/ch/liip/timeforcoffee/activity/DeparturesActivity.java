@@ -114,8 +114,10 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, DEPARTURE_LIST_FRAGMENT_KEY, mDepartureListFragment);
-        getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
+        if(mDepartureListFragment.isAdded() && mFavoriteListFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, DEPARTURE_LIST_FRAGMENT_KEY, mDepartureListFragment);
+            getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
+        }
     }
 
     @Override
