@@ -2,11 +2,12 @@ package ch.liip.timeforcoffee.api.mappers;
 
 import android.graphics.Color;
 
-import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.models.Departure;
 
 public class DepartureMapper {
 
     public static Departure fromZvv(ch.liip.timeforcoffee.zvv.Departure zvvDeparture) {
+        int id = zvvDeparture.getId() != null ? Integer.parseInt(zvvDeparture.getId()) : 0;
         int colorBg = Color.WHITE;
         int colorFg = Color.BLACK;
         try {
@@ -17,7 +18,7 @@ public class DepartureMapper {
         }
 
         return new Departure(zvvDeparture.getName(),
-                Integer.parseInt(zvvDeparture.getId()),
+                id,
                 zvvDeparture.getTo(),
                 zvvDeparture.getPlatform(),
                 colorFg,

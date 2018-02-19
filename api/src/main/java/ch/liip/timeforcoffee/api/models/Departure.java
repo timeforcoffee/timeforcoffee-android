@@ -1,15 +1,13 @@
-package ch.liip.timeforcoffee.api;
+package ch.liip.timeforcoffee.api.models;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Departure {
 
     private String name;
-    private String type;
     private int destinationId;
     private String destinationName;
     private String platform;
@@ -45,10 +43,6 @@ public class Departure {
         return name;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public boolean isAccessible() {
         return accessible;
     }
@@ -59,6 +53,10 @@ public class Departure {
 
     public String getDestinationIdStr() {
         return String.valueOf(destinationId);
+    }
+
+    public void setDestinationId(int destinationId) {
+        this.destinationId = destinationId;
     }
 
     public String getDestinationName() {

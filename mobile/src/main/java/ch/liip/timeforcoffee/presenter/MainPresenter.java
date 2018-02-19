@@ -1,21 +1,30 @@
 package ch.liip.timeforcoffee.presenter;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.MainActivity;
-import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
-import ch.liip.timeforcoffee.api.Station;
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
-import ch.liip.timeforcoffee.api.events.FetchOpenDataLocationsEvent;
-import ch.liip.timeforcoffee.api.events.StationsFetchedEvent;
+import ch.liip.timeforcoffee.api.StationService;
+import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchStationsLocationErrorEvent;
+import ch.liip.timeforcoffee.api.events.stationsLocationEvents.FetchStationsLocationEvent;
+import ch.liip.timeforcoffee.api.events.stationsLocationEvents.StationsLocationFetchedEvent;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.helper.PermissionsChecker;
@@ -24,19 +33,7 @@ import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.config.LocationAccuracy;
 import io.nlopez.smartlocation.location.config.LocationParams;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Created by nicolas on 10/10/16.
- */
 public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private MainActivity mActivity;
@@ -52,14 +49,17 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     private String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
     private PermissionsChecker permissionsChecker;
 
-    final String TAG = "timeforcoffee";
-    final int PERMISSION_REQUEST_CODE = 0;
+    private final String LOG_TAG = "timeforcoffee";
+    private final int PERMISSION_REQUEST_CODE = 0;
 
     @Inject
     EventBus mEventBus;
 
     @Inject
-    OpenDataApiService service;
+    StationService stationService;
+
+    @Inject
+    OpenDataApiService openDataApiService;
 
     @Inject
     FavoritesDataSource favoritesDataSource;
@@ -73,7 +73,30 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         permissionsChecker = new PermissionsChecker(activity);
     }
 
-    public void onResumeView() {
+    @Override
+    public void onResumeView() { }
+
+    @Override
+    public void onPauseView() {
+        if (mIsCapturingLocation) {
+            stopLocation();
+        }
+    }
+
+    @Override
+    public void onRefreshView() {
+        // Empty list before reloading
+        mActivity.updateStations(new ArrayList<Station>());
+
+        updateStationsWithLastPosition();
+    }
+
+    public void onDestroy() {
+        mActivity = null;
+        mEventBus.unregister(this);
+    }
+
+    public void updateStations() {
         if (Build.FINGERPRINT.contains("generic")) { //emulator
             updateStationsWithLastPosition();
         } else if (!mIsCapturingLocation) {
@@ -81,73 +104,63 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
     }
 
-    public void onPauseView() {
-        if (mIsCapturingLocation) {
-            stopLocation();
+    public void updateFavorites() {
+        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+
+        if(mStations != null) {
+            for(Station station : mStations) {
+                station.setIsFavorite(favoriteStations.contains(station));
+            }
+
+            mActivity.updateStations(mStations);
         }
+
+        mFavoriteStations = favoriteStations;
+        mActivity.updateFavorites(mFavoriteStations);
     }
 
-    public void onRefreshView() {
-        updateStationsWithLastPosition();
-    }
-
-    public void updateStationsWithLastPosition() {
+    private void updateStationsWithLastPosition() {
+        mActivity.setIsPositionLoading(true);
 
         if (Build.FINGERPRINT.contains("generic")) { //emulator
             mLastLocation = new Location("emulator");
             mLastLocation.setLatitude(46.8017);
             mLastLocation.setLongitude(7.1456);
-            //mLastLocation.setLatitude(52.5074592);
-            //mLastLocation.setLongitude(13.2860644);
-            //mLastLocation.setLatitude(40.705311);
-            //mLastLocation.setLongitude(-74.2581929);
         }
 
         if (mLastLocation != null) {
             updateStations(mLastLocation);
+        } else {
+            startLocation();
         }
-    }
-
-    public void updateFavorites() {
-        if(mStations == null || mStations.size() == 0) {
-            return;
-        }
-
-        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
-        for(Station station : mStations) {
-            station.setIsFavorite(favoriteStations.contains(station));
-        }
-
-        mFavoriteStations = favoriteStations;
-        mActivity.updateStations(mStations);
-        mActivity.updateFavorites(mFavoriteStations);
     }
 
     private void startLocation() {
         if (!permissionsChecker.LacksPermission(locationPermission)) {
+            mActivity.setIsPositionLoading(true);
 
             if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
-                SnackBars.showLocalisationServiceOff(mActivity, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mActivity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                });
+                SnackBars.showLocalisationServiceOff(mActivity);
+                mActivity.setIsPositionLoading(false);
+                return;
+            } else if(SmartLocation.with(mActivity).location().state().isGpsAvailable() && !SmartLocation.with(mActivity).location().state().isNetworkAvailable()) {
+                SnackBars.showLocalisationServiceSetToDeviceOnly(mActivity);
+                mActivity.setIsPositionLoading(false);
                 return;
             }
 
             mIsCapturingLocation = true;
-            SmartLocation smartLocation = new SmartLocation.Builder(mActivity).logging(true).build();
             LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
-            smartLocation.location().config(locationParams).start(this);
-
+            SmartLocation.with(mActivity).location()
+                    .config(locationParams)
+                    .oneFix()
+                    .start(this);
         } else {
             permissionsChecker.RequestPermission(mActivity, locationPermission, PERMISSION_REQUEST_CODE, mActivity.getResources().getString(R.string.permission_message));
         }
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
         if (requestCode == PERMISSION_REQUEST_CODE) {
             for (int i = 0; i < permissions.length; i++) {
                 String permission = permissions[i];
@@ -160,6 +173,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
                     startLocation();
                 } else {
+                    mActivity.setIsPositionLoading(false);
                     SnackBars.showLocalisationSettings(mActivity);
                 }
             }
@@ -171,27 +185,28 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         SmartLocation.with(mActivity).location().stop();
     }
 
-    @Override
-    public void onLocationUpdated(Location location) {
-        Log.i(TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
-        mLastLocation = location;
-
-        updateStations(location);
-    }
-
     private void updateStations(Location location) {
         if (location != null) {
             Map<String, String> query = new HashMap<>();
             query.put("x", Double.toString(location.getLatitude()));
             query.put("y", Double.toString(location.getLongitude()));
-            Log.i(TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
-            mEventBus.post(new FetchOpenDataLocationsEvent(query));
+
+            Log.i(LOG_TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
+            mEventBus.post(new FetchStationsLocationEvent(query));
         }
     }
 
+    @Override
+    public void onLocationUpdated(Location location) {
+        Log.i(LOG_TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
+        mLastLocation = location;
+
+        updateStations(location);
+    }
+
     @Subscribe
-    public void onStationsFetched(StationsFetchedEvent event) {
-        mActivity.showProgressLayout(false);
+    public void onStationsFetched(StationsLocationFetchedEvent event) {
+        mActivity.setIsPositionLoading(false);
 
         mStations = event.getStations();
         mActivity.updateStations(mStations);
@@ -200,18 +215,13 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     }
 
     @Subscribe
-    public void onFetchErrorEvent(FetchErrorEvent event) {
-        mActivity.showProgressLayout(false);
+    public void onFetchErrorEvent(FetchStationsLocationErrorEvent event) {
+        mActivity.setIsPositionLoading(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updateStationsWithLastPosition();
             }
         });
-    }
-
-    public void onDestroy() {
-        mActivity = null;
-        mEventBus.unregister(this);
     }
 }

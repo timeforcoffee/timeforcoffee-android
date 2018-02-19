@@ -3,9 +3,10 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,14 +21,14 @@ ext {
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
-    VERSION = "1.1.1"
-    VERSION_CODE = 25
+    VERSION = "1.2.0"
+    VERSION_CODE = 29
 
     RELEASE_MAP_API_KEY = "***REMOVED***"
     DEBUG_MAP_API_KEY = "***REMOVED***"
 
     PLAY_SERVICES_VERSION = "9.4.0"
-    SUPPORT_VERSION = "23.1.1"
+    SUPPORT_VERSION = "27.0.2"
     RETROFIT_VERSION = "1.9.0"
     DAGGER_VERSION = "1.2.2"
     SUPPORT_WEARABLE_VERSION = "1.4.0"
@@ -38,5 +39,6 @@ ext {
 allprojects {
     repositories {
         jcenter()
+        google()
     }
 }
