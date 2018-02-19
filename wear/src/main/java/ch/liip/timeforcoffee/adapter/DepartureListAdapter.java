@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.api.Departure;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 
@@ -117,11 +117,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 if (departure.getColorBg() != Color.WHITE) {
                     textView.setBackgroundColor(departure.getColorBg());
                 } else {
-                    if (departure.getType() != null && departure.getType().equals("train")) {
-                        textView.setBackgroundColor(Color.WHITE);
-                    } else {
-                        textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
-                    }
+                    textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                 }
             }
         } catch (Exception ex) {

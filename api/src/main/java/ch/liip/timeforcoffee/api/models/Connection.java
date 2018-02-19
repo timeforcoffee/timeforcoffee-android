@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.api;
+package ch.liip.timeforcoffee.api.models;
 
 import android.location.Location;
 

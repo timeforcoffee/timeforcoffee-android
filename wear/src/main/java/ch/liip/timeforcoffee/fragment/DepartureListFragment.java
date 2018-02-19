@@ -11,8 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;

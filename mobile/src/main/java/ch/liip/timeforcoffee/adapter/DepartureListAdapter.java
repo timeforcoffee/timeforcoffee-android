@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
-import ch.liip.timeforcoffee.api.Departure;
-import ch.liip.timeforcoffee.api.Station;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -150,11 +148,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 if (departure.getColorBg() != Color.WHITE) {
                     textView.setBackgroundColor(departure.getColorBg());
                 } else {
-                    if (departure.getType() != null && departure.getType().equals("train")) {
-                        textView.setBackgroundColor(Color.WHITE);
-                    } else {
-                        textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
-                    }
+                    textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                 }
             }
         } catch (Exception ex) {

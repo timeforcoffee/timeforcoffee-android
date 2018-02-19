@@ -8,19 +8,18 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
-import ch.liip.timeforcoffee.api.Departure;
 import ch.liip.timeforcoffee.api.DepartureService;
-import ch.liip.timeforcoffee.api.Station;
 import ch.liip.timeforcoffee.api.ZvvApiService;
-import ch.liip.timeforcoffee.api.events.DeparturesFetchedEvent;
-import ch.liip.timeforcoffee.api.events.FetchDeparturesEvent;
-import ch.liip.timeforcoffee.api.events.FetchErrorEvent;
+import ch.liip.timeforcoffee.api.events.departuresEvents.DeparturesFetchedEvent;
+import ch.liip.timeforcoffee.api.events.departuresEvents.FetchDeparturesErrorEvent;
+import ch.liip.timeforcoffee.api.events.departuresEvents.FetchDeparturesEvent;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.widget.SnackBars;
@@ -28,12 +27,10 @@ import ch.liip.timeforcoffee.widget.SnackBars;
 public class DeparturesPresenter implements Presenter {
 
     private DeparturesActivity mActivity;
-    private Timer mAutoUpdateTimer;
-    public static final int UPDATE_FREQUENCY = 60000;
-
     private Station mStation;
     private List<Departure> mDepartures;
     private List<Departure> mFavoriteDepartures;
+    private Timer mAutoUpdateTimer;
 
     @Inject
     EventBus mEventBus;
@@ -55,24 +52,30 @@ public class DeparturesPresenter implements Presenter {
         mEventBus.register(this);
     }
 
-    public void onResumeView() {
-        //timer to refresh departures each 60 secs
-        mAutoUpdateTimer = new Timer();
-        mAutoUpdateTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateDepartures();
-                    }
-                });
-            }
-        }, 0, UPDATE_FREQUENCY);
-
-    }
+    public void onResumeView() { }
 
     public void onRefreshView() {
         updateDepartures();
+    }
+
+    public void onPauseView() {
+        if (mAutoUpdateTimer != null) {
+            mAutoUpdateTimer.cancel();
+            mAutoUpdateTimer = null;
+        }
+    }
+
+    public void onDestroy() {
+        mEventBus.unregister(this);
+        mActivity = null;
+    }
+
+    public Station getStation() {
+        return mStation;
+    }
+
+    public boolean getIsFavorite() {
+        return mStation.getIsFavorite();
     }
 
     public void updateDepartures() {
@@ -107,6 +110,18 @@ public class DeparturesPresenter implements Presenter {
         mActivity.updateFavorites(mFavoriteDepartures);
     }
 
+    public void toggleFavorite() {
+        if (getIsFavorite()) {
+            //Remove from fav
+            mStation.setIsFavorite(false);
+            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
+        } else {
+            //Add to fav
+            mStation.setIsFavorite(true);
+            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
+        }
+    }
+
     @Subscribe
     public void onDeparturesFetchedEvent(DeparturesFetchedEvent event) {
         mActivity.showProgressLayout(false);
@@ -118,7 +133,7 @@ public class DeparturesPresenter implements Presenter {
     }
 
     @Subscribe
-    public void onFetchErrorEvent(FetchErrorEvent event) {
+    public void onFetchErrorEvent(FetchDeparturesErrorEvent event) {
         mActivity.showProgressLayout(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
@@ -126,37 +141,5 @@ public class DeparturesPresenter implements Presenter {
                 updateDepartures();
             }
         });
-    }
-
-    public void onPauseView() {
-        if (mAutoUpdateTimer != null) {
-            mAutoUpdateTimer.cancel();
-            mAutoUpdateTimer = null;
-        }
-    }
-
-    public void onDestroy() {
-        mEventBus.unregister(this);
-        mActivity = null;
-    }
-
-    public Station getStation() {
-        return mStation;
-    }
-
-    public boolean getIsFavorite() {
-        return mStation.getIsFavorite();
-    }
-
-    public void toggleFavorite() {
-        if (getIsFavorite()) {
-            //Remove from fav
-            mStation.setIsFavorite(false);
-            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
-        } else {
-            //Add to fav
-            mStation.setIsFavorite(true);
-            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
-        }
     }
 }
