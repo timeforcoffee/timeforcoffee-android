@@ -1,7 +1,10 @@
 package ch.liip.timeforcoffee;
 
+import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
+import ch.liip.timeforcoffee.api.StationService;
+import ch.liip.timeforcoffee.api.WalkingDistanceCache;
 import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
@@ -33,9 +36,6 @@ import retrofit.converter.GsonConverter;
 
 import javax.inject.Singleton;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 @Module(
         injects = {
                 DataService.class,
@@ -48,6 +48,7 @@ import javax.inject.Singleton;
                 FavoritesListFragment.class
         }
 )
+
 class TimeForCoffeeModule {
 
     @Provides
@@ -117,8 +118,20 @@ class TimeForCoffeeModule {
 
     @Provides
     @Singleton
+    StationService provideStationService(EventBus eventBus) {
+        return new StationService(eventBus);
+    }
+
+    @Provides
+    @Singleton
     DepartureService provideDepartureService(EventBus eventBus) {
         return new DepartureService(eventBus);
+    }
+
+    @Provides
+    @Singleton
+    ConnectionService provideConnectionService(EventBus eventBus) {
+        return new ConnectionService(eventBus);
     }
 
     @Provides
