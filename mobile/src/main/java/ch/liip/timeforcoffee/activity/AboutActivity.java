@@ -2,8 +2,6 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import ch.liip.timeforcoffee.BuildConfig;
 import ch.liip.timeforcoffee.R;
 
 public class AboutActivity extends AppCompatActivity {
@@ -114,15 +114,10 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private String getAppVersionStr() {
-        String result = "";
-        try {
-            PackageInfo packageInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            result = String.format(getString(R.string.timeForCoffee_version), packageInfo.versionName, packageInfo.versionCode);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        String versionName = BuildConfig.VERSION_NAME;
+        int versionCode = BuildConfig.VERSION_CODE;
 
-        return result;
+        return String.format(getString(R.string.timeForCoffee_version), versionName, versionCode);
     }
 
     private void openTwitter(String twitterId, String twitterName) {
