@@ -2,6 +2,8 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +45,9 @@ public class AboutActivity extends AppCompatActivity {
                 openTwitter(getResources().getString(R.string.timeForCoffee_twitter_id), getResources().getString(R.string.timeForCoffee_twitter_name));
             }
         });
+
+        TextView appVersionTextView = findViewById(R.id.appVersion);
+        appVersionTextView.setText(getAppVersionStr());
 
         TextView francoisTwitter = findViewById(R.id.francoisTwitter);
         francoisTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -106,6 +111,18 @@ public class AboutActivity extends AppCompatActivity {
                 openGithub(getResources().getString(R.string.luca_sardonini_github_username));
             }
         });
+    }
+
+    private String getAppVersionStr() {
+        String result = "";
+        try {
+            PackageInfo packageInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            result = String.format(getString(R.string.timeForCoffee_version), packageInfo.versionName, packageInfo.versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private void openTwitter(String twitterId, String twitterName) {

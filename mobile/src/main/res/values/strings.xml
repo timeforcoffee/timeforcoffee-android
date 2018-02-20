@@ -31,6 +31,7 @@
     <string name="timeForCoffee_url">http://app.timeforcoffee.ch/</string>
     <string name="timeForCoffee_twitter_name">"@time4coffeeApp"</string>
     <string name="timeForCoffee_twitter_id">"3043101919"</string>
+    <string name="timeForCoffee_version">Version %s (%d)</string>
     <string name="timeForCoffee_about_idea">Idea, Website and API by</string>
     <string name="francois_terrier">François Terrier /</string>
     <string name="francois_terrier_twitter_name">"@fterrier"</string>
