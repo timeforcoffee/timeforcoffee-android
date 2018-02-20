@@ -4,28 +4,18 @@ import android.util.LruCache;
 
 import ch.liip.timeforcoffee.api.models.WalkingDistance;
 
-/* Created by nicolas on 16/05/16.
- */
 public class WalkingDistanceCache {
 
     private static final int CACHE_SIZE = 1000;
-
     private static WalkingDistanceCache singleton;
-    private LruCache<String, WalkingDistance> mCache;
+
+    private final LruCache<String, WalkingDistance> mCache = new LruCache(CACHE_SIZE);
 
     public static WalkingDistanceCache getInstance() {
         if (singleton == null) {
             singleton = new WalkingDistanceCache();
         }
         return singleton;
-    }
-
-    private WalkingDistanceCache() {
-        mCache = new LruCache(CACHE_SIZE);
-    }
-
-    public LruCache getCache() {
-        return mCache;
     }
 
     public WalkingDistance get(String key) {
@@ -41,5 +31,4 @@ public class WalkingDistanceCache {
             }
         }
     }
-
 }
