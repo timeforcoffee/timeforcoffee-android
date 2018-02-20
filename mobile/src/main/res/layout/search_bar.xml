@@ -32,4 +32,5 @@
         android:indeterminateTint="@color/primary_text"
         android:indeterminateTintMode="src_in"
         android:layout_gravity="end" />
+
 </LinearLayout>
