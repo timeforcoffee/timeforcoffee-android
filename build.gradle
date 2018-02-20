@@ -21,8 +21,8 @@ ext {
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
-    VERSION = "1.2.0"
-    VERSION_CODE = 29
+    VERSION = "1.2.1"
+    VERSION_CODE = 30
 
     RELEASE_MAP_API_KEY = "AIzaSyD1a4ATVxYCJdzxlhVq8Qcpa7okxSo1sxU"
     DEBUG_MAP_API_KEY = "AIzaSyAwy5pW4FeqNbBJpFVTdAoYXeadLNeKSDE"
