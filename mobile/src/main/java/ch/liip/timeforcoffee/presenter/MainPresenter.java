@@ -36,21 +36,20 @@ import io.nlopez.smartlocation.location.config.LocationParams;
 
 public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
-    private MainActivity mActivity;
+    private final int LOCATION_SMALLEST_DISPLACEMENT = 250;
+    private final int LOCATION_INTERVAL = 10000;
+    private final String LOG_TAG = "timeforcoffee";
 
+    private MainActivity mActivity;
     private List<Station> mStations;
     private List<Station> mFavoriteStations;
 
     private Location mLastLocation;
     private boolean mIsCapturingLocation;
-    private final int LOCATION_SMALLEST_DISPLACEMENT = 250;
-    private final int LOCATION_INTERVAL = 10000;
 
-    private String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
-    private PermissionsChecker permissionsChecker;
-
-    private final String LOG_TAG = "timeforcoffee";
+    private final String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
     private final int PERMISSION_REQUEST_CODE = 0;
+    private PermissionsChecker permissionsChecker;
 
     @Inject
     EventBus mEventBus;
