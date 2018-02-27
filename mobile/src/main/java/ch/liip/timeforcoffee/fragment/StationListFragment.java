@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.MainActivity;
+import ch.liip.timeforcoffee.activity.StationSearchActivity;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -108,6 +109,9 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         super.onResume();
         if(mActivity instanceof MainActivity) {
             ((MainActivity)mActivity).performStationsUpdate();
+        }
+        else if(mActivity instanceof StationSearchActivity) {
+            ((StationSearchActivity)mActivity).performStationsSearch();
         }
     }
 
