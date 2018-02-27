@@ -4,33 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/nameLayout"
+    <ch.liip.timeforcoffee.common.FontFitTextView
+        android:id="@+id/name"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:gravity="center">
-
-        <!-- TODO FIX LAYOUT ISSUE + CONTINUE XML REFACTORING -->
-        <ch.liip.timeforcoffee.common.FontFitTextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="6dp"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            tools:text="3"/>
-
-    </RelativeLayout>
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="3"/>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:orientation="vertical"
         android:layout_toStartOf="@+id/departure"
-        android:layout_toEndOf="@id/nameLayout"
+        android:layout_toEndOf="@id/name"
         android:gravity="center_vertical"
         android:layout_marginStart="10dp">
 
