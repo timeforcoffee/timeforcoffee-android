@@ -11,8 +11,7 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppTheme.Base">
-    </style>
+    <style name="AppTheme" parent="AppTheme.Base" />
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/primary</item>

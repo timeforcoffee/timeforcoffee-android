@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,6 @@ import ch.liip.timeforcoffee.common.Typefaces;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
     private List<Departure> mDepartures;
@@ -43,31 +41,28 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         mContext = context;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-
+    @NonNull
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        Departure departure = this.mDepartures.get(position);
         DepartureViewHolder viewHolder;
 
         if (convertView == null) {
-
-            LayoutInflater inflater = (LayoutInflater) this.getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.departure_list_row, parent, false);
 
             viewHolder = new DepartureViewHolder();
-            viewHolder.lineNameTextView = (FontFitTextView) convertView.findViewById(R.id.name);
-            viewHolder.toTextView = (TextView) convertView.findViewById(R.id.to);
-            viewHolder.departureTextView = (TextView) convertView.findViewById(R.id.departure);
-            viewHolder.scheduledTimeTextView = (TextView) convertView.findViewById(R.id.scheduledtime);
-            viewHolder.realtimeTextView = (TextView) convertView.findViewById(R.id.realtime);
-            viewHolder.platformTextView = (TextView) convertView.findViewById(R.id.platform);
+            viewHolder.lineNameTextView = convertView.findViewById(R.id.name);
+            viewHolder.toTextView = convertView.findViewById(R.id.to);
+            viewHolder.departureTextView = convertView.findViewById(R.id.departure);
+            viewHolder.scheduledTimeTextView = convertView.findViewById(R.id.scheduledtime);
+            viewHolder.realtimeTextView = convertView.findViewById(R.id.realtime);
+            viewHolder.platformTextView = convertView.findViewById(R.id.platform);
 
             convertView.setTag(viewHolder);
-
-        } else {
+        }
+        else {
             viewHolder = (DepartureViewHolder) convertView.getTag();
         }
-
-        Departure departure = this.mDepartures.get(position);
 
         setLineName(viewHolder.lineNameTextView, departure);
         viewHolder.toTextView.setText(departure.getDestinationName());
@@ -78,7 +73,8 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             viewHolder.realtimeTextView.setText(departure.getDepartureRealtimeStr());
             viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(viewHolder.scheduledTimeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
+        }
+        else {
             viewHolder.realtimeTextView.setVisibility(View.GONE);
             viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(viewHolder.scheduledTimeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -87,7 +83,8 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         if (departure.getPlatform() != null) {
             viewHolder.platformTextView.setVisibility(View.VISIBLE);
             viewHolder.platformTextView.setText(String.format(getContext().getString(R.string.platform), departure.getPlatform()));
-        } else {
+        }
+        else {
             viewHolder.platformTextView.setVisibility(View.GONE);
         }
 
@@ -105,22 +102,15 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 textView.setTypeface(type);
                 textView.setTextColor(Color.WHITE);
                 textView.setBackgroundColor(Color.RED);
-
-            } else {
-
-                if (name.equals("RE")) {
-                    textView.setTextColor(Color.RED);
-                } else {
-                    textView.setTextColor(departure.getColorFg());
-                }
-
-                if (departure.getColorBg() != Color.WHITE) {
-                    textView.setBackgroundColor(departure.getColorBg());
-                } else {
-                    textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
-                }
             }
-        } catch (Exception ex) {
+            else {
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
+                textView.setTextColor(name.equals("RE") ? Color.RED : departure.getColorFg());
+                textView.setBackgroundColor(departure.getColorBg() == Color.WHITE ? mContext.getResources().getColor(R.color.gray) : departure.getColorBg());
+            }
+        }
+        catch (Exception ex) {
+            // Do nothing
         }
     }
 

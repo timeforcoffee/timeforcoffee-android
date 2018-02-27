@@ -1,80 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-    <RelativeLayout
-            android:id="@+id/nameLayout"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity="center">
-        <ch.liip.timeforcoffee.common.FontFitTextView
-                android:id="@+id/name"
-                android:text="3"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_alignParentLeft="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="6dp"
-                android:gravity="center"
-                android:layout_centerInParent="true"/>
-    </RelativeLayout>
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ch.liip.timeforcoffee.common.FontFitTextView
+        android:id="@+id/name"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        custom:maxFontSize="45"
+        tools:text="3"/>
+
     <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:orientation="vertical"
-            android:layout_toRightOf="@+id/nameLayout"
-            android:layout_toLeftOf="@+id/departure"
-            android:layout_toEndOf="@id/nameLayout"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="10dp">
-        <TextView android:id="@+id/to"
-                  tools:text="Zürich, Albisrieden"
-                  android:textSize="14sp"
-                  android:textStyle="bold"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"/>
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:orientation="vertical"
+        android:layout_toStartOf="@+id/departure"
+        android:layout_toEndOf="@id/name"
+        android:gravity="center_vertical"
+        android:layout_marginStart="10dp">
+
+        <TextView
+            android:id="@+id/to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Test, Test station" />
+
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            <TextView android:id="@+id/realtime"
-                      tools:text="11:29"
-                      android:textSize="14sp"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginRight="5dp"/>
-            <TextView android:id="@+id/scheduledtime"
-                      tools:text="11:29"
-                      android:textSize="14sp"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginRight="5dp"/>
-            <TextView android:id="@+id/platform"
-                      tools:text="- Pl: 3"
-                      android:textSize="14sp"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginRight="5dp"/>
-            <TextView android:id="@+id/accessible"
-                      android:text="♿︎"
-                      android:textSize="14sp"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginRight="5dp"/>
-            <!--<TextView android:id="@+id/norealtimedata"
-                android:text="(no real-time data)"
-                android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/realtime"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />-->
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textSize="14sp"
+                tools:text="11:29"/>
+
+            <TextView
+                android:id="@+id/scheduledtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textSize="14sp"
+                tools:text="11:29"/>
+
+            <TextView
+                android:id="@+id/platform"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textSize="14sp"
+                tools:text="- Pl: 3"/>
+
+            <TextView
+                android:id="@+id/accessible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textSize="14sp"
+                android:text="♿︎"/>
+
         </LinearLayout>
+
     </LinearLayout>
-    <TextView android:id="@+id/departure"
-              tools:text="5'"
-              android:textSize="18sp"
-              android:layout_alignParentRight="true"
-              android:layout_width="48dp"
-              android:layout_height="48dp"
-              android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/departure"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:textSize="18sp"
+        android:gravity="center"
+        tools:text="5'"/>
+
 </RelativeLayout>

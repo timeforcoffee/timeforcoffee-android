@@ -18,8 +18,7 @@
     <string name="platform">- Pl: %s</string>
     <string name="retry">Retry</string>
     <string name="network_error">Network error!</string>
-    <string name="permission_message">We need permission to access your location, so we can get the nearest stations.
-    </string>
+    <string name="permission_message">We need permission to access your location, so we can get the nearest stations.</string>
     <string name="permission_allow">"Allow access"</string>
     <string name="permission_dont_allow">"Don't allow"</string>
     <string name="permission_no_location">"You didn't granted the permission to access your location"</string>
