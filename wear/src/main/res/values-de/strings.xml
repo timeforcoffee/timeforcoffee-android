@@ -7,15 +7,10 @@
     <string name="action_map">"Karte"</string>
     <string name="action_refresh">"Aktualisieren"</string>
     <string name="platform">"Gl: %s"</string>
-    <string name="permission_message">"Um die nächsten Stationen anzeigen zu können, brauchen wir die Erlaubnis den
-        Standort abrufen zu dürfen"
-    </string>
+    <string name="permission_message">"Um die nächsten Stationen anzeigen zu können, brauchen wir die Erlaubnis den Standort abrufen zu dürfen"</string>
     <string name="permission_allow">"Zugriff erlauben"</string>
     <string name="permission_dont_allow">"Nicht erlauben"</string>
     <string name="play_services_error">"Google Play service Fehler"</string>
-    <string name="permission_no_location">"Du hast die Erlaubnis um den Standort abrufen zu können, nicht gegeben"
-    </string>
-    <string name="timeout">"Timeout: Prüfe ob Deine Uhr mit Deinem Telefon verbunden ist, und ob dieses
-        Internetanschluss hat."
-    </string>
+    <string name="permission_no_location">"Du hast die Erlaubnis um den Standort abrufen zu können, nicht gegeben"</string>
+    <string name="timeout">"Timeout: Prüfe ob Deine Uhr mit Deinem Telefon verbunden ist, und ob dieses Internetanschluss hat."</string>
 </resources>
