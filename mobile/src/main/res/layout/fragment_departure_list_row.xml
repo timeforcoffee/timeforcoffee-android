@@ -7,8 +7,8 @@
 
     <ch.liip.timeforcoffee.common.FontFitTextView
         android:id="@+id/name"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_margin="5dp"
         android:gravity="center"
         android:singleLine="true"

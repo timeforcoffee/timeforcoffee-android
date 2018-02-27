@@ -72,7 +72,7 @@ public class FontFitTextView extends AppCompatTextView {
         mTestPaint.set(this.getPaint());
 
         while (testSize <= mMaxFontSize) {
-            testSize += 2;
+            testSize += 1;
 
             mTestPaint.setTextSize(testSize);
             mTestPaint.getTextBounds(text, 0, text.length(), testTextSize);
