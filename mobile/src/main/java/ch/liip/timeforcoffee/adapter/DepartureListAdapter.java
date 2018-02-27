@@ -4,21 +4,22 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.Arrays;
+import java.util.List;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
 
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
@@ -46,7 +47,8 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         mFavoritesDataSource = favoritesDataSource;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @NonNull
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         final Departure departure = this.mDepartures.get(position);
         DepartureViewHolder viewHolder;
 

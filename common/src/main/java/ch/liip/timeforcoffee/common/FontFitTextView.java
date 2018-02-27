@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.common;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.widget.AppCompatTextView;
@@ -11,7 +12,7 @@ import android.widget.RelativeLayout;
 
 public class FontFitTextView extends AppCompatTextView {
 
-    final int mMaxFontSize = 40;
+    private int mMaxFontSize;
     private Paint mTestPaint;
 
     public FontFitTextView(Context context) {
@@ -21,6 +22,14 @@ public class FontFitTextView extends AppCompatTextView {
 
     public FontFitTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.FontFitTextView, 0, 0);
+        try {
+            mMaxFontSize = a.getInteger(R.styleable.FontFitTextView_maxFontSize, 40);
+        }
+        finally {
+            a.recycle();
+        }
+
         initialise();
     }
 
@@ -58,23 +67,21 @@ public class FontFitTextView extends AppCompatTextView {
         int targetHeight = textHeight - marginTop - marginBottom;
         int targetWidth = textWidth - marginLeft - marginRight;
 
-        float testSize = 80;
+        float testSize = 5;
         Rect testTextSize = new Rect();
         mTestPaint.set(this.getPaint());
 
-        while (true) {
-            testSize -= 2;
+        while (testSize <= mMaxFontSize) {
+            testSize += 2;
 
             mTestPaint.setTextSize(testSize);
             mTestPaint.getTextBounds(text, 0, text.length(), testTextSize);
 
-            if (testTextSize.width() < targetWidth || testTextSize.height() < targetHeight) {
-                break; // Small enough
+            if (testTextSize.width() >= targetWidth || testTextSize.height() >= targetHeight) {
+                break; // Big enough
             }
         }
 
-        // Use lo so that we undershoot rather than overshoot
-        testSize = testSize > mMaxFontSize ? mMaxFontSize : testSize;
         this.setTextSize(TypedValue.COMPLEX_UNIT_PX, testSize);
     }
 }
