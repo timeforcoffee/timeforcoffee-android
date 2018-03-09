@@ -1,9 +1,11 @@
 package ch.liip.timeforcoffee.zvv;
 
+import com.google.gson.annotations.SerializedName;
+
 public class StationboardMeta {
 
-    private String stationId;
-    private String stationName;
+    @SerializedName("station_id") private String stationId;
+    @SerializedName("station_name") private String stationName;
 
     public StationboardMeta(String stationId, String stationName ) {
         this.stationId = stationId;
