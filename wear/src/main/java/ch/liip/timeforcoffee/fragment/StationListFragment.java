@@ -19,12 +19,12 @@ import java.util.List;
 
 public class StationListFragment extends Fragment implements WearableListView.ClickListener {
 
-    final String TAG = "timeforcoffee";
-
-    private StationListAdapter mAdapter;
+    private TextView mNoResultsTextView;
     private ProgressBar mProgressBar;
-    private WearableListView mListView;
     private TextView mTitleTextView;
+
+    private WearableListView mListView;
+    private StationListAdapter mAdapter;
 
     private List<Station> mStations = new ArrayList<>();
 
@@ -36,38 +36,17 @@ public class StationListFragment extends Fragment implements WearableListView.Cl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_station_list, container, false);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mListView = (WearableListView) view.findViewById(R.id.list_view);
+
+        mProgressBar = view.findViewById(R.id.progressBar);
+        mNoResultsTextView = view.findViewById(R.id.noResults);
+        mTitleTextView = view.findViewById(R.id.title);
+        mListView = view.findViewById(R.id.list_view);
 
         mAdapter = new StationListAdapter(getActivity(), mStations);
         mListView.setAdapter(mAdapter);
         mListView.setClickListener(this);
 
-        mTitleTextView = (TextView) view.findViewById(R.id.title);
-
         return view;
-    }
-
-    public void setStations(List<Station> stations) {
-        mStations = stations;
-    }
-
-    public void displayStations() {
-
-        mListView.setVisibility(View.VISIBLE);
-        mTitleTextView.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
-
-        if (mAdapter != null && mStations != null) {
-            mAdapter.setStations(mStations);
-        }
-    }
-
-    public void displayProgressIndicator() {
-
-        mListView.setVisibility(View.GONE);
-        mTitleTextView.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -78,7 +57,34 @@ public class StationListFragment extends Fragment implements WearableListView.Cl
     }
 
     @Override
-    public void onTopEmptyRegionClick() {
+    public void onTopEmptyRegionClick() { }
 
+    public void setStations(List<Station> stations) {
+        mStations = stations;
+    }
+
+    public void displayStations() {
+        mProgressBar.setVisibility(View.GONE);
+        mNoResultsTextView.setVisibility(View.GONE);
+        mTitleTextView.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.VISIBLE);
+
+        if (mAdapter != null && mStations != null) {
+            mAdapter.setStations(mStations);
+        }
+    }
+
+    public void displayProgressIndicator() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        mNoResultsTextView.setVisibility(View.GONE);
+        mTitleTextView.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
+    }
+
+    public void displayNoResults() {
+        mProgressBar.setVisibility(View.GONE);
+        mNoResultsTextView.setVisibility(View.VISIBLE);
+        mTitleTextView.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
     }
 }
