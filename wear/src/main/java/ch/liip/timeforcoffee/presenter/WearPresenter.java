@@ -29,38 +29,27 @@ import com.google.android.gms.wearable.*;
 
 import java.util.*;
 
-/**
- * Created by nicolas on 04/01/17.
- */
 public class WearPresenter implements Presenter, MessageApi.MessageListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
-    private WearActivity mActivity;
-    private GoogleApiClient mGoogleApiClient;
+    public final int PLAY_SERVICE_RESOLUTION_REQUEST_CODE = 123;
 
-    private Station mSelectedStation;
+    private final String TAG = "timeforcoffee";
+    private final String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
+    private final int PERMISSION_REQUEST_CODE = 0;
 
-    private String locationPermission = "android.permission.ACCESS_FINE_LOCATION";
-    private PermissionsChecker mPermissionsChecker;
-    final int PERMISSION_REQUEST_CODE = 0;
-
-    private Timer timeoutTimer;
-    public static final int TIMEOUT = 30000;
-
+    private final int TIMEOUT = 10000;
     private final int LOCATION_SMALLEST_DISPLACEMENT = 250;
     private final int LOCATION_INTERVAL = 10000;
 
-    private NodeApi.NodeListener mNodeListener;
-    private boolean mNodeListenerRegistered;
-
-    private static final String TAG = "timeforcoffee";
-    public final int PLAY_SERVICE_RESOLUTION_REQUEST_CODE = 123;
+    private WearActivity mActivity;
+    private GoogleApiClient mGoogleApiClient;
+    private Timer timeoutTimer;
+    private PermissionsChecker mPermissionsChecker;
 
     public WearPresenter(WearActivity activity) {
-
         mActivity = activity;
-
         mPermissionsChecker = new PermissionsChecker(mActivity);
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -90,29 +79,42 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
     }
 
     @Override
+    public void onRefreshView() {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location != null) {
+                mActivity.displayRefreshState();
+                startMeasureTimeout();
+                loadStations(location);
+            }
+        }
+    }
+
+    @Override
+    public void onPauseView() {
+        Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+
+        if (timeoutTimer != null) {
+            timeoutTimer.cancel();
+            timeoutTimer = null;
+        }
+
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        mActivity = null;
+    }
+
+    @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected");
         Wearable.MessageApi.addListener(mGoogleApiClient, this);
         startLocation();
-    }
-
-    private void sendMessage(final String path, final String message) {
-
-        if (mGoogleApiClient == null || !mGoogleApiClient.isConnected()) {
-            return;
-        }
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final NodeApi.GetConnectedNodesResult nodes =
-                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-                for (Node node : nodes.getNodes()) {
-                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
-                            mGoogleApiClient, node.getId(), path, message.getBytes()).await();
-                }
-            }
-        }).start();
     }
 
     @Override
@@ -128,16 +130,99 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
                 result.startResolutionForResult(mActivity, PLAY_SERVICE_RESOLUTION_REQUEST_CODE);
                 return;
             } catch (IntentSender.SendIntentException exception) {
-                Toast.makeText(mActivity, R.string.play_services_error, Toast.LENGTH_LONG).show();
+                showError(R.string.play_services_error);
             }
         }
-        Toast.makeText(mActivity, R.string.play_services_error, Toast.LENGTH_LONG).show();
+
+        showError(R.string.play_services_error);
     }
 
-    public void startLocation() {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
 
+                if (!(permission.equals(locationPermission))) {
+                    continue;
+                }
+
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    if (mGoogleApiClient.isConnected()) {
+                        startLocation();
+                    } else {
+                        mGoogleApiClient.connect();
+                    }
+                } else {
+                    showError(R.string.permission_no_location);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged");
+        startMeasureTimeout();
+        loadStations(location);
+    }
+
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent) {
+        Log.d(TAG, "onMessageReceived: " + messageEvent);
+
+        if (messageEvent.getPath().compareTo("/stations") == 0) {
+            Log.d(TAG, "stations changed");
+            String stationsSerialized = new String(messageEvent.getData());
+            if (stationsSerialized.isEmpty()) {
+                onStationsReceived(null);
+            } else {
+                Station[] stations = (Station[]) SerialisationUtilsGSON.deserialize(Station[].class, stationsSerialized);
+                onStationsReceived(new LinkedList(Arrays.asList(stations)));
+            }
+        }
+
+        if (messageEvent.getPath().compareTo("/departures") == 0) {
+            Log.d(TAG, "departures changed");
+            String departureSerialized = new String(messageEvent.getData());
+            if (departureSerialized.isEmpty()) {
+                onDeparturesReceived(null);
+            } else {
+                Departure[] departures = (Departure[]) SerialisationUtilsGSON.deserialize(Departure[].class, departureSerialized);
+                onDeparturesReceived(new LinkedList(Arrays.asList(departures)));
+            }
+        }
+    }
+
+    private void onStationsReceived(final List<Station> stations) {
+        Log.d(TAG, "onStationsReceived");
+        if (timeoutTimer != null) {
+            timeoutTimer.cancel();
+            timeoutTimer = null;
+        }
+
+        //User did not selected a stations. Select the first one in list
+        if (stations != null && stations.size() > 0) {
+            //Select first station in the list and load departures for it
+            Station station = stations.get(0);
+            mActivity.setStation(station);
+            loadDepartures(station.getIdStr());
+
+            //Display station list
+            mActivity.setStations(stations);
+        }
+        else {
+            showError(R.string.title_no_stations);
+        }
+    }
+
+    private void onDeparturesReceived(List<Departure> departures) {
+        Log.d(TAG, "onDeparturesReceived");
+        mActivity.setDepartures(departures);
+    }
+
+    private void startLocation() {
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
             LocationRequest locationRequest = LocationRequest.create()
                     .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
                     .setInterval(LOCATION_INTERVAL)
@@ -166,8 +251,7 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         }
     }
 
-    void startMeasureTimeout() {
-
+    private void startMeasureTimeout() {
         if (timeoutTimer != null) {
             timeoutTimer.cancel();
             timeoutTimer = null;
@@ -175,52 +259,19 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
 
         //timer to measure timeout (no data location or data received from the mobile)
         timeoutTimer = new Timer();
-        final Context context = mActivity;
         timeoutTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(context, R.string.timeout, Toast.LENGTH_LONG).show();
+                        showError(R.string.timeout);
                     }
                 });
             }
         }, TIMEOUT, TIMEOUT);
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            for (int i = 0; i < permissions.length; i++) {
-                String permission = permissions[i];
-                int grantResult = grantResults[i];
-
-                if (!(permission.equals(locationPermission))) {
-                    continue;
-                }
-
-                if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    if (mGoogleApiClient.isConnected()) {
-                        startLocation();
-                    } else {
-                        mGoogleApiClient.connect();
-                    }
-                } else {
-                    Toast.makeText(mActivity, R.string.permission_no_location, Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
-        mSelectedStation = null;
-        startMeasureTimeout();
-        getStations(location);
-    }
-
-    void getStations(Location location) {
+    private void loadStations(Location location) {
         Log.d(TAG, "getStations");
 
         if (location != null) {
@@ -230,103 +281,38 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         }
     }
 
-    public void loadDepartures(String stationId) {
+    private void loadDepartures(String stationId) {
         Log.d(TAG, "loadDepartures");
         sendMessage("/station", stationId);
     }
 
-    @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        Log.d(TAG, "onMessageReceived: " + messageEvent);
+    private void sendMessage(final String path, final String message) {
+        if (mGoogleApiClient == null || !mGoogleApiClient.isConnected()) {
+            return;
+        }
 
-        if (messageEvent.getPath().compareTo("/stations") == 0) {
-            Log.d(TAG, "stations changed");
-            String stationsSerialized = new String(messageEvent.getData());
-            if (stationsSerialized == null || stationsSerialized.isEmpty()) {
-                onStationsReceived(null);
-            } else {
-                Station[] stations = (Station[]) SerialisationUtilsGSON.deserialize(Station[].class, stationsSerialized);
-                onStationsReceived(new LinkedList(Arrays.asList(stations)));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+                for (Node node : nodes.getNodes()) {
+                    Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), path, message.getBytes()).await();
+                }
             }
-        }
-        if (messageEvent.getPath().compareTo("/departures") == 0) {
-            Log.d(TAG, "departures changed");
-            String departureSerialized = new String(messageEvent.getData());
-            if (departureSerialized == null || departureSerialized.isEmpty()) {
-                onDeparturesReceived(null);
-            } else {
-                Departure[] departures = (Departure[]) SerialisationUtilsGSON.deserialize(Departure[].class, departureSerialized);
-                onDeparturesReceived(new LinkedList(Arrays.asList(departures)));
-            }
-        }
+        }).start();
     }
 
-    private void onStationsReceived(final List<Station> stations) {
-        Log.d(TAG, "onStationsReceived");
+    private void showError(int messageStringResId) {
         if (timeoutTimer != null) {
             timeoutTimer.cancel();
             timeoutTimer = null;
         }
 
-        //User did not selected a stations. Select the first one in list
-        if (stations != null && stations.size() > 0) {
-
-            //Reset selected station
-            mSelectedStation = null;
-
-            //Select first station in the list and load departures for it
-            Station station = stations.get(0);
-            mActivity.setStation(station);
-            loadDepartures(station.getIdStr());
-
-            //Display station list
-            mActivity.setStations(stations);
-        } else {
-            Toast.makeText(mActivity, R.string.title_no_stations, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void onDeparturesReceived(List<Departure> departures) {
-        Log.d(TAG, "onDeparturesReceived");
-        mActivity.setDepartures(departures);
+        Toast.makeText(mActivity, messageStringResId, Toast.LENGTH_LONG).show();
+        mActivity.displayNoResult();
     }
 
     public void selectStation(Station station) {
-        mSelectedStation = station;
         loadDepartures(station.getIdStr());
     }
-
-    @Override
-    public void onRefreshView() {
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (location != null) {
-                mActivity.displayRefreshState();
-                mSelectedStation = null;
-                startMeasureTimeout();
-                getStations(location);
-            }
-        }
-    }
-
-    @Override
-    public void onPauseView() {
-        Wearable.MessageApi.removeListener(mGoogleApiClient, this);
-
-        if (timeoutTimer != null) {
-            timeoutTimer.cancel();
-            timeoutTimer = null;
-        }
-
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        mActivity = null;
-    }
-
 }
