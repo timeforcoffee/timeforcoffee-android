@@ -28,9 +28,12 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
+    private ViewPager mTabsViewPager;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+    private static final int STATION_LIST_TAB = 0;
+    private static final int FAVORITE_LIST_TAB = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +64,16 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         fragments.add(mFavoriteListFragment);
 
         // Initialize the ViewPager and bind to tabs
-        TabsAdapter pagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
-        ViewPager viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
+        mTabsViewPager = findViewById(R.id.viewpager);
+        mTabsViewPager.setAdapter(new TabsAdapter(
+                this,
+                super.getSupportFragmentManager(),
+                new int[]{ R.string.tab_stations, R.string.tab_favorites },
+                fragments
+        ));
 
         PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(viewPager);
+        tabs.setViewPager(mTabsViewPager);
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -186,5 +193,9 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     public void setIsPositionLoading(boolean loading) {
         mStationListFragment.showLoadingPositionLayout(loading);
+    }
+
+    public void displayStationList() {
+        mTabsViewPager.setCurrentItem(STATION_LIST_TAB);
     }
 }
