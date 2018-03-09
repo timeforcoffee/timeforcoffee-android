@@ -13,4 +13,5 @@
     <string name="permission_no_location">"Tu n'as pas autorisé d'accéder à ta position"</string>
     <string name="play_services_error">"Erreur du service Google Play"</string>
     <string name="timeout">"Timeout: Vérifie que ta montre est connectée à ton téléphone et que le téléphone est bienbconnecté à internet."</string>
+    <string name="no_result">Pas de résultats</string>
 </resources>
