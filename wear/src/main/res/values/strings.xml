@@ -14,4 +14,5 @@
     <string name="permission_no_location">"You didn't granted the permission to access your location"</string>
     <string name="play_services_error">"Google Play services error"</string>
     <string name="timeout">"Timeout: Check that your watch is connected to your mobile phone and that you mobile phone has internet access."</string>
+    <string name="no_result">No results</string>
 </resources>

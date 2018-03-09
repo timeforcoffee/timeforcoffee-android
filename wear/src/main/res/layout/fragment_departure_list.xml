@@ -15,6 +15,17 @@
         android:indeterminateTintMode="src_in" />
 
     <TextView
+        android:id="@+id/noResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:lines="1"
+        android:textColor="@color/primary_text"
+        android:textSize="16sp"
+        android:text="@string/no_result"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
