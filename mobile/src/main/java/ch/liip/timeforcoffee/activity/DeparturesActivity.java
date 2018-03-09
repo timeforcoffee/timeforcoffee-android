@@ -149,7 +149,7 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         inflater.inflate(R.menu.menu_fav, menu);
         MenuItem favItem = menu.findItem(R.id.action_fav);
 
-        if (mPresenter.getIsFavorite()) {
+        if (mPresenter.getStationIsFavorite()) {
             favItem.setIcon(R.drawable.ic_action_star);
         } else {
             favItem.setIcon(R.drawable.ic_action_star_border);
@@ -164,9 +164,10 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (id == R.id.action_fav) {
-            mPresenter.toggleFavorite();
-            if (mPresenter.getIsFavorite()) {
+        }
+        else if (id == R.id.action_fav) {
+            mPresenter.toggleStationIsFavorite();
+            if (mPresenter.getStationIsFavorite()) {
                 item.setIcon(R.drawable.ic_action_star);
             } else {
                 item.setIcon(R.drawable.ic_action_star_border);
@@ -205,6 +206,14 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     @Override
     public void onFavoriteStationSelected(Station station) { }
+
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
+
+    @Override
+    public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) {
+        mPresenter.updateDepartureIsFavorite(departure, isFavorite);
+    }
 
     private void selectDeparture(Departure departure) {
         Intent detailIntent = new Intent(this, ConnectionsActivity.class);
@@ -250,7 +259,8 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
     public void showProgressLayout(boolean show) {
         if (show) {
             mProgressLayout.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             mProgressLayout.setVisibility(View.GONE);
         }
     }

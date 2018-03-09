@@ -2,6 +2,7 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -49,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
             mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
-        } else{
+        }
+        else{
             mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
             mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -149,6 +151,14 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     @Override
     public void onFavoriteDepartureSelected(Departure departure) { }
+
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) {
+        mPresenter.updateStationIsFavorite(station, isFavorite);
+    }
+
+    @Override
+    public void onDepartureFavoriteToggled(Departure station, boolean isFavorite) { }
 
     private void selectStation(Station station) {
         Intent detailIntent = new Intent(this, DeparturesActivity.class);

@@ -15,36 +15,31 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
-    private List<Departure> mDepartures;
-    private FavoritesDataSource mFavoritesDataSource;
-    private Context mContext;
-
     private static final String[] linesWithSymbol = {"ICN", "EN", "ICN", "TGV", "RX", "EC", "IC", "SC", "CNL", "ICE", "IR"};
+    private List<Departure> mDepartures;
 
-    private static class DepartureViewHolder {
-        FontFitTextView lineNameTextView;
-        TextView destinationTextView;
-        TextView departureTextView;
-        TextView scheduledTimeTextView;
-        TextView realtimeTextView;
-        TextView platformTextView;
-        TextView accessibleTextView;
+    private Context mContext;
+    private Callbacks mCallbacks = new Callbacks() {
+        @Override
+        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
+    };
+
+    public interface Callbacks {
+        void onDepartureFavoriteToggled(Departure departure, boolean isFavorite);
     }
 
-    public DepartureListAdapter(Context context, List<Departure> departures, FavoritesDataSource favoritesDataSource) {
+    public DepartureListAdapter(Context context, List<Departure> departures, Callbacks callbacks) {
         super(context, R.layout.fragment_departure_list_row, departures);
 
-        mDepartures = departures;
         mContext = context;
-        mFavoritesDataSource = favoritesDataSource;
+        mDepartures = departures;
+        mCallbacks = callbacks;
     }
 
     @NonNull
@@ -66,7 +61,6 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             viewHolder.accessibleTextView = convertView.findViewById(R.id.accessible);
 
             convertView.setTag(viewHolder);
-
         }
         else {
             viewHolder = (DepartureViewHolder) convertView.getTag();
@@ -105,23 +99,10 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         viewHolder.lineNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isFavorite = departure.getIsFavorite();
-                String action, action1;
+                boolean isFavorite = !departure.getIsFavorite();
+                departure.setIsFavorite(isFavorite);
 
-                if (isFavorite) {
-                    mFavoritesDataSource.deleteFavoriteLine(mContext, departure);
-                    action = mContext.getResources().getString(R.string.departure_action_remove);
-                    action1 = mContext.getResources().getString(R.string.departure_action_remove_2);
-                } else {
-                    mFavoritesDataSource.insertFavoriteLine(mContext, departure);
-                    action = mContext.getResources().getString(R.string.departure_action_add);
-                    action1 = mContext.getResources().getString(R.string.departure_action_add_2);
-                }
-
-                departure.setIsFavorite(!isFavorite);
-                String message = mContext.getResources().getString(R.string.departure_fav_message);
-                String messageFormatted = String.format(message, departure.getName(), departure.getDestinationName(), action, action1);
-                ((DeparturesActivity)getContext()).displayToastMessage(messageFormatted);
+                mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
             }
         });
 
@@ -158,5 +139,15 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         this.mDepartures.clear();
         this.mDepartures.addAll(departures);
         notifyDataSetChanged();
+    }
+
+    private static class DepartureViewHolder {
+        FontFitTextView lineNameTextView;
+        TextView destinationTextView;
+        TextView departureTextView;
+        TextView scheduledTimeTextView;
+        TextView realtimeTextView;
+        TextView platformTextView;
+        TextView accessibleTextView;
     }
 }
