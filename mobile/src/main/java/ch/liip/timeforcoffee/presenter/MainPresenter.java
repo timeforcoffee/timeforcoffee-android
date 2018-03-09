@@ -153,12 +153,12 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     }
 
     public void updateFavorites() {
-        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
         mActivity.updateFavorites(mFavoriteStations);
 
         if(mStations != null) {
             for(Station station : mStations) {
-                station.setIsFavorite(favoriteStations.contains(station));
+                station.setIsFavorite(mFavoriteStations.contains(station));
             }
 
             mActivity.updateStations(mStations);
@@ -174,6 +174,9 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
 
         updateFavoritesOnFavoriteList();
+        if(mFavoriteStations.size() == 0) {
+            mActivity.displayStationList();
+        }
     }
 
     private void updateFavoritesOnFavoriteList() {
