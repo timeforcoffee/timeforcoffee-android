@@ -33,7 +33,9 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
+    private ViewPager mTabsViewPager;
     private RelativeLayout mProgressLayout;
+
 
     private DeparturesPresenter mPresenter;
     private DepartureListFragment mDepartureListFragment;
@@ -41,6 +43,8 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     public static final String DEPARTURE_LIST_FRAGMENT_KEY = "departure_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+    private static final int DEPARTURE_LIST_TAB = 0;
+    private static final int FAVORITE_LIST_TAB = 1;
 
     public static final String ARG_STATION_ID = "station_id";
     public static final String ARG__STATION_NAME = "station_name";
@@ -97,12 +101,16 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         fragments.add(mFavoriteListFragment);
 
         // Initialize the ViewPager and bind to tabs
-        TabsAdapter pagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_departures, R.string.tab_favorites }, fragments);
-        ViewPager viewPager = super.findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
+        mTabsViewPager = super.findViewById(R.id.viewpager);
+        mTabsViewPager.setAdapter(new TabsAdapter(
+                this,
+                super.getSupportFragmentManager(),
+                new int[]{ R.string.tab_departures, R.string.tab_favorites },
+                fragments
+        ));
 
         PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(viewPager);
+        tabs.setViewPager(mTabsViewPager);
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -263,5 +271,9 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         else {
             mProgressLayout.setVisibility(View.GONE);
         }
+    }
+
+    public void displayDepartureList() {
+        mTabsViewPager.setCurrentItem(DEPARTURE_LIST_TAB);
     }
 }

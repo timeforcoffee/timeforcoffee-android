@@ -149,6 +149,9 @@ public class DeparturesPresenter implements Presenter {
         mActivity.displayToastMessage(messageFormatted);
 
         updateFavoritesOnFavoriteList();
+        if(mFavoriteDepartures.size() == 0) {
+            mActivity.displayDepartureList();
+        }
     }
 
     private void updateFavoritesOnFavoriteList() {
