@@ -26,7 +26,7 @@ import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
-public class FavoritesListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FavoritesListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, StationListAdapter.Callbacks, DepartureListAdapter.Callbacks {
 
     public static final String ARG_MODE = "favorite_mode";
     public static final int ARG_MODE_STATIONS = 0;
@@ -40,12 +40,11 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
-    @Inject
-    FavoritesDataSource favoritesDataSource;
-
     public interface Callbacks {
         void onFavoriteStationSelected(Station station);
         void onFavoriteDepartureSelected(Departure departure);
+        void onStationFavoriteToggled(Station station, boolean isFavorite);
+        void onDepartureFavoriteToggled(Departure station, boolean isFavorite);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -54,6 +53,12 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
         @Override
         public void onFavoriteDepartureSelected(Departure departure) { }
+
+        @Override
+        public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
+
+        @Override
+        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
     };
 
     /**
@@ -76,10 +81,11 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
         mFavoriteMode = args.getInt(ARG_MODE);
         if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
-            mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), favoritesDataSource);
+            mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), this);
             setListAdapter(mStationListAdapter);
-        } else {
-            mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), favoritesDataSource);
+        }
+        else {
+            mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), this);
             setListAdapter(mDepartureListAdapter);
         }
     }
@@ -132,6 +138,16 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         } else {
             mCallbacks.onFavoriteDepartureSelected(mDepartureListAdapter.getDeparture(position));
         }
+    }
+
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) {
+        mCallbacks.onStationFavoriteToggled(station, isFavorite);
+    }
+
+    @Override
+    public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) {
+        mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
     }
 
     public void setStations(List<Station> stations) {
