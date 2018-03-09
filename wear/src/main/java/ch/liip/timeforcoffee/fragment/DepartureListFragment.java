@@ -19,14 +19,13 @@ import java.util.List;
 
 public class DepartureListFragment extends Fragment {
 
-    final String TAG = "timeforcoffee";
-
     private Station mStation;
 
-    private DepartureListAdapter mAdapter;
     private ProgressBar mProgressBar;
-    private ListView mListView;
+    private TextView mNoResultsTextView;
     private TextView mTitleTextView;
+    private ListView mListView;
+    private DepartureListAdapter mAdapter;
 
     private List<Departure> mDepartures = new ArrayList<>();
 
@@ -38,11 +37,15 @@ public class DepartureListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_departure_list, container, false);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mListView = (ListView) view.findViewById(R.id.list_view);
+
+        mProgressBar = view.findViewById(R.id.progressBar);
+        mNoResultsTextView = view.findViewById(R.id.noResults);
+        mTitleTextView = view.findViewById(R.id.title);
+        mListView = view.findViewById(R.id.list_view);
+
         mAdapter = new DepartureListAdapter(getActivity(), mDepartures);
         mListView.setAdapter(mAdapter);
-        mTitleTextView = (TextView) view.findViewById(R.id.title);
+
         return view;
     }
 
@@ -60,9 +63,10 @@ public class DepartureListFragment extends Fragment {
     }
 
     public void displayDepartures() {
-        mListView.setVisibility(View.VISIBLE);
-        mTitleTextView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
+        mNoResultsTextView.setVisibility(View.GONE);
+        mTitleTextView.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.VISIBLE);
 
         if (mAdapter != null && mDepartures != null) {
             mAdapter.setDepartures(mDepartures);
@@ -70,9 +74,16 @@ public class DepartureListFragment extends Fragment {
     }
 
     public void displayProgressIndicator() {
-        mListView.setVisibility(View.GONE);
-        mTitleTextView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
+        mNoResultsTextView.setVisibility(View.GONE);
+        mTitleTextView.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
     }
 
+    public void displayNoResults() {
+        mProgressBar.setVisibility(View.GONE);
+        mNoResultsTextView.setVisibility(View.VISIBLE);
+        mTitleTextView.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
+    }
 }
