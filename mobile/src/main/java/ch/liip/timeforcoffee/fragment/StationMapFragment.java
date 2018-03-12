@@ -19,6 +19,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -191,22 +193,33 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     private void drawTransportPath() {
         if (mConnections == null || mConnections.size() < 2) return;
 
+        List<LatLng> checkpoints = new ArrayList<>();
+        BitmapDescriptor checkpointIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin);
+        BitmapDescriptor destinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_flag);
+
         Connection departure = mConnections.get(0);
+        Connection destination = mConnections.get(mConnections.size() - 1);
+        mConnections.remove(departure);
+        mConnections.remove(destination);
+
+        // Departure
         LatLng departureLocation = new LatLng(departure.getLocation().getLatitude(), departure.getLocation().getLongitude());
         mMap.addMarker(new MarkerOptions().position(departureLocation).title(departure.getName()));
+        checkpoints.add(departureLocation);
 
-        Connection destination = mConnections.get(mConnections.size() - 1);
-        LatLng destinationLocation = new LatLng(destination.getLocation().getLatitude(), destination.getLocation().getLongitude());
-        mMap.addMarker(new MarkerOptions().position(destinationLocation).title(destination.getName()));
-
-        List<LatLng> checkpoints = new ArrayList<>();
+        // Checkpoints
         for(Connection connection : mConnections) {
             LatLng location = new LatLng(connection.getLocation().getLatitude(), connection.getLocation().getLongitude());
-
+            mMap.addMarker(new MarkerOptions().position(location).icon(checkpointIcon).anchor(0.5f, 0.9f).title(connection.getName()));
             checkpoints.add(location);
-            mVisiblePoints.add(location);
         }
 
+        // Destination
+        LatLng destinationLocation = new LatLng(destination.getLocation().getLatitude(), destination.getLocation().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(destinationLocation).icon(destinationIcon).anchor(0.2f, 0.9f).title(destination.getName()));
+        checkpoints.add(destinationLocation);
+
+        mVisiblePoints.addAll(checkpoints);
         drawPathForCheckpoints(checkpoints);
     }
 
