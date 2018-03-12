@@ -38,7 +38,8 @@ import io.nlopez.smartlocation.SmartLocation;
 
 public class StationMapFragment extends Fragment implements OnMapReadyCallback, OnMapLoadedCallback {
 
-    private static final int MAP_ZOOM_PADDING = 300;
+    private static final int MAP_ZOOM_PADDING = 75;
+    private static final float MAP_ZOOM_DEFAULT = 16;
 
     private MapFragment mMapFragment;
     private GoogleMap mMap;
@@ -158,41 +159,38 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     private void drawWalkingPath() {
-        if (mStation == null) return;
-
         LatLng stationLocation = new LatLng(mStation.getLocation().getLatitude(), mStation.getLocation().getLongitude());
         mMap.addMarker(new MarkerOptions().position(stationLocation).title(mStation.getName()));
+        mVisiblePoints.add(stationLocation);
 
         Location currentLocation = SmartLocation.with(getActivity()).location().getLastLocation();
-        LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        if (currentLocation != null) {
+            LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            mVisiblePoints.add(userLocation);
 
-        mVisiblePoints.add(stationLocation);
-        mVisiblePoints.add(userLocation);
+            // Draw walking distance
+            mStation.setOnDistanceComputedListener(new Station.OnDistanceComputedListener() {
+                @Override
+                public void onDistanceComputed(WalkingDistance distance) {
+                    if (distance == null || !isAdded()) return;
 
-        // Draw walking distance
-        mStation.setOnDistanceComputedListener(new Station.OnDistanceComputedListener() {
-            @Override
-            public void onDistanceComputed(WalkingDistance distance) {
-                if (distance == null || !isAdded()) return;
-
-                mSubtitleTextView.setText(distance.getWalkingDistance());
-                if (distance.getWalkingPath() != null) {
-                    drawPathForCheckpoints(distance.getWalkingPath().getPoints());
+                    mSubtitleTextView.setText(distance.getWalkingDistance());
+                    if (distance.getWalkingPath() != null) {
+                        drawPathForCheckpoints(distance.getWalkingPath().getPoints());
+                    }
                 }
-            }
-        });
+            });
 
-        // Display Walking distance
-        WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
-        if (distance != null) {
-            mSubtitleTextView.setVisibility(View.VISIBLE);
-            mSubtitleTextView.setText(distance.getWalkingDistance());
+            // Display Walking distance
+            WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
+            if (distance != null) {
+                mSubtitleTextView.setVisibility(View.VISIBLE);
+                mSubtitleTextView.setText(distance.getWalkingDistance());
+            }
         }
     }
 
     private void drawTransportPath() {
-        if (mConnections == null || mConnections.size() < 2) return;
-
         List<LatLng> checkpoints = new ArrayList<>();
         BitmapDescriptor checkpointIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin);
         BitmapDescriptor destinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_flag);
@@ -224,6 +222,8 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     private void drawPathForCheckpoints(List<LatLng> checkpoints) {
+        if(checkpoints.size() < 2) return;
+
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(getResources().getColor(R.color.dark_blue));
         polylineOptions.width(5);
@@ -232,7 +232,13 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     private void calculateZoomForVisiblePoints() {
-        if (mVisiblePoints.size() < 2) return;
+        if (mVisiblePoints.size() == 1) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mVisiblePoints.get(0), MAP_ZOOM_DEFAULT));
+            return;
+        }
+        else if(mVisiblePoints.size() == 0) {
+            return;
+        }
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (LatLng visiblePoint : mVisiblePoints) {
