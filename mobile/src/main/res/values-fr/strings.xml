@@ -16,9 +16,7 @@
     <string name="platform">"- Voie: %s"</string>
     <string name="retry">"Réessayer"</string>
     <string name="network_error">"Problème de connection"</string>
-    <string name="permission_message">"Nous avons besoin d’accéder à ta position pour pouvoir trouver les arrêtes les
-        plus proches."
-    </string>
+    <string name="permission_message">"Nous avons besoin d’accéder à ta position pour pouvoir trouver les arrêtes les plus proches."</string>
     <string name="permission_allow">"Autoriser"</string>
     <string name="permission_dont_allow">"Ne pas autoriser"</string>
     <string name="permission_no_location">"Tu n'as pas autorisé d'accéder à ta position"</string>

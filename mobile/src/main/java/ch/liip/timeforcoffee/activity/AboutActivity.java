@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import ch.liip.timeforcoffee.BuildConfig;
 import ch.liip.timeforcoffee.R;
 
 public class AboutActivity extends AppCompatActivity {
@@ -43,6 +45,9 @@ public class AboutActivity extends AppCompatActivity {
                 openTwitter(getResources().getString(R.string.timeForCoffee_twitter_id), getResources().getString(R.string.timeForCoffee_twitter_name));
             }
         });
+
+        TextView appVersionTextView = findViewById(R.id.appVersion);
+        appVersionTextView.setText(getAppVersionStr());
 
         TextView francoisTwitter = findViewById(R.id.francoisTwitter);
         francoisTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -106,6 +111,13 @@ public class AboutActivity extends AppCompatActivity {
                 openGithub(getResources().getString(R.string.luca_sardonini_github_username));
             }
         });
+    }
+
+    private String getAppVersionStr() {
+        String versionName = BuildConfig.VERSION_NAME;
+        int versionCode = BuildConfig.VERSION_CODE;
+
+        return String.format(getString(R.string.timeForCoffee_version), versionName, versionCode);
     }
 
     private void openTwitter(String twitterId, String twitterName) {

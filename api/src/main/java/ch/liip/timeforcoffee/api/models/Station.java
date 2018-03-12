@@ -20,7 +20,6 @@ public class Station implements RoutingListener {
     private boolean isFavorite;
 
     private WalkingDistance walkingDistance;
-    private Location walkingDistanceLastCoord;
     private LatLng tempStart;
     private LatLng tempEnd;
 
@@ -43,7 +42,6 @@ public class Station implements RoutingListener {
     }
 
     public WalkingDistance getDistanceForDisplay(Location userLocation) {
-
         if (userLocation == null || location == null || userLocation == null) {
             onDistanceComputedListener.onDistanceComputed(null);
         }
@@ -53,21 +51,24 @@ public class Station implements RoutingListener {
         }
 
         int directDistance = getDistanceInMeter(userLocation);
-        String distanceString = "";
+        String distanceString;
+
         if (directDistance > 5000) {
             int km = (int) (Math.round((double) (directDistance) / 1000));
             distanceString = km + " km";
             walkingDistance = new WalkingDistance(distanceString, null);
             onDistanceComputedListener.onDistanceComputed(walkingDistance);
             return walkingDistance;
-        } else {
+        }
+        else {
             //calculate exact distance
             this.getWalkingDistance(userLocation);
         }
+
         return null;
     }
 
-    public int getDistanceInMeter(Location userLocation) {
+    private int getDistanceInMeter(Location userLocation) {
         if (userLocation != null) {
             return (int) userLocation.distanceTo(location);
         }
@@ -84,9 +85,7 @@ public class Station implements RoutingListener {
         LatLng end = new LatLng(this.getLocation().getLatitude(), this.getLocation().getLongitude());
 
         String key = getWalkingDistanceKey(start, end);
-        WalkingDistance distance = WalkingDistanceCache.getInstance().get(key);
-
-        this.walkingDistance = distance;
+        this.walkingDistance = WalkingDistanceCache.getInstance().get(key);
 
         if (walkingDistance != null) { //we have a cached walking
             new Handler().post(new Runnable() {
@@ -95,7 +94,8 @@ public class Station implements RoutingListener {
                     onDistanceComputedListener.onDistanceComputed(walkingDistance);
                 }
             });
-        } else {
+        }
+        else {
 
             tempStart = start;
             tempEnd = end;
@@ -159,7 +159,6 @@ public class Station implements RoutingListener {
 
     @Override
     public void onRoutingFailure() {
-        this.walkingDistanceLastCoord = null;
         onDistanceComputedListener.onDistanceComputed(null);
     }
 

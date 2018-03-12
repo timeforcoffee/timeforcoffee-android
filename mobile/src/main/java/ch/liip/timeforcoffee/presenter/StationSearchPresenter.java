@@ -48,9 +48,7 @@ public class StationSearchPresenter implements Presenter {
     }
 
     @Override
-    public void onResumeView() {
-        search();
-    }
+    public void onResumeView() { }
 
     @Override
     public void onRefreshView() {
@@ -76,14 +74,14 @@ public class StationSearchPresenter implements Presenter {
 
     public void search() {
         if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
-            mActivity.showProgressLayout(true);
+            mActivity.setIsSearchLoading(true);
             mEventBus.post(new FetchStationsSearchEvent(mSearchQuery));
         }
     }
 
     @Subscribe
     public void onStationsFetchedEvent(StationsSearchFetchedEvent event) {
-        mActivity.showProgressLayout(false);
+        mActivity.setIsSearchLoading(false);
         mStations = event.getStations();
 
         List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
@@ -96,7 +94,7 @@ public class StationSearchPresenter implements Presenter {
 
     @Subscribe
     public void onFetchErrorEvent(FetchStationsSearchErrorEvent event) {
-        mActivity.showProgressLayout(false);
+        mActivity.setIsSearchLoading(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
