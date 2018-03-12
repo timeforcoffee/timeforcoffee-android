@@ -8,13 +8,10 @@
     <string name="action_map">Map</string>
     <string name="action_refresh">Refresh</string>
     <string name="platform">Pl: %s</string>
-    <string name="permission_message">We need permission to access your location, so we can get the nearest stations.
-    </string>
+    <string name="permission_message">We need permission to access your location, so we can get the nearest stations.</string>
     <string name="permission_allow">"Allow access"</string>
     <string name="permission_dont_allow">"Don't allow"</string>
     <string name="permission_no_location">"You didn't granted the permission to access your location"</string>
     <string name="play_services_error">"Google Play services error"</string>
-    <string name="timeout">"Timeout: Check that your watch is connected to your mobile phone and that you mobile phone
-        has internet access."
-    </string>
+    <string name="timeout">"Timeout: Check that your watch is connected to your mobile phone and that you mobile phone has internet access."</string>
 </resources>
