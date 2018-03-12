@@ -62,7 +62,7 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_connection_list, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         return rootView;
