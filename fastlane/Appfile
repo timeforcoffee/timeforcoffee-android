@@ -1,0 +1,5 @@
+package_name "ch.liip.timeforcoffee"
+
+for_lane :staging do
+  package_name "ch.liip.timeforcoffee.staging"
+end
