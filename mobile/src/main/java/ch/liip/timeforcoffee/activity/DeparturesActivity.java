@@ -29,7 +29,7 @@ import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
 
-public class DeparturesActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
+public class DeparturesActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, StationMapFragment.Callbacks, FavoritesListFragment.Callbacks, DepartureListFragment.Callbacks {
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
@@ -79,6 +79,7 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         mProgressLayout = findViewById(R.id.progressLayout);
         mSlidingLayout = findViewById(R.id.sliding_layout);
         mSlidingLayout.setPanelSlideListener(this);
+        mSlidingLayout.setTouchEnabled(false);
 
         // Fragments
         Bundle favoritesFragmentArgs = new Bundle();
@@ -192,6 +193,11 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     @Override
     public void onPanelHidden(View panel) { }
+
+    @Override
+    public void onMapLoaded() {
+        mSlidingLayout.setTouchEnabled(true);
+    }
 
     @Override
     public void onDepartureSelected(Departure departure) {
