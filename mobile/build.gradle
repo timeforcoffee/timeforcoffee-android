@@ -15,11 +15,13 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-
 android {
-
     signingConfigs {
         release {
+            keyAlias project.KEYSTORE_KEY_ALIAS
+            keyPassword project.KEYSTORE_KEY_PASS
+            storeFile file(project.KEYSTORE_PATH)
+            storePassword project.KEYSTORE_STORE_PASS
         }
     }
 
