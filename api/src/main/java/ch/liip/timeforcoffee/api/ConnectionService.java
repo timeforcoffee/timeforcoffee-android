@@ -34,7 +34,10 @@ public class ConnectionService {
     public void onEvent(ZvvConnectionsFetchedEvent event) {
         List<Connection> connections = new ArrayList<>();
         for (ch.liip.timeforcoffee.zvv.CheckPoint zvvCheckPoint : event.getCheckPoints()) {
-            connections.add(ConnectionMapper.fromZvv(zvvCheckPoint));
+            Connection connection = ConnectionMapper.fromZvv(zvvCheckPoint);
+            if(connection != null) {
+                connections.add(connection);
+            }
         }
 
         eventBus.post(new ConnectionsFetchedEvent(connections));
