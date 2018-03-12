@@ -17,14 +17,18 @@ repositories {
 
 
 android {
+
+    signingConfigs {
+        release {
+        }
+    }
+
     compileSdkVersion project.COMPILE_SDK
     buildToolsVersion project.BUILD_TOOL
-
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
-
     defaultConfig {
         applicationId project.PACKAGE_NAME
         minSdkVersion project.MIN_SDK
@@ -34,16 +38,35 @@ android {
     }
     buildTypes {
         debug {
+            debuggable true
+            minifyEnabled false
+            applicationIdSuffix '.dev'
+            versionNameSuffix '-DEV'
             resValue "string", "google_maps_api_key", project.DEBUG_MAP_API_KEY
         }
         release {
-            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
+            signingConfig signingConfigs.release
         }
     }
-    lintOptions{
+    flavorDimensions "mobile"
+    productFlavors {
+        mock {
+            dimension "mobile"
+        }
+        full {
+            dimension "mobile"
+        }
+    }
+    lintOptions {
         disable 'MissingTranslation'
+        checkReleaseBuilds true
+        warningsAsErrors false
+        abortOnError true
+        htmlReport true
     }
 }
 
@@ -51,15 +74,12 @@ dependencies {
     repositories {
         mavenCentral()
     }
-
     annotationProcessor 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     wearApp project(':wear')
     implementation project(':opendata')
     implementation project(':api')
     implementation project(':common')
-
     implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
     implementation 'com.android.support:support-v4:' + project.SUPPORT_VERSION
     implementation 'com.android.support:design:' + project.SUPPORT_VERSION
@@ -70,7 +90,6 @@ dependencies {
     implementation 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
     implementation 'com.sothree.slidinguppanel:library:3.0.0'
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
-
     implementation('io.nlopez.smartlocation:library:3.3.3') {
         transitive = false
     }
