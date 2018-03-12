@@ -22,6 +22,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        disable 'MissingTranslation'
+        checkReleaseBuilds false
+        warningsAsErrors false
+        abortOnError false
+        htmlReport true
+    }
 }
 
 dependencies {
