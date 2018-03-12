@@ -2,6 +2,7 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -27,9 +28,12 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
+    private ViewPager mTabsViewPager;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+    private static final int STATION_LIST_TAB = 0;
+    private static final int FAVORITE_LIST_TAB = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,8 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
             mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
-        } else{
+        }
+        else{
             mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
             mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
@@ -59,12 +64,16 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         fragments.add(mFavoriteListFragment);
 
         // Initialize the ViewPager and bind to tabs
-        TabsAdapter pagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_stations, R.string.tab_favorites }, fragments);
-        ViewPager viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
+        mTabsViewPager = findViewById(R.id.viewpager);
+        mTabsViewPager.setAdapter(new TabsAdapter(
+                this,
+                super.getSupportFragmentManager(),
+                new int[]{ R.string.tab_stations, R.string.tab_favorites },
+                fragments
+        ));
 
         PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(viewPager);
+        tabs.setViewPager(mTabsViewPager);
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -107,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -150,6 +159,14 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     @Override
     public void onFavoriteDepartureSelected(Departure departure) { }
 
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) {
+        mPresenter.updateStationIsFavorite(station, isFavorite);
+    }
+
+    @Override
+    public void onDepartureFavoriteToggled(Departure station, boolean isFavorite) { }
+
     private void selectStation(Station station) {
         Intent detailIntent = new Intent(this, DeparturesActivity.class);
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
@@ -176,5 +193,9 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     public void setIsPositionLoading(boolean loading) {
         mStationListFragment.showLoadingPositionLayout(loading);
+    }
+
+    public void displayStationList() {
+        mTabsViewPager.setCurrentItem(STATION_LIST_TAB);
     }
 }
