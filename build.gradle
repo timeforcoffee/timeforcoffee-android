@@ -7,28 +7,37 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 ext {
+
+    def getVersionCode = { ->
+        return project.hasProperty('versionCode') ? project.property('versionCode') as int : 33
+    }
+
     MIN_SDK = 19
-    COMPILE_SDK = 26
-    TARGET_SDK = 26
-    BUILD_TOOL = "26.0.2"
+    COMPILE_SDK = 27
+    TARGET_SDK = 27
+    BUILD_TOOL = "27.0.1"
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
     VERSION = "1.2.3"
-    VERSION_CODE = 32
+    VERSION_CODE = getVersionCode()
+
+    KEYSTORE_KEY_ALIAS = project.hasProperty('keystoreKeyAlias') ? project.property('keystoreKeyAlias') : ""
+    KEYSTORE_KEY_PASS = project.hasProperty('keystoreKeyPass') ? project.property('keystoreKeyPass'): ""
+    KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath'): "."
+    KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass'): ""
 
     RELEASE_MAP_API_KEY = "AIzaSyD1a4ATVxYCJdzxlhVq8Qcpa7okxSo1sxU"
     DEBUG_MAP_API_KEY = "AIzaSyAwy5pW4FeqNbBJpFVTdAoYXeadLNeKSDE"
 
     PLAY_SERVICES_VERSION = "9.4.0"
-    SUPPORT_VERSION = "27.0.2"
+    SUPPORT_VERSION = "27.1.0"
     RETROFIT_VERSION = "1.9.0"
     DAGGER_VERSION = "1.2.2"
     SUPPORT_WEARABLE_VERSION = "1.4.0"
