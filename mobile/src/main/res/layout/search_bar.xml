@@ -25,11 +25,13 @@
         android:id="@+id/search_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="0dp"
+        android:indeterminate="true"
         android:indeterminateTint="@color/primary_text"
         android:indeterminateTintMode="src_in"
         android:layout_gravity="end" />
+
 </LinearLayout>

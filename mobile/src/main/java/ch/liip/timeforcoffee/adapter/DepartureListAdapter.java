@@ -4,11 +4,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.Arrays;
+import java.util.List;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.models.Departure;
@@ -16,12 +21,6 @@ import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
-import java.util.Arrays;
-import java.util.List;
-
-/**
- * Created by fsantschi on 08/03/15.
- */
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
     private List<Departure> mDepartures;
@@ -48,32 +47,30 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         mFavoritesDataSource = favoritesDataSource;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-
+    @NonNull
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        final Departure departure = this.mDepartures.get(position);
         DepartureViewHolder viewHolder;
 
         if (convertView == null) {
-
-            LayoutInflater inflater = (LayoutInflater) this.getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.fragment_departure_list_row, parent, false);
 
             viewHolder = new DepartureViewHolder();
-            viewHolder.lineNameTextView = (FontFitTextView) convertView.findViewById(R.id.name);
-            viewHolder.destinationTextView = (TextView) convertView.findViewById(R.id.to);
-            viewHolder.departureTextView = (TextView) convertView.findViewById(R.id.departure);
-            viewHolder.scheduledTimeTextView = (TextView) convertView.findViewById(R.id.scheduledtime);
-            viewHolder.realtimeTextView = (TextView) convertView.findViewById(R.id.realtime);
-            viewHolder.platformTextView = (TextView) convertView.findViewById(R.id.platform);
-            viewHolder.accessibleTextView = (TextView) convertView.findViewById(R.id.accessible);
+            viewHolder.lineNameTextView = convertView.findViewById(R.id.name);
+            viewHolder.destinationTextView = convertView.findViewById(R.id.to);
+            viewHolder.departureTextView = convertView.findViewById(R.id.departure);
+            viewHolder.scheduledTimeTextView = convertView.findViewById(R.id.scheduledtime);
+            viewHolder.realtimeTextView = convertView.findViewById(R.id.realtime);
+            viewHolder.platformTextView = convertView.findViewById(R.id.platform);
+            viewHolder.accessibleTextView = convertView.findViewById(R.id.accessible);
 
             convertView.setTag(viewHolder);
 
-        } else {
+        }
+        else {
             viewHolder = (DepartureViewHolder) convertView.getTag();
         }
-
-        final Departure departure = this.mDepartures.get(position);
 
         setLineName(viewHolder.lineNameTextView, departure);
         viewHolder.destinationTextView.setText(departure.getDestinationName());
@@ -84,7 +81,8 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             viewHolder.realtimeTextView.setText(departure.getDepartureRealtimeStr());
             viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
+        }
+        else {
             viewHolder.realtimeTextView.setVisibility(View.GONE);
             viewHolder.scheduledTimeTextView.setText(departure.getDepartureScheduledStr());
             viewHolder.scheduledTimeTextView.setPaintFlags(viewHolder.scheduledTimeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -92,13 +90,15 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
 
         if (departure.getPlatform() != null) {
             viewHolder.platformTextView.setText(String.format(getContext().getString(R.string.platform), departure.getPlatform()));
-        } else {
+        }
+        else {
             viewHolder.platformTextView.setText("");
         }
 
         if (departure.isAccessible()) {
             viewHolder.accessibleTextView.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             viewHolder.accessibleTextView.setVisibility(View.GONE);
         }
 
@@ -138,20 +138,15 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
                 textView.setTypeface(type);
                 textView.setTextColor(Color.WHITE);
                 textView.setBackgroundColor(Color.RED);
-            } else {
-                if (name.equals("RE")) {
-                    textView.setTextColor(Color.RED);
-                } else {
-                    textView.setTextColor(departure.getColorFg());
-                }
-
-                if (departure.getColorBg() != Color.WHITE) {
-                    textView.setBackgroundColor(departure.getColorBg());
-                } else {
-                    textView.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
-                }
             }
-        } catch (Exception ex) {
+            else {
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
+                textView.setTextColor(name.equals("RE") ? Color.RED : departure.getColorFg());
+                textView.setBackgroundColor(departure.getColorBg() == Color.WHITE ? mContext.getResources().getColor(R.color.gray) : departure.getColorBg());
+            }
+        }
+        catch (Exception ex) {
+            // Do nothing
         }
     }
 

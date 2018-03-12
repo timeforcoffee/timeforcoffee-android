@@ -18,8 +18,7 @@
     <string name="platform">- Pl: %s</string>
     <string name="retry">Retry</string>
     <string name="network_error">Network error!</string>
-    <string name="permission_message">We need permission to access your location, so we can get the nearest stations.
-    </string>
+    <string name="permission_message">We need permission to access your location, so we can get the nearest stations.</string>
     <string name="permission_allow">"Allow access"</string>
     <string name="permission_dont_allow">"Don't allow"</string>
     <string name="permission_no_location">"You didn't granted the permission to access your location"</string>
@@ -31,6 +30,7 @@
     <string name="timeForCoffee_url">http://app.timeforcoffee.ch/</string>
     <string name="timeForCoffee_twitter_name">"@time4coffeeApp"</string>
     <string name="timeForCoffee_twitter_id">"3043101919"</string>
+    <string name="timeForCoffee_version">Version %s (%d)</string>
     <string name="timeForCoffee_about_idea">Idea, Website and API by</string>
     <string name="francois_terrier">François Terrier /</string>
     <string name="francois_terrier_twitter_name">"@fterrier"</string>

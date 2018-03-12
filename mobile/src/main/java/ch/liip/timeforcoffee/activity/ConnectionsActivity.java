@@ -100,7 +100,8 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         // Fragments
         if (savedInstanceState == null) {
             mConnectionListFragment = (ConnectionListFragment) Fragment.instantiate(this, ConnectionListFragment.class.getName());
-        } else{
+        }
+        else{
             mConnectionListFragment = (ConnectionListFragment) getSupportFragmentManager().getFragment(savedInstanceState, CONNECTION_LIST_FRAGMENT_KEY);
         }
 
@@ -113,7 +114,9 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, CONNECTION_LIST_FRAGMENT_KEY, mConnectionListFragment);
+        if(mConnectionListFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, CONNECTION_LIST_FRAGMENT_KEY, mConnectionListFragment);
+        }
     }
 
     @Override

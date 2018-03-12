@@ -138,14 +138,19 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         startActivity(detailIntent);
     }
 
+    public void performStationsSearch() {
+        mPresenter.search();
+    }
+
     public void updateStations(List<Station> stations) {
         mStationListFragment.setStations(stations);
     }
 
-    public void showProgressLayout(boolean show) {
-        if (show) {
+    public void setIsSearchLoading(boolean loading) {
+        if (loading) {
             mSearchProgressBar.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             mSearchProgressBar.setVisibility(View.GONE);
         }
     }

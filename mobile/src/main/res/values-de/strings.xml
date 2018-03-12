@@ -16,13 +16,10 @@
     <string name="platform">- Gl: %s</string>
     <string name="retry">Wiederholen</string>
     <string name="network_error">Netzwerk Fehler!</string>
-    <string name="permission_message">Um die nächsten Stationen anzeigen zu können, brauchen wir die Erlaubnis den
-        Standort abrufen zu dürfen
-    </string>
+    <string name="permission_message">Um die nächsten Stationen anzeigen zu können, brauchen wir die Erlaubnis den Standort abrufen zu dürfen</string>
     <string name="permission_allow">"Zugriff erlauben"</string>
     <string name="permission_dont_allow">"Nicht erlauben"</string>
-    <string name="permission_no_location">"Du hast die Erlaubnis um den Standort abrufen zu können, nicht gegeben"
-    </string>
+    <string name="permission_no_location">"Du hast die Erlaubnis um den Standort abrufen zu können, nicht gegeben"</string>
     <string name="grant">Erlaube</string>
     <string name="activate">Aktivieren</string>
     <string name="location_service_off">Standort Service ist ausgeschaltet</string>
