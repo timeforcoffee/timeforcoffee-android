@@ -33,12 +33,11 @@ ext {
     KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath'): "."
     KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass'): ""
 
-
     RELEASE_MAP_API_KEY = "***REMOVED***"
     DEBUG_MAP_API_KEY = "***REMOVED***"
 
     PLAY_SERVICES_VERSION = "9.4.0"
-    SUPPORT_VERSION = "27.0.2"
+    SUPPORT_VERSION = "27.1.0"
     RETROFIT_VERSION = "1.9.0"
     DAGGER_VERSION = "1.2.2"
     SUPPORT_WEARABLE_VERSION = "1.4.0"

@@ -13,21 +13,6 @@ unitTests:
   script:
   - bundle exec fastlane ci_test
 
-staging:
-  stage: deploy
-  tags:
-  - the-mob
-  when: manual
-  only:
-  - develop
-  script:
-  - bundle exec fastlane staging
-  artifacts:
-    name: "android_${CI_COMMIT_REF_SLUG}_${CI_JOB_ID}"
-    expire_in: 6 months
-    paths:
-      - mobile/build/outputs/
-
 release:
   stage: deploy
   tags:
