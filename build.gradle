@@ -7,22 +7,25 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 ext {
+    def getVersionCode = { ->
+        return project.hasProperty('versionCode') ? project.property('versionCode') as int : 33
+    }
+
     MIN_SDK = 19
-    COMPILE_SDK = 26
-    TARGET_SDK = 26
-    BUILD_TOOL = "26.0.2"
+    COMPILE_SDK = 27
+    TARGET_SDK = 27
+    BUILD_TOOL = "27.0.1"
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
     VERSION = "1.2.3"
-    VERSION_CODE = 32
+    VERSION_CODE = getVersionCode()
 
     RELEASE_MAP_API_KEY = "***REMOVED***"
     DEBUG_MAP_API_KEY = "***REMOVED***"
