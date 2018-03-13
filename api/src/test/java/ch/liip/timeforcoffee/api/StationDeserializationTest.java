@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 public class StationDeserializationTest {
 
-    private Gson gson = new GsonBuilder().create();
+    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 
     @Test
     public void stationsForLocationDeserialization_Works() throws UnsupportedEncodingException {
