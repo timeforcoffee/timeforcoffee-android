@@ -54,7 +54,10 @@ class TimeForCoffeeModule {
     @Provides
     @Singleton
     TransportService provideTransportService() {
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .create();
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://transport.opendata.ch")
                 .setConverter(new GsonConverter(gson))
