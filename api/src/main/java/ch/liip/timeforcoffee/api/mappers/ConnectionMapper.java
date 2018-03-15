@@ -15,9 +15,9 @@ public class ConnectionMapper {
         checkPointLocation.setLongitude(checkPoint.getLocation().getLng());
         checkPointLocation.setLatitude(checkPoint.getLocation().getLat());
 
-        Date departureScheduled = checkPoint.getDeparture().getScheduled();
-        Date departureRealtime = checkPoint.getDeparture().getRealtime();
-        Date arrivalScheduled = checkPoint.getArrival().getScheduled();
+        Date departureScheduled = checkPoint.getDeparture() == null ? null : checkPoint.getDeparture().getScheduled();
+        Date departureRealtime = checkPoint.getDeparture() == null ? null : checkPoint.getDeparture().getRealtime();
+        Date arrivalScheduled = checkPoint.getArrival() == null ? null : checkPoint.getArrival().getScheduled();
 
         // If there is no specified departure and arrival, it is not a valid connection
         if(arrivalScheduled == null && departureScheduled == null) {
