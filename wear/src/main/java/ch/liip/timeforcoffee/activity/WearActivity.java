@@ -114,13 +114,34 @@ public class WearActivity extends Activity {
         }
     }
 
-    public void selectStation(Station station) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        return mDetector.onTouchEvent(event) || super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mDetector.onTouchEvent(event) || super.onTouchEvent(event);
+    }
+
+    public void selectStation(Station station) {
         mDepartureListFragment.displayProgressIndicator();
         mDepartureListFragment.setStation(station);
         mFragmentViewPager.setCurrentItem(0, 0);
 
         mPresenter.selectStation(station);
+    }
+
+    public void refresh() {
+        mFragmentViewPager.setCurrentItem(0, 0, true);
+        mPresenter.onRefreshView();
     }
 
     public void setDepartures(final List<Departure> departures) {
@@ -160,32 +181,13 @@ public class WearActivity extends Activity {
         startActivity(intent);
     }
 
-    public void refresh() {
-        mFragmentViewPager.setCurrentItem(0, 0, true);
-        mPresenter.onRefreshView();
-    }
-
     public void displayRefreshState() {
         mDepartureListFragment.displayProgressIndicator();
         mStationListFragment.displayProgressIndicator();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void displayNoResult() {
+        mDepartureListFragment.displayNoResults();
+        mStationListFragment.displayNoResults();
     }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        return mDetector.onTouchEvent(event) || super.dispatchTouchEvent(event);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mDetector.onTouchEvent(event) || super.onTouchEvent(event);
-    }
-
-
 }

@@ -11,4 +11,10 @@ public class ConnectionsResponse {
     public List<CheckPoint> getConnections() {
         return passlist.get(0);
     }
+
+    public static ConnectionsResponse fromCheckPointList(List<List<CheckPoint>> checkPointList) {
+        ConnectionsResponse connectionResponse = new ConnectionsResponse();
+        connectionResponse.passlist = checkPointList;
+        return connectionResponse;
+    }
 }
