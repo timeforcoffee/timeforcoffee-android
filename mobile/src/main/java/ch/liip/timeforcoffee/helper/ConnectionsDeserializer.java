@@ -11,7 +11,6 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import ch.liip.timeforcoffee.zvv.CheckPoint;
@@ -27,37 +26,35 @@ public class ConnectionsDeserializer implements JsonDeserializer<ConnectionsResp
 
   @Override
   public ConnectionsResponse deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-      JsonElement passListJsonElement = jsonElement.getAsJsonObject().get("passlist");
+    JsonElement passListJsonElement = jsonElement.getAsJsonObject().get("passlist");
+    List<List<CheckPoint>> checkPoints = new ArrayList<>();
 
-      List<List<CheckPoint>> checkPoints = new ArrayList<>();
+    if (passListJsonElement != null && passListJsonElement.isJsonArray()) {
+      final JsonArray passList = passListJsonElement.getAsJsonArray();
+      final JsonElement passListItem = passList.size() > 0 ? passList.get(0) : null;
 
-      if (passListJsonElement != null && passListJsonElement.isJsonArray()) {
-        JsonArray passList = passListJsonElement.getAsJsonArray();
-
-        JsonElement passListItem = passList.get(0);
-
-        // PassListItem can be an Array of Checkpoint or directly a CheckPoint.
-        if (passListItem.isJsonArray()) {
-          Iterator<JsonElement> iter = passList.iterator();
-          while (iter.hasNext()) {
-            passListItem = iter.next();
-            checkPoints.add(fromJsonCheckPointList(passListItem.getAsJsonArray()));
-          }
-        } else {
+      // PassListItem can be an Array of Checkpoint or directly a CheckPoint.
+      // We only get the first Array of Checkpoint by convention. 
+      if (passListItem != null) {
+        if (passListItem.isJsonObject()) {
           checkPoints.add(fromJsonCheckPointList(passList));
+          return ConnectionsResponse.fromCheckPointList(checkPoints);
+        } else if (passListItem.isJsonArray()) {
+          checkPoints.add(fromJsonCheckPointList(passListItem.getAsJsonArray()));
+          return ConnectionsResponse.fromCheckPointList(checkPoints);
         }
-      } else throw new JsonParseException("Unparseable passList in ConnectionsResponse");
-
-      return ConnectionsResponse.fromCheckPointList(checkPoints);
+      }
+    }
+    throw new JsonParseException("Failed to parse passList in ConnectionsResponse");
   }
 
   private List<CheckPoint> fromJsonCheckPointList(JsonArray jsonCheckpoints) {
     List<CheckPoint> checkPoints = new ArrayList<>();
-    Iterator<JsonElement> iter = jsonCheckpoints.iterator();
 
-    while (iter.hasNext()) {
-      checkPoints.add(mGson.fromJson(iter.next(), CheckPoint.class));
+    for ( JsonElement crtJsonElement : jsonCheckpoints) {
+      checkPoints.add(mGson.fromJson(crtJsonElement, CheckPoint.class));
     }
+
     return checkPoints;
   }
 }
