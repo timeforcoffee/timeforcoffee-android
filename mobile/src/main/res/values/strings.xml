@@ -54,6 +54,8 @@
     <string name="nicolas_dougoud_twitter_id">"17496639"</string>
     <string name="luca_sardonini">Luca Sardonini /</string>
     <string name="luca_sardonini_github_username">"@lucasardonini"</string>
+    <string name="pascal_cudre">Pascal Cudré /</string>
+    <string name="pascal_cudre_github_username">"@friedrichIII"</string>
     <string name="title_activity_about">About</string>
     <string name="station_search_placeholder">…</string>
     <string name="connection_departure">Dep: </string>
