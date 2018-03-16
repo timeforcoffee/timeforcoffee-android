@@ -11,6 +11,7 @@ import java.util.Timer;
 
 import javax.inject.Inject;
 
+import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.DepartureService;
@@ -70,58 +71,6 @@ public class DeparturesPresenter implements Presenter {
         mActivity = null;
     }
 
-    public Station getStation() {
-        return mStation;
-    }
-
-    public boolean getIsFavorite() {
-        return mStation.getIsFavorite();
-    }
-
-    public void updateDepartures() {
-        if (mDepartures == null || mDepartures.size() == 0) {
-            mActivity.showProgressLayout(true);
-        }
-
-        mEventBus.post(new FetchDeparturesEvent(mStation.getIdStr()));
-    }
-
-    public void updateFavorites() {
-        if(mDepartures == null || mDepartures.size() == 0) {
-            return;
-        }
-
-        List<Departure> favoriteLines = favoritesDataSource.getAllFavoriteLines(mActivity);
-        List<Departure> favoriteDepartures = new ArrayList<>();
-        for(Departure departure : mDepartures) {
-            boolean contains = false;
-            for(Departure favorite : favoriteLines) {
-                if(favorite.lineEquals(departure)) {
-                    favoriteDepartures.add(departure);
-                    contains = true;
-                }
-            }
-
-            departure.setIsFavorite(contains);
-        }
-
-        mFavoriteDepartures = favoriteDepartures;
-        mActivity.updateDepartures(mDepartures);
-        mActivity.updateFavorites(mFavoriteDepartures);
-    }
-
-    public void toggleFavorite() {
-        if (getIsFavorite()) {
-            //Remove from fav
-            mStation.setIsFavorite(false);
-            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
-        } else {
-            //Add to fav
-            mStation.setIsFavorite(true);
-            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
-        }
-    }
-
     @Subscribe
     public void onDeparturesFetchedEvent(DeparturesFetchedEvent event) {
         mActivity.showProgressLayout(false);
@@ -141,5 +90,91 @@ public class DeparturesPresenter implements Presenter {
                 updateDepartures();
             }
         });
+    }
+
+    public Station getStation() {
+        return mStation;
+    }
+
+    public boolean getStationIsFavorite() {
+        return mStation.getIsFavorite();
+    }
+
+    public void updateDepartures() {
+        if (mDepartures == null || mDepartures.size() == 0) {
+            mActivity.showProgressLayout(true);
+        }
+
+        mEventBus.post(new FetchDeparturesEvent(mStation.getIdStr()));
+    }
+
+    public void updateFavorites() {
+        if(mDepartures == null || mDepartures.size() == 0) {
+            return;
+        }
+
+        mFavoriteDepartures = getFavorites();
+
+        mActivity.updateDepartures(mDepartures);
+        mActivity.updateFavorites(mFavoriteDepartures);
+    }
+
+    public void toggleStationIsFavorite() {
+        if (mStation.getIsFavorite()) {
+            mStation.setIsFavorite(false);
+            favoritesDataSource.deleteFavoriteStation(mActivity, mStation);
+        }
+        else {
+            mStation.setIsFavorite(true);
+            favoritesDataSource.insertFavoriteStation(mActivity, mStation);
+        }
+    }
+
+    public void updateDepartureIsFavorite(Departure departure, boolean isFavorite) {
+        String action, action1;
+
+        if (isFavorite) {
+            favoritesDataSource.insertFavoriteLine(mActivity, departure);
+            action = mActivity.getResources().getString(R.string.departure_action_add);
+            action1 = mActivity.getResources().getString(R.string.departure_action_add_2);
+        }
+        else {
+            favoritesDataSource.deleteFavoriteLine(mActivity, departure);
+            action = mActivity.getResources().getString(R.string.departure_action_remove);
+            action1 = mActivity.getResources().getString(R.string.departure_action_remove_2);
+        }
+
+        String message = mActivity.getResources().getString(R.string.departure_fav_message);
+        String messageFormatted = String.format(message, departure.getName(), departure.getDestinationName(), action, action1);
+        mActivity.displayToastMessage(messageFormatted);
+
+        updateFavoritesOnFavoriteList();
+        if(mFavoriteDepartures.size() == 0) {
+            mActivity.displayDepartureList();
+        }
+    }
+
+    private void updateFavoritesOnFavoriteList() {
+        mFavoriteDepartures = getFavorites();
+        mActivity.updateFavorites(mFavoriteDepartures);
+    }
+
+    private List<Departure> getFavorites() {
+        List<Departure> favoriteLines = favoritesDataSource.getAllFavoriteLines(mActivity);
+        List<Departure> favoriteDepartures = new ArrayList<>();
+
+        for(Departure departure : mDepartures) {
+            boolean contains = false;
+            for(Departure favorite : favoriteLines) {
+                if(favorite.lineEquals(departure)) {
+                    favoriteDepartures.add(departure);
+                    contains = true;
+                }
+            }
+
+            departure.setIsFavorite(contains);
+        }
+
+        return favoriteDepartures;
     }
 }

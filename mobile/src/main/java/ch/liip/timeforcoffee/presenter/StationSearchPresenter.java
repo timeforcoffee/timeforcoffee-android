@@ -64,21 +64,6 @@ public class StationSearchPresenter implements Presenter {
         mEventBus.unregister(this);
     }
 
-    public void setSearchQuery(String searchQuery) {
-        mSearchQuery = searchQuery;
-    }
-
-    public String getSearchQuery() {
-        return mSearchQuery;
-    }
-
-    public void search() {
-        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
-            mActivity.setIsSearchLoading(true);
-            mEventBus.post(new FetchStationsSearchEvent(mSearchQuery));
-        }
-    }
-
     @Subscribe
     public void onStationsFetchedEvent(StationsSearchFetchedEvent event) {
         mActivity.setIsSearchLoading(false);
@@ -101,5 +86,29 @@ public class StationSearchPresenter implements Presenter {
                 search();
             }
         });
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        mSearchQuery = searchQuery;
+    }
+
+    public String getSearchQuery() {
+        return mSearchQuery;
+    }
+
+    public void search() {
+        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+            mActivity.setIsSearchLoading(true);
+            mEventBus.post(new FetchStationsSearchEvent(mSearchQuery));
+        }
+    }
+
+    public void updateStationIsFavorite(Station station, boolean isFavorite) {
+        if (isFavorite) {
+            favoritesDataSource.insertFavoriteStation(mActivity, station);
+        }
+        else {
+            favoritesDataSource.deleteFavoriteStation(mActivity, station);
+        }
     }
 }
