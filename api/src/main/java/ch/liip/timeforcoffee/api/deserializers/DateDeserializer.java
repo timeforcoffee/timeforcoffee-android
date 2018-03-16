@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class DateDeserializer implements JsonDeserializer<Date> {
 
-  private final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss" };
+  private final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ssZ" };
 
   @Override
   public Date deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
