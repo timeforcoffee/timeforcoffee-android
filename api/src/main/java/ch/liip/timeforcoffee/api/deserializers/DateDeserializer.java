@@ -1,4 +1,4 @@
-package ch.liip.timeforcoffee.helper;
+package ch.liip.timeforcoffee.api.deserializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
