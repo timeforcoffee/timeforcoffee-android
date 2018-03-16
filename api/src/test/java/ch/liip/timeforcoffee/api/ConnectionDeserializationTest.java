@@ -9,8 +9,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
+import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.zvv.CheckPoint;
 import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 
@@ -20,12 +23,13 @@ public class ConnectionDeserializationTest {
 
     private SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            .registerTypeAdapter(Date.class, new DateDeserializer())
+            .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
             .create();
 
     @Test
-    public void stationsForLocationDeserialization_Works() throws UnsupportedEncodingException {
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("connections.json");
+    public void connectionsFormat1Deserialization_Works() throws UnsupportedEncodingException {
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("connections_format1.json");
         InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
 
         ConnectionsResponse connectionsResponse = gson.fromJson(reader, ConnectionsResponse.class);
@@ -141,5 +145,45 @@ public class ConnectionDeserializationTest {
         assertEquals(null , station12.getDeparture().getRealtime());
         assertEquals("2018-03-09T15:58:00" , dateTimeFormatter.format(station12.getDeparture().getScheduled()));
         assertEquals(null , station12.getArrival().getRealtime());
+    }
+
+    @Test
+    public void connectionsFormat2Deserialization_Works() throws UnsupportedEncodingException {
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("connections_format2.json");
+        InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
+
+        ConnectionsResponse connectionsResponse = gson.fromJson(reader, ConnectionsResponse.class);
+
+        List<CheckPoint> stations = connectionsResponse.getConnections();
+        assertEquals(3, stations.size());
+
+        CheckPoint station1 = stations.get(0);
+        assertEquals("8503000", station1.getId());
+        assertEquals("Zürich HB", station1.getName());
+        assertEquals((Double)47.377847, (Double) station1.getLocation().getLat());
+        assertEquals((Double)8.540502, (Double) station1.getLocation().getLng());
+        assertEquals("2018-03-15T11:59:00" , dateTimeFormatter.format(station1.getDeparture().getScheduled()));
+        assertEquals(null , station1.getDeparture().getRealtime());
+        assertEquals(null , station1.getArrival().getRealtime());
+        assertEquals(null , station1.getArrival().getScheduled());
+
+        CheckPoint station2 = stations.get(1);
+        assertEquals("8503020", station2.getId());
+        assertEquals("Zürich Hardbrücke", station2.getName());
+        assertEquals((Double)47.385087, (Double) station2.getLocation().getLat());
+        assertEquals((Double)8.517686, (Double) station2.getLocation().getLng());
+        assertEquals("2018-03-15T12:01:00" , dateTimeFormatter.format(station2.getDeparture().getScheduled()));
+        assertEquals(null , station2.getDeparture().getRealtime());
+        assertEquals(null , station2.getArrival());
+
+        CheckPoint station3 = stations.get(2);
+        assertEquals("8503001", station3.getId());
+        assertEquals("Zürich Altstetten", station3.getName());
+        assertEquals((Double)47.391478, (Double) station3.getLocation().getLat());
+        assertEquals((Double)8.488939, (Double) station3.getLocation().getLng());
+        assertEquals("2018-03-15T12:05:00" , dateTimeFormatter.format(station3.getDeparture().getScheduled()));
+        assertEquals(null , station3.getDeparture().getRealtime());
+        assertEquals("2018-03-15T12:05:00" , dateTimeFormatter.format(station3.getDeparture().getScheduled()));
+        assertEquals(null , station3.getArrival().getRealtime());
     }
 }
