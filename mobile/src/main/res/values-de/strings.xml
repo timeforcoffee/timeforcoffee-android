@@ -36,6 +36,7 @@
     <string name="departure_action_add_2">hinzugefügt</string>
     <string name="departure_action_remove">von</string>
     <string name="departure_action_remove_2">gelöscht</string>
+    <string name="map_loading">Wird geladen…</string>
 </resources>
 
 

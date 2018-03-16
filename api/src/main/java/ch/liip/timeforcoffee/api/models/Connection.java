@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.api.models;
 
 import android.location.Location;
+import android.support.annotation.Nullable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,7 +48,7 @@ public class Connection {
         return departureLabel;
     }
 
-    public String getScheduledDepartureStr() {
+    public @Nullable String getScheduledDepartureStr() {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         if (scheduledDeparture != null) {
             return dt.format(scheduledDeparture);
@@ -56,7 +57,7 @@ public class Connection {
         return null;
     }
 
-    public String getRealtimeDepartureStr() {
+    public @Nullable String getRealtimeDepartureStr() {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         if (realtimeDeparture != null) {
             return dt.format(realtimeDeparture);
@@ -65,7 +66,7 @@ public class Connection {
         return null;
     }
 
-    public String getDepartureInMinutes() {
+    public @Nullable String getDepartureInMinutes() {
         long timeInterval = getDepartureTimeDiffInMinutes();
         if (timeInterval < 0){
             return "0'";

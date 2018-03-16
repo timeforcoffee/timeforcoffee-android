@@ -25,7 +25,7 @@ import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
-public class DepartureListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class DepartureListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, DepartureListAdapter.Callbacks {
 
     private FragmentActivity mActivity;
     private DepartureListAdapter mDepartureListAdapter;
@@ -33,22 +33,21 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
-    @Inject
-    FavoritesDataSource favoritesDataSource;
-
     public interface Callbacks {
-        void onDepartureSelected(Departure departure);
         void onRefresh();
+        void onDepartureSelected(Departure departure);
+        void onDepartureFavoriteToggled(Departure departure, boolean isFavorite);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onDepartureSelected(Departure departure) {
-        }
+        public void onDepartureSelected(Departure departure) { }
 
         @Override
-        public void onRefresh() {
-        }
+        public void onRefresh() { }
+
+        @Override
+        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
     };
 
     /**
@@ -65,7 +64,7 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
         ((TimeForCoffeeApplication) getActivity().getApplication()).inject(this);
 
         mActivity = getActivity();
-        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), favoritesDataSource);
+        mDepartureListAdapter = new DepartureListAdapter(getActivity(), new ArrayList<Departure>(), this);
         setListAdapter(mDepartureListAdapter);
     }
 
@@ -117,6 +116,11 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
         mCallbacks.onDepartureSelected(mDepartureListAdapter.getDeparture(position));
+    }
+
+    @Override
+    public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) {
+        mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
     }
 
     public void setDepartures(List<Departure> departures) {

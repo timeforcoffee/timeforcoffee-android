@@ -111,6 +111,16 @@ public class AboutActivity extends AppCompatActivity {
                 openGithub(getResources().getString(R.string.luca_sardonini_github_username));
             }
         });
+
+        TextView pascalGithub = findViewById(R.id.pascalGithub);
+        pascalGithub.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        pascalGithub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGithub(getResources().getString(R.string.pascal_cudre_github_username));
+            }
+        });
+
     }
 
     private String getAppVersionStr() {
