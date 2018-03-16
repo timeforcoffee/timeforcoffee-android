@@ -206,7 +206,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     }
 
     public void updateConnections(List<Connection> connections) {
-        mStationMapFragment.setup(connections, getResources().getString(R.string.connection_from));
+        mStationMapFragment.setup(connections);
         mConnectionListFragment.setConnections(connections);
     }
 
