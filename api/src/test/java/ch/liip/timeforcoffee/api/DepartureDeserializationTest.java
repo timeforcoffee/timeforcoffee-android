@@ -26,7 +26,6 @@ public class DepartureDeserializationTest {
     private SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private Gson gson = new GsonBuilder()
             .registerTypeAdapter(Date.class, new DateDeserializer())
-            .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
             .create();
 
     @Test
