@@ -66,4 +66,5 @@
     <string name="departure_action_add_2">to</string>
     <string name="departure_action_remove">removed</string>
     <string name="departure_action_remove_2">from</string>
+    <string name="map_loading">Loading…</string>
 </resources>
