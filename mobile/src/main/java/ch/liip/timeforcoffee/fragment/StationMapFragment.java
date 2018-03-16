@@ -126,14 +126,14 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         loadMap();
     }
 
-    public void setup(List<Connection> connections, String fromStr) {
+    public void setup(List<Connection> connections) {
         mConnections = connections;
 
         Connection departure = mConnections.get(0);
         Connection destination = mConnections.get(mConnections.size() - 1);
 
         mTitleTextView.setText(destination.getName());
-        mSubtitleTextView.setText(String.format("%s %s", fromStr, departure.getName()));
+        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getName()));
         mSubtitleTextView.setVisibility(View.VISIBLE);
 
         loadMap();
