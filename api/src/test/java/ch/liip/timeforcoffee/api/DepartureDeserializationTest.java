@@ -9,8 +9,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
+import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
+import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Departure;
 import ch.liip.timeforcoffee.zvv.StationboardMeta;
 import ch.liip.timeforcoffee.zvv.StationboardResponse;
@@ -21,7 +25,8 @@ public class DepartureDeserializationTest {
 
     private SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            .registerTypeAdapter(Date.class, new DateDeserializer())
+            .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
             .create();
 
     @Test

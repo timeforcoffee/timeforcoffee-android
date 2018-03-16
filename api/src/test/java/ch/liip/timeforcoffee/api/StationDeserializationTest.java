@@ -8,10 +8,14 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
+import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
+import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.opendata.Location;
 import ch.liip.timeforcoffee.opendata.LocationsResponse;
+import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.Station;
 import ch.liip.timeforcoffee.zvv.StationsResponse;
 
@@ -19,7 +23,10 @@ import static org.junit.Assert.assertEquals;
 
 public class StationDeserializationTest {
 
-    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+    private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new DateDeserializer())
+            .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
+            .create();
 
     @Test
     public void stationsForLocationDeserialization_Works() throws UnsupportedEncodingException {
