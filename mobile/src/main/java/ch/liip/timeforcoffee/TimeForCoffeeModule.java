@@ -56,7 +56,6 @@ class TimeForCoffeeModule {
     TransportService provideTransportService() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, new DateDeserializer())
-                .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
