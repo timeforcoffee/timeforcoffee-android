@@ -1,0 +1,30 @@
+variables:
+  FASTLANE_SKIP_UPDATE_CHECK: "true"
+
+before_script:
+  - export ANDROID_HOME=/Users/Shared/Android/sdk
+  - export PATH=$PATH:/Users/Shared/Android/sdk/platform-tools/
+  - bundle install
+
+unitTests:
+  stage: test
+  tags:
+  - the-mob
+  script:
+  - bundle exec fastlane ci_test
+
+release:
+  stage: deploy
+  tags:
+    - the-mob
+  when: manual
+  only:
+    - master
+  script:
+    - bundle exec fastlane release
+  artifacts:
+    name: "android_${CI_COMMIT_REF_SLUG}_${CI_JOB_ID}"
+    expire_in: 6 months
+    paths:
+      - mobile/build/outputs/
+

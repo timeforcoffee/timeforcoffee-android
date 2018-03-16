@@ -4,31 +4,25 @@ import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.DepartureService;
 import ch.liip.timeforcoffee.api.OpenDataApiService;
 import ch.liip.timeforcoffee.api.StationService;
-import ch.liip.timeforcoffee.api.WalkingDistanceCache;
 import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
+import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.opendata.TransportService;
 import ch.liip.timeforcoffee.presenter.*;
 import ch.liip.timeforcoffee.wear.DataService;
+import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
 import ch.liip.timeforcoffee.zvv.ZvvService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 
 import dagger.Module;
 import dagger.Provides;
 import org.greenrobot.eventbus.EventBus;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 import retrofit.RestAdapter;
@@ -78,21 +72,9 @@ class TimeForCoffeeModule {
     @Singleton
     ZvvService provideZvvService() {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-
-                    private final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss" };
-
-                    @Override
-                    public Date deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
-                        for (String format : DATE_FORMATS) {
-                            try {
-                                return new SimpleDateFormat(format).parse(jsonElement.getAsString());
-                            } catch (ParseException e) { }
-                        }
-
-                        throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString() + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
-                    }
-                })
+                // Register all the Custom deserializer for Retrofit
+                .registerTypeAdapter(Date.class, new DateDeserializer())
+                .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
