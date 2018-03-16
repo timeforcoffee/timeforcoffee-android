@@ -54,9 +54,8 @@ class TimeForCoffeeModule {
     @Provides
     @Singleton
     TransportService provideTransportService() {
-
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .registerTypeAdapter(Date.class, new DateDeserializer())
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -64,15 +63,13 @@ class TimeForCoffeeModule {
                 .setConverter(new GsonConverter(gson))
                 .build();
 
-        TransportService service = restAdapter.create(TransportService.class);
-        return service;
+        return restAdapter.create(TransportService.class);
     }
 
     @Provides
     @Singleton
     ZvvService provideZvvService() {
         Gson gson = new GsonBuilder()
-                // Register all the Custom deserializer for Retrofit
                 .registerTypeAdapter(Date.class, new DateDeserializer())
                 .registerTypeAdapter(ConnectionsResponse.class, new ConnectionsDeserializer())
                 .create();
@@ -82,8 +79,7 @@ class TimeForCoffeeModule {
                 .setConverter(new GsonConverter(gson))
                 .build();
 
-        ZvvService service = restAdapter.create(ZvvService.class);
-        return service;
+        return restAdapter.create(ZvvService.class);
     }
 
     @Provides
