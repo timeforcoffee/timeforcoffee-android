@@ -53,12 +53,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     private TextView mSubtitleTextView;
     private ImageView mChevron;
 
-    private Callbacks mCallbacks;
-
-    public interface Callbacks {
-        void onMapLoaded();
-    }
-
     public StationMapFragment() {
         // Required empty public constructor
     }
@@ -78,16 +72,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         transaction.commit();
 
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (!(context instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-
-        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -111,9 +95,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     @Override
     public void onMapLoaded() {
         calculateZoomForVisiblePoints();
-        if(mCallbacks != null) {
-            mCallbacks.onMapLoaded();
-        }
     }
 
     public void setup(Station station) {
