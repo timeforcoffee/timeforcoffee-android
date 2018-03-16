@@ -66,14 +66,12 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
 
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
-        } else{
+        }
+        else{
             mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
         }
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content_frame, mStationListFragment)
-                .commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mStationListFragment).commit();
     }
 
     @Override
@@ -126,6 +124,11 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         selectStation(station);
     }
 
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) {
+        mPresenter.updateStationIsFavorite(station, isFavorite);
+    }
+
     private void selectStation(Station station) {
         Intent detailIntent = new Intent(this, DeparturesActivity.class);
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
@@ -168,17 +171,14 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
 
         @Override
         public void afterTextChanged(Editable editable) {
-
             //Stop current handler since we have a new text entered
             if (mSearchHandler != null && mSearchRunnable != null) {
-                //Log.i(TAG, "Stop current search");
                 mSearchHandler.removeCallbacks(mSearchRunnable);
                 mSearchHandler = null;
                 mSearchRunnable = null;
             }
 
-            //Search afer 1 sec. This allow to stop the search is user is still entering
-            //new letters
+            //Search after 1 sec. This allow to stop the search is user is still entering text
             mSearchRunnable = new Runnable() {
                 public void run() {
                     mPresenter.setSearchQuery(mSearchEditText.getText().toString());

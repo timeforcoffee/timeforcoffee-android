@@ -28,7 +28,7 @@ import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
-public class StationListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class StationListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, StationListAdapter.Callbacks {
 
     public static final String ARG_SEARCH_MODE = "search_mode";
     private boolean mSearchMode;
@@ -46,8 +46,9 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     FavoritesDataSource favoritesDataSource;
 
     public interface Callbacks {
-        void onStationSelected(Station station);
         void onRefresh();
+        void onStationSelected(Station station);
+        void onStationFavoriteToggled(Station station, boolean isFavorite);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -56,6 +57,9 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
 
         @Override
         public void onRefresh() { }
+
+        @Override
+        public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
     };
 
     /**
@@ -79,7 +83,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         }
 
         mSearchMode = args.getBoolean(ARG_SEARCH_MODE);
-        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), favoritesDataSource);
+        mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), this);
         setListAdapter(mStationListAdapter);
     }
 
@@ -146,6 +150,11 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
         mCallbacks.onStationSelected(mStationListAdapter.getStation(position));
+    }
+
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) {
+        mCallbacks.onStationFavoriteToggled(station, isFavorite);
     }
 
     public void setStations(List<Station> stations) {

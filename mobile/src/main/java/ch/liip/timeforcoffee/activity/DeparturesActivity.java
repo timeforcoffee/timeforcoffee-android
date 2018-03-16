@@ -33,7 +33,9 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
+    private ViewPager mTabsViewPager;
     private RelativeLayout mProgressLayout;
+
 
     private DeparturesPresenter mPresenter;
     private DepartureListFragment mDepartureListFragment;
@@ -41,6 +43,8 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     public static final String DEPARTURE_LIST_FRAGMENT_KEY = "departure_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+    private static final int DEPARTURE_LIST_TAB = 0;
+    private static final int FAVORITE_LIST_TAB = 1;
 
     public static final String ARG_STATION_ID = "station_id";
     public static final String ARG__STATION_NAME = "station_name";
@@ -98,12 +102,16 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         fragments.add(mFavoriteListFragment);
 
         // Initialize the ViewPager and bind to tabs
-        TabsAdapter pagerAdapter = new TabsAdapter(this, super.getSupportFragmentManager(), new int[]{ R.string.tab_departures, R.string.tab_favorites }, fragments);
-        ViewPager viewPager = super.findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
+        mTabsViewPager = super.findViewById(R.id.viewpager);
+        mTabsViewPager.setAdapter(new TabsAdapter(
+                this,
+                super.getSupportFragmentManager(),
+                new int[]{ R.string.tab_departures, R.string.tab_favorites },
+                fragments
+        ));
 
         PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(viewPager);
+        tabs.setViewPager(mTabsViewPager);
         tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -150,7 +158,7 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         inflater.inflate(R.menu.menu_fav, menu);
         MenuItem favItem = menu.findItem(R.id.action_fav);
 
-        if (mPresenter.getIsFavorite()) {
+        if (mPresenter.getStationIsFavorite()) {
             favItem.setIcon(R.drawable.ic_action_star);
         } else {
             favItem.setIcon(R.drawable.ic_action_star_border);
@@ -165,9 +173,10 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (id == R.id.action_fav) {
-            mPresenter.toggleFavorite();
-            if (mPresenter.getIsFavorite()) {
+        }
+        else if (id == R.id.action_fav) {
+            mPresenter.toggleStationIsFavorite();
+            if (mPresenter.getStationIsFavorite()) {
                 item.setIcon(R.drawable.ic_action_star);
             } else {
                 item.setIcon(R.drawable.ic_action_star_border);
@@ -211,6 +220,14 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     @Override
     public void onFavoriteStationSelected(Station station) { }
+
+    @Override
+    public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
+
+    @Override
+    public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) {
+        mPresenter.updateDepartureIsFavorite(departure, isFavorite);
+    }
 
     private void selectDeparture(Departure departure) {
         Intent detailIntent = new Intent(this, ConnectionsActivity.class);
@@ -256,8 +273,13 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
     public void showProgressLayout(boolean show) {
         if (show) {
             mProgressLayout.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             mProgressLayout.setVisibility(View.GONE);
         }
+    }
+
+    public void displayDepartureList() {
+        mTabsViewPager.setCurrentItem(DEPARTURE_LIST_TAB);
     }
 }
