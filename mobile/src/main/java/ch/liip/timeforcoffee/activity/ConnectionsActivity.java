@@ -24,7 +24,7 @@ import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
 
-public class ConnectionsActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, StationMapFragment.Callbacks, ConnectionListFragment.Callbacks {
+public class ConnectionsActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, ConnectionListFragment.Callbacks {
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
@@ -109,7 +109,6 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
 
         mSlidingLayout = findViewById(R.id.sliding_layout);
         mSlidingLayout.setPanelSlideListener(this);
-        mSlidingLayout.setTouchEnabled(false);
     }
 
     @Override
@@ -192,11 +191,6 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
 
     @Override
     public void onPanelHidden(View panel) { }
-
-    @Override
-    public void onMapLoaded() {
-        mSlidingLayout.setTouchEnabled(true);
-    }
 
     @Override
     public void onConnectionSelected(Connection connection) { }
