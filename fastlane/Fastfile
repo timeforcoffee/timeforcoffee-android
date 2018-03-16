@@ -31,7 +31,7 @@ platform :android do
     gradle(
         task: "assemble",
         flavor: "Full",
-        build_type: "Release",
+        build_type: "Debug",
         properties: gradleProperties
     )
 
@@ -40,6 +40,10 @@ platform :android do
       task: "test",
       flavor: "Full",
       build_type: "DebugUnitTest"
+    )
+
+    gradle(
+      task: "api:test",
     )
   end
 
