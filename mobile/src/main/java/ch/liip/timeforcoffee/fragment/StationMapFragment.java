@@ -218,7 +218,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         checkpoints.add(destinationLocation);
 
         mVisiblePoints.addAll(checkpoints);
-        drawPathForCheckpoints(checkpoints);
     }
 
     private void drawPathForCheckpoints(List<LatLng> checkpoints) {
