@@ -7,10 +7,11 @@
     <string name="action_search">Suche</string>
     <string name="action_about">Über</string>
     <string name="action_favorite">Zu Favoriten hinzufügen</string>
-    <string name="title_loading_position">Wir versuchen sie zu lokalisieren...</string>
+    <string name="title_loading_position">Wir versuchen sie zu lokalisieren…</string>
     <string name="title_no_stations">Keine Stationen gefunden</string>
     <string name="title_enter_search">"Geben Sie Ihre Suche ein"</string>
     <string name="title_no_favorites">Keine Favoriten</string>
+    <string name="title_no_departures">Keine Abfahrten</string>
     <string name="title_add_favorite_end">um eine Station als Favorit hinzuzufügen</string>
     <string name="title_add_favorite_start">Tippe das Icon an</string>
     <string name="platform">- Gl: %s</string>
