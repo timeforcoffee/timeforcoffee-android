@@ -84,9 +84,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     @Override
     public void onRefreshView() {
-        // Empty list before reloading
-        mActivity.updateStations(new ArrayList<Station>());
-
         loadStationsWithLastPosition();
     }
 
@@ -147,7 +144,8 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     public void updateStations() {
         if (Build.FINGERPRINT.contains("generic")) { //emulator
             loadStationsWithLastPosition();
-        } else if (!mIsCapturingLocation) {
+        }
+        else if (!mIsCapturingLocation) {
             startLocation();
         }
     }
@@ -186,6 +184,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     private void startLocation() {
         if (!permissionsChecker.LacksPermission(locationPermission)) {
+            mActivity.updateStations(new ArrayList<Station>());
             mActivity.setIsPositionLoading(true);
 
             if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
@@ -226,6 +225,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     }
 
     private void loadStationsWithLastPosition() {
+        mActivity.updateStations(new ArrayList<Station>());
         mActivity.setIsPositionLoading(true);
 
         if (Build.FINGERPRINT.contains("generic")) { //emulator
