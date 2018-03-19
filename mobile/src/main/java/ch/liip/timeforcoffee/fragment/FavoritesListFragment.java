@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -38,7 +39,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     private LinearLayout mNoFavoritesLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onFavoriteStationSelected(Station station);
@@ -46,20 +47,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         void onStationFavoriteToggled(Station station, boolean isFavorite);
         void onDepartureFavoriteToggled(Departure station, boolean isFavorite);
     }
-
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onFavoriteStationSelected(Station station) { }
-
-        @Override
-        public void onFavoriteDepartureSelected(Departure departure) { }
-
-        @Override
-        public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
-
-        @Override
-        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
-    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -104,8 +91,6 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        // Activities containing this fragment must implement its callbacks.
         if (!(activity instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
@@ -116,8 +101,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onDetach() {
         super.onDetach();
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
+        mCallbacks = null;
     }
 
     @Override
@@ -133,21 +117,28 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
-        if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
-            mCallbacks.onFavoriteStationSelected(mStationListAdapter.getStation(position));
-        } else {
-            mCallbacks.onFavoriteDepartureSelected(mDepartureListAdapter.getDeparture(position));
+        if(mCallbacks != null) {
+            if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
+                mCallbacks.onFavoriteStationSelected(mStationListAdapter.getStation(position));
+            }
+            else {
+                mCallbacks.onFavoriteDepartureSelected(mDepartureListAdapter.getDeparture(position));
+            }
         }
     }
 
     @Override
     public void onStationFavoriteToggled(Station station, boolean isFavorite) {
-        mCallbacks.onStationFavoriteToggled(station, isFavorite);
+        if(mCallbacks != null) {
+            mCallbacks.onStationFavoriteToggled(station, isFavorite);
+        }
     }
 
     @Override
     public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) {
-        mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
+        if(mCallbacks != null) {
+            mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
+        }
     }
 
     public void setStations(List<Station> stations) {
