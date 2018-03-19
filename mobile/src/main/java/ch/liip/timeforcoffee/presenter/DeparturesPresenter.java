@@ -73,7 +73,7 @@ public class DeparturesPresenter implements Presenter {
 
     @Subscribe
     public void onDeparturesFetchedEvent(DeparturesFetchedEvent event) {
-        mActivity.showProgressLayout(false);
+        mActivity.setAreDeparturesLoading(false);
 
         mDepartures = event.getDepartures();
         mActivity.updateDepartures(mDepartures);
@@ -83,7 +83,7 @@ public class DeparturesPresenter implements Presenter {
 
     @Subscribe
     public void onFetchErrorEvent(FetchDeparturesErrorEvent event) {
-        mActivity.showProgressLayout(false);
+        mActivity.setAreDeparturesLoading(false);
         SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +102,7 @@ public class DeparturesPresenter implements Presenter {
 
     public void updateDepartures() {
         if (mDepartures == null || mDepartures.size() == 0) {
-            mActivity.showProgressLayout(true);
+            mActivity.setAreDeparturesLoading(true);
         }
 
         mEventBus.post(new FetchDeparturesEvent(mStation.getIdStr()));

@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,7 +41,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     private RelativeLayout mEnterSearchLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
     @Inject
     FavoritesDataSource favoritesDataSource;
@@ -50,17 +51,6 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         void onStationSelected(Station station);
         void onStationFavoriteToggled(Station station, boolean isFavorite);
     }
-
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onStationSelected(Station station) { }
-
-        @Override
-        public void onRefresh() { }
-
-        @Override
-        public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
-    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -97,8 +87,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        mNoStationsLayout.setVisibility(View.GONE);
         mLoadingPositionLayout.setVisibility(View.GONE);
+        mNoStationsLayout.setVisibility(View.GONE);
         if (mSearchMode) {
             mEnterSearchLayout.setVisibility(View.VISIBLE);
         } else {
@@ -120,19 +110,19 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (!(context instanceof Callbacks)) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallbacks = (Callbacks) context;
+
+        mCallbacks = (Callbacks) activity;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
+        mCallbacks = null;
     }
 
     @Override
@@ -140,8 +130,10 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCallbacks.onRefresh();
                 swipeRefreshLayout.setRefreshing(false);
+                if(mCallbacks != null) {
+                    mCallbacks.onRefresh();
+                }
             }
         }, 100);
     }
@@ -149,12 +141,16 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
-        mCallbacks.onStationSelected(mStationListAdapter.getStation(position));
+        if(mCallbacks != null) {
+            mCallbacks.onStationSelected(mStationListAdapter.getStation(position));
+        }
     }
 
     @Override
     public void onStationFavoriteToggled(Station station, boolean isFavorite) {
-        mCallbacks.onStationFavoriteToggled(station, isFavorite);
+        if(mCallbacks != null) {
+            mCallbacks.onStationFavoriteToggled(station, isFavorite);
+        }
     }
 
     public void setStations(List<Station> stations) {
@@ -170,7 +166,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         if(mLoadingPositionLayout != null) {
             if (show) {
                 mLoadingPositionLayout.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 mLoadingPositionLayout.setVisibility(View.GONE);
             }
         }
@@ -182,7 +179,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
             mEnterSearchLayout.setVisibility(View.GONE);
             if (show) {
                 mNoStationsLayout.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 mNoStationsLayout.setVisibility(View.GONE);
             }
         }

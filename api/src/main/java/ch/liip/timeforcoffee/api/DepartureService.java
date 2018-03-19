@@ -17,6 +17,7 @@ import ch.liip.timeforcoffee.api.models.Departure;
 public class DepartureService {
 
     private final EventBus eventBus;
+    private String stationId;
 
     @Inject
     public DepartureService(EventBus eventBus) {
@@ -26,14 +27,20 @@ public class DepartureService {
 
     @Subscribe
     public void onEvent(FetchDeparturesEvent event) {
-        eventBus.post(new FetchZvvDeparturesEvent(event.getStationId()));
+        stationId = event.getStationId();
+        eventBus.post(new FetchZvvDeparturesEvent(stationId));
     }
 
     @Subscribe
     public void onEvent(ZvvDeparturesFetchedEvent event) {
         ArrayList<Departure> departures = new ArrayList<>();
+        int stationId = Integer.parseInt(this.stationId);
+
         for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : event.getDepartures()) {
-            departures.add(DepartureMapper.fromZvv(zvvDeparture));
+            Departure departure = DepartureMapper.fromZvv(zvvDeparture, stationId);
+            if(departure != null) {
+                departures.add(departure);
+            }
         }
 
         eventBus.post(new DeparturesFetchedEvent(departures));
