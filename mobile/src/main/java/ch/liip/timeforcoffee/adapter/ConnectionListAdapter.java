@@ -33,29 +33,28 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ConnectionListAdapter.ConnexionViewHolder viewHolder;
+        String departureLabel = mContext.getResources().getString(R.string.connection_departure);
+        String arrivalLabel = mContext.getResources().getString(R.string.connection_arrival);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.fragment_connection_list_row, parent, false);
 
             viewHolder = new ConnectionListAdapter.ConnexionViewHolder();
-            viewHolder.stationTextView = (TextView) convertView.findViewById(R.id.station);
-            viewHolder.timeLabelTextView = (TextView) convertView.findViewById(R.id.time_label);
-            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.time);
-            viewHolder.realtimeDepartureTextView = (TextView) convertView.findViewById(R.id.realtime);
-            viewHolder.departureTextView = (TextView) convertView.findViewById(R.id.departure);
+            viewHolder.stationTextView = convertView.findViewById(R.id.station);
+            viewHolder.timeLabelTextView = convertView.findViewById(R.id.time_label);
+            viewHolder.timeTextView = convertView.findViewById(R.id.time);
+            viewHolder.realtimeDepartureTextView = convertView.findViewById(R.id.realtime);
+            viewHolder.departureTextView = convertView.findViewById(R.id.departure);
 
 
             convertView.setTag(viewHolder);
 
-        } else {
+        }
+        else {
             viewHolder = (ConnectionListAdapter.ConnexionViewHolder) convertView.getTag();
         }
-
-        String departureLabel = mContext.getResources().getString(R.string.connection_departure);
-        String arrivalLabel = mContext.getResources().getString(R.string.connection_arrival);
 
         Connection connection = this.mConnexions.get(position);
         viewHolder.stationTextView.setText(connection.getName());
@@ -67,16 +66,13 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
             viewHolder.realtimeDepartureTextView.setVisibility(View.VISIBLE);
             viewHolder.realtimeDepartureTextView.setText(connection.getRealtimeDepartureStr());
             viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
+        }
+        else {
             viewHolder.realtimeDepartureTextView.setVisibility(View.GONE);
             viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
         return convertView;
-    }
-
-    public Connection getConnexion(int position) {
-        return this.mConnexions.get(position);
     }
 
     public void setConnexions(List<Connection> connexions) {
