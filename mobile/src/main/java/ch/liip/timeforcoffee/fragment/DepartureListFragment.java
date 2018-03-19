@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,8 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     private FragmentActivity mActivity;
     private DepartureListAdapter mDepartureListAdapter;
+    private RelativeLayout mNoDesparturesLayout;
+    private ProgressBar mLoadingDeparturesProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Callbacks mCallbacks = sDummyCallbacks;
@@ -71,8 +75,14 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_departure_list, container, false);
+
+        mLoadingDeparturesProgressBar = rootView.findViewById(R.id.loadingDeparturesSpinner);
+        mNoDesparturesLayout = rootView.findViewById(R.id.noDeparturesLayout);
         mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        mLoadingDeparturesProgressBar.setVisibility(View.GONE);
+        mNoDesparturesLayout.setVisibility(View.GONE);
 
         return rootView;
     }
@@ -124,6 +134,29 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setDepartures(List<Departure> departures) {
+        showNoDeparturesLayout(departures.size() == 0);
         mDepartureListAdapter.setDepartures(departures);
+    }
+
+    public void showLoadingDeparturesProgressBar(boolean show) {
+        if(mLoadingDeparturesProgressBar != null) {
+            if (show) {
+                mLoadingDeparturesProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mLoadingDeparturesProgressBar.setVisibility(View.GONE);
+            }
+        }
+
+    }
+
+    public void showNoDeparturesLayout(boolean show) {
+        if(mNoDesparturesLayout != null) {
+            mNoDesparturesLayout.setVisibility(View.GONE);
+            if (show) {
+                mNoDesparturesLayout.setVisibility(View.VISIBLE);
+            } else {
+                mNoDesparturesLayout.setVisibility(View.GONE);
+            }
+        }
     }
 }
