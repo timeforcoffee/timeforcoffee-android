@@ -104,21 +104,26 @@ public class Departure {
     }
 
     public String getDepartureStrForZvv() {
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        return dateFormatter.format(departureScheduled);
+        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        if (departureScheduled != null) {
+            return dt.format(departureScheduled);
+        }
+
+        return null;
     }
 
     public String getArrivalStrForZvv() {
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        return dateFormatter.format(arrivalScheduled);
+        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        if (arrivalScheduled != null) {
+            return dt.format(arrivalScheduled);
+        }
+
+        return null;
     }
 
-    //realtime != schedule time
     public Boolean isLate() {
-        if (departureRealtime != null && departureScheduled != null && departureRealtime.compareTo(departureScheduled) != 0) {
-            return true;
-        }
-        return false;
+        return departureRealtime != null && departureScheduled != null && departureRealtime.compareTo(departureScheduled) != 0;
+
     }
 
     public String departureInMinutes() {
@@ -133,7 +138,7 @@ public class Departure {
         return timeInterval +"'";
     }
 
-    long getDepartureTimeDiffInMinutes() {
+    private long getDepartureTimeDiffInMinutes() {
         long diff = -1;
         Date now = new Date();
         if (departureRealtime != null){
