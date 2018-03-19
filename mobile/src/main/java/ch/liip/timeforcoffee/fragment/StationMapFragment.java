@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Connection;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.api.models.WalkingDistance;
 import io.nlopez.smartlocation.SmartLocation;
@@ -52,6 +54,12 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     private TextView mTitleTextView;
     private TextView mSubtitleTextView;
     private ImageView mChevron;
+
+    private Callbacks mCallbacks;
+
+    public interface Callbacks {
+        void onMapLoaded();
+    }
 
     public StationMapFragment() {
         // Required empty public constructor
@@ -75,6 +83,22 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof Callbacks)) {
+            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapLoadedCallback(this);
@@ -95,6 +119,9 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     @Override
     public void onMapLoaded() {
         calculateZoomForVisiblePoints();
+        if(mCallbacks != null) {
+            mCallbacks.onMapLoaded();
+        }
     }
 
     public void setup(Station station) {
