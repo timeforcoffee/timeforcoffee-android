@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,28 +32,17 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
 
     private FragmentActivity mActivity;
     private DepartureListAdapter mDepartureListAdapter;
-    private RelativeLayout mNoDesparturesLayout;
+    private RelativeLayout mNoDeparturesLayout;
     private ProgressBar mLoadingDeparturesProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onRefresh();
         void onDepartureSelected(Departure departure);
         void onDepartureFavoriteToggled(Departure departure, boolean isFavorite);
     }
-
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onDepartureSelected(Departure departure) { }
-
-        @Override
-        public void onRefresh() { }
-
-        @Override
-        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
-    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -77,12 +67,12 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
         View rootView = inflater.inflate(R.layout.fragment_departure_list, container, false);
 
         mLoadingDeparturesProgressBar = rootView.findViewById(R.id.loadingDeparturesSpinner);
-        mNoDesparturesLayout = rootView.findViewById(R.id.noDeparturesLayout);
+        mNoDeparturesLayout = rootView.findViewById(R.id.noDeparturesLayout);
         mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mLoadingDeparturesProgressBar.setVisibility(View.GONE);
-        mNoDesparturesLayout.setVisibility(View.GONE);
+        mNoDeparturesLayout.setVisibility(View.GONE);
 
         return rootView;
     }
@@ -100,37 +90,43 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCallbacks.onRefresh();
                 mSwipeRefreshLayout.setRefreshing(false);
+                if(mCallbacks != null) {
+                    mCallbacks.onRefresh();
+                }
             }
         }, 100);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (!(context instanceof Callbacks)) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallbacks = (Callbacks) context;
+
+        mCallbacks = (Callbacks) activity;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
+        mCallbacks = null;
     }
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
-        mCallbacks.onDepartureSelected(mDepartureListAdapter.getDeparture(position));
+        if(mCallbacks != null) {
+            mCallbacks.onDepartureSelected(mDepartureListAdapter.getDeparture(position));
+        }
     }
 
     @Override
     public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) {
-        mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
+        if(mCallbacks != null) {
+            mCallbacks.onDepartureFavoriteToggled(departure, isFavorite);
+        }
     }
 
     public void setDepartures(List<Departure> departures) {
@@ -150,12 +146,12 @@ public class DepartureListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void showNoDeparturesLayout(boolean show) {
-        if(mNoDesparturesLayout != null) {
-            mNoDesparturesLayout.setVisibility(View.GONE);
+        if(mNoDeparturesLayout != null) {
+            mNoDeparturesLayout.setVisibility(View.GONE);
             if (show) {
-                mNoDesparturesLayout.setVisibility(View.VISIBLE);
+                mNoDeparturesLayout.setVisibility(View.VISIBLE);
             } else {
-                mNoDesparturesLayout.setVisibility(View.GONE);
+                mNoDeparturesLayout.setVisibility(View.GONE);
             }
         }
     }
