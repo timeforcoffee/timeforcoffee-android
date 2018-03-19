@@ -169,7 +169,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         }
     }
 
-    public void getStationBoard(String stationId) {
+    public void getStationBoard(final String stationId) {
 
         if (_gettingStationBoard || stationId == null) {
             return;
@@ -195,8 +195,10 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     @Override
                     public void onNext(StationboardResponse stationboard) {
                         ArrayList<Departure> departures = new ArrayList<>();
+                        int stationIdInteger = Integer.parseInt(stationId);
+
                         for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : stationboard.getDepartures()) {
-                            Departure departure = DepartureMapper.fromZvv(zvvDeparture);
+                            Departure departure = DepartureMapper.fromZvv(zvvDeparture, stationIdInteger);
                             if(departure != null) {
                                 departures.add(departure);
                             }
