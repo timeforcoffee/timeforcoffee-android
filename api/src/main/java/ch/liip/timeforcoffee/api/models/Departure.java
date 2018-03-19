@@ -123,7 +123,6 @@ public class Departure {
 
     public Boolean isLate() {
         return departureRealtime != null && departureScheduled != null && departureRealtime.compareTo(departureScheduled) != 0;
-
     }
 
     public String departureInMinutes() {
