@@ -97,8 +97,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        mNoStationsLayout.setVisibility(View.GONE);
         mLoadingPositionLayout.setVisibility(View.GONE);
+        mNoStationsLayout.setVisibility(View.GONE);
         if (mSearchMode) {
             mEnterSearchLayout.setVisibility(View.VISIBLE);
         } else {
@@ -170,7 +170,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         if(mLoadingPositionLayout != null) {
             if (show) {
                 mLoadingPositionLayout.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 mLoadingPositionLayout.setVisibility(View.GONE);
             }
         }
@@ -182,7 +183,8 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
             mEnterSearchLayout.setVisibility(View.GONE);
             if (show) {
                 mNoStationsLayout.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 mNoStationsLayout.setVisibility(View.GONE);
             }
         }

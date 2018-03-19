@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -34,8 +33,6 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
     private ViewPager mTabsViewPager;
-    private RelativeLayout mProgressLayout;
-
 
     private DeparturesPresenter mPresenter;
     private DepartureListFragment mDepartureListFragment;
@@ -80,7 +77,6 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
         mStationMapFragment.setup(station);
 
-        mProgressLayout = findViewById(R.id.progressLayout);
         mSlidingLayout = findViewById(R.id.sliding_layout);
         mSlidingLayout.setPanelSlideListener(this);
 
@@ -91,7 +87,8 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         if (savedInstanceState == null) {
             mDepartureListFragment = (DepartureListFragment) Fragment.instantiate(this, DepartureListFragment.class.getName());
             mFavoriteListFragment = (FavoritesListFragment)  Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
-        } else{
+        }
+        else{
             mDepartureListFragment = (DepartureListFragment) getSupportFragmentManager().getFragment(savedInstanceState, DEPARTURE_LIST_FRAGMENT_KEY);
             mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
@@ -264,13 +261,8 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void showProgressLayout(boolean show) {
-        if (show) {
-            mProgressLayout.setVisibility(View.VISIBLE);
-        }
-        else {
-            mProgressLayout.setVisibility(View.GONE);
-        }
+    public void setAreDeparturesLoading(boolean loading) {
+        mDepartureListFragment.showLoadingDeparturesProgressBar(loading);
     }
 
     public void displayDepartureList() {
