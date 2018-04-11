@@ -9,14 +9,14 @@ before_script:
 unitTests:
   stage: test
   tags:
-  - the-mob
+  - the-mob-android
   script:
   - bundle exec fastlane ci_test
 
 release:
   stage: deploy
   tags:
-    - the-mob
+    - the-mob-android
   when: manual
   only:
     - master
