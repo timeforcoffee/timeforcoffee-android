@@ -12,12 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
 import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
-import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
-import ch.liip.timeforcoffee.zvv.Departure;
-import ch.liip.timeforcoffee.zvv.StationboardMeta;
-import ch.liip.timeforcoffee.zvv.StationboardResponse;
+import ch.liip.timeforcoffee.backend.Departure;
+import ch.liip.timeforcoffee.backend.StationboardResponse;
 
 import static org.junit.Assert.assertEquals;
 
@@ -46,8 +43,8 @@ public class DepartureDeserializationTest {
         assertEquals("8593286", departure1.getId());
         assertEquals("201", departure1.getName());
         assertEquals("bus", departure1.getType());
-        assertEquals("#000000", departure1.getColors().getFg());
-        assertEquals("#FFFFFF", departure1.getColors().getBg());
+        assertEquals("#000000", departure1.getColor().getFg());
+        assertEquals("#FFFFFF", departure1.getColor().getBg());
         assertEquals("La Tour-de-Trême, Le Closalet", departure1.getTo());
         assertEquals(null, departure1.getPlatform());
         assertEquals("2018-03-09T15:44:00" , dateTimeFormatter.format(departure1.getDeparture().getScheduled()));
@@ -60,8 +57,8 @@ public class DepartureDeserializationTest {
         assertEquals("8593291", departure2.getId());
         assertEquals("202", departure2.getName());
         assertEquals("bus", departure2.getType());
-        assertEquals("#000000", departure2.getColors().getFg());
-        assertEquals("#FFFFFF", departure2.getColors().getBg());
+        assertEquals("#000000", departure2.getColor().getFg());
+        assertEquals("#FFFFFF", departure2.getColor().getBg());
         assertEquals("Vuadens, gare", departure2.getTo());
         assertEquals(null, departure2.getPlatform());
         assertEquals("2018-03-09T15:44:00" , dateTimeFormatter.format(departure2.getDeparture().getScheduled()));
@@ -74,8 +71,8 @@ public class DepartureDeserializationTest {
         assertEquals("8593289", departure3.getId());
         assertEquals("202", departure3.getName());
         assertEquals("bus", departure3.getType());
-        assertEquals("#000000", departure3.getColors().getFg());
-        assertEquals("#FFFFFF", departure3.getColors().getBg());
+        assertEquals("#000000", departure3.getColor().getFg());
+        assertEquals("#FFFFFF", departure3.getColor().getBg());
         assertEquals("Morlon, Eglise", departure3.getTo());
         assertEquals(null, departure3.getPlatform());
         assertEquals("2018-03-09T15:45:00" , dateTimeFormatter.format(departure3.getDeparture().getScheduled()));

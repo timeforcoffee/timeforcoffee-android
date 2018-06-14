@@ -18,7 +18,6 @@ import ch.liip.timeforcoffee.helper.FavoritesDatabaseHelper.FavoriteStationColum
 public class FavoritesDataSource {
 
     private SQLiteDatabase database;
-    private FavoritesDatabaseHelper dbHelper;
 
     private String[] allStationColumns = {FavoriteStationColumn.COLUMN_ID, FavoriteStationColumn.COLUMN_STATION_ID,
             FavoriteStationColumn.COLUMN_NAME, FavoriteStationColumn.COLUMN_LATITUDE, FavoriteStationColumn.COLUMN_LONGITUDE};
@@ -49,7 +48,7 @@ public class FavoritesDataSource {
         open(context);
 
         ContentValues values = new ContentValues();
-        values.put(FavoriteLineColumn.COLUMN_NAME, departure.getName());
+        values.put(FavoriteLineColumn.COLUMN_NAME, departure.getLine());
         values.put(FavoriteLineColumn.COLUMN_DESTINATION_ID, departure.getDestinationId());
         database.insert(FavoriteLineColumn.TABLE_NAME, null, values);
 
@@ -58,7 +57,7 @@ public class FavoritesDataSource {
 
     public void deleteFavoriteLine(Context context, Departure departure) {
         open(context);
-        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getName()  + "' AND " +
+        database.delete(FavoriteLineColumn.TABLE_NAME, FavoriteLineColumn.COLUMN_NAME + " = '" + departure.getLine()  + "' AND " +
                 FavoriteLineColumn.COLUMN_DESTINATION_ID + " = " + departure.getDestinationId(), null);
 
         close();
@@ -101,8 +100,7 @@ public class FavoritesDataSource {
     }
 
     private void open(Context context) throws SQLException {
-        dbHelper = new FavoritesDatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
+        database = new FavoritesDatabaseHelper(context).getWritableDatabase();
     }
 
     private void close() {
@@ -125,9 +123,9 @@ public class FavoritesDataSource {
     }
 
     private Departure cursorToLine(Cursor cursor) {
-        String name = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
         int destinationId = cursor.getInt(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_DESTINATION_ID));
+        String line = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteLineColumn.COLUMN_NAME));
 
-        return new Departure(name, destinationId, true);
+        return new Departure(destinationId, line, true);
     }
 }

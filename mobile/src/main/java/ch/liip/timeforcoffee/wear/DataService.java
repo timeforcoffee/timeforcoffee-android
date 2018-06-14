@@ -21,11 +21,10 @@ import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
+import ch.liip.timeforcoffee.backend.BackendService;
+import ch.liip.timeforcoffee.backend.StationboardResponse;
+import ch.liip.timeforcoffee.backend.StationsResponse;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
-import ch.liip.timeforcoffee.opendata.LocationsResponse;
-import ch.liip.timeforcoffee.opendata.TransportService;
-import ch.liip.timeforcoffee.zvv.StationboardResponse;
-import ch.liip.timeforcoffee.zvv.ZvvService;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -47,10 +46,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
     private String _sourceNodeId;
 
     @Inject
-    TransportService transportService;
-
-    @Inject
-    ZvvService zvvService;
+    BackendService backendService;
 
     @Nullable
     @Override
@@ -130,10 +126,10 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         query.put("y", Double.toString(longitude));
 
         _gettingStations = true;
-        transportService.getLocations(query)
+        backendService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LocationsResponse>() {
+                .subscribe(new Subscriber<StationsResponse>() {
 
                     @Override
                     public void onCompleted() {
@@ -146,13 +142,10 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(LocationsResponse locationsResponse) {
+                    public void onNext(StationsResponse stationsResponse) {
                         ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.opendata.Location location : locationsResponse.getStations()) {
-                            Station station = StationMapper.fromLocation(location);
-                            if(station != null) {
-                                stations.add(station);
-                            }
+                        for (ch.liip.timeforcoffee.backend.Station station : stationsResponse.getStations()) {
+                            stations.add( StationMapper.fromBackend(station));
                         }
 
                         sendStations(stations, _sourceNodeId);
@@ -177,8 +170,11 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
         Log.d(LOG_TAG, "DataService: getStationBoard");
 
+        Map<String, String> query = new HashMap<String, String>();
+        query.put("station_id", stationId);
+
         _gettingStationBoard = true;
-        zvvService.getDepartures(stationId)
+        backendService.getDepartures(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<StationboardResponse>() {
@@ -195,13 +191,8 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     @Override
                     public void onNext(StationboardResponse stationboard) {
                         ArrayList<Departure> departures = new ArrayList<>();
-                        int stationIdInteger = Integer.parseInt(stationId);
-
-                        for (ch.liip.timeforcoffee.zvv.Departure zvvDeparture : stationboard.getDepartures()) {
-                            Departure departure = DepartureMapper.fromZvv(zvvDeparture, stationIdInteger);
-                            if(departure != null) {
-                                departures.add(departure);
-                            }
+                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : stationboard.getDepartures()) {
+                            departures.add(DepartureMapper.fromBackend(backendDeparture));
                         }
 
                         sendDepartures(departures, _sourceNodeId);

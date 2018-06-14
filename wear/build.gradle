@@ -35,7 +35,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(':opendata')
     implementation project(':api')
     implementation project(':common')
 

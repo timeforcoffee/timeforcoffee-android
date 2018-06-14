@@ -8,36 +8,36 @@ import ch.liip.timeforcoffee.api.models.Departure;
 
 public class DepartureMapper {
 
-    public static Departure fromZvv(ch.liip.timeforcoffee.zvv.Departure zvvDeparture, int stationId) {
-        int id = zvvDeparture.getId() != null ? Integer.parseInt(zvvDeparture.getId()) : 0;
-        int colorBg = Color.WHITE;
-        int colorFg = Color.BLACK;
+    public static Departure fromBackend(ch.liip.timeforcoffee.backend.Departure backendDeparture) {
+        int colorBg = Color.parseColor(backendDeparture.getColor().getBg());
+        int colorFg = Color.parseColor(backendDeparture.getColor().getFg());
 
-        try {
-            colorBg = Color.parseColor(zvvDeparture.getColors().getBg());
-            colorFg = Color.parseColor(zvvDeparture.getColors().getFg());
+        Date departureScheduled = null;
+        Date departureRealtime = null;
+        Date arrivalScheduled = null;
+        Date arrivalRealtime = null;
+
+        if(backendDeparture.getDeparture() != null) {
+            departureScheduled = backendDeparture.getDeparture().getScheduled();
+            departureRealtime = backendDeparture.getDeparture().getRealtime();
         }
-        catch (Throwable ignored) { }
-
-        Date departureScheduled = zvvDeparture.getDeparture() == null ? null : zvvDeparture.getDeparture().getScheduled();
-        Date departureRealtime = zvvDeparture.getDeparture() == null ? null : zvvDeparture.getDeparture().getRealtime();
-        Date arrivalScheduled = zvvDeparture.getArrival() == null ? null : zvvDeparture.getArrival().getScheduled();
-
-        // If destination id and station id are equal, it is not a valid departure
-        if(id == stationId) {
-            return null;
+        if(backendDeparture.getArrival() != null) {
+            arrivalScheduled = backendDeparture.getArrival().getScheduled();
+            arrivalRealtime = backendDeparture.getArrival().getRealtime();
         }
 
-        return new Departure(zvvDeparture.getName(),
-                id,
-                zvvDeparture.getTo(),
-                zvvDeparture.getPlatform(),
-                colorFg,
-                colorBg,
+        return new Departure(
+                backendDeparture.getDestination().getId(),
+                backendDeparture.getDestination().getName(),
                 departureScheduled,
                 departureRealtime,
                 arrivalScheduled,
-                zvvDeparture.getAccessible(),
+                arrivalRealtime,
+                backendDeparture.getLine(),
+                backendDeparture.getPlatform(),
+                colorFg,
+                colorBg,
+                false,
                 false
         );
     }
