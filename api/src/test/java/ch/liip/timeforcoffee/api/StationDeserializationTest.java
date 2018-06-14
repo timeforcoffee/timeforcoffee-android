@@ -11,13 +11,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
-import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
 import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.opendata.Location;
 import ch.liip.timeforcoffee.opendata.LocationsResponse;
-import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
-import ch.liip.timeforcoffee.zvv.Station;
-import ch.liip.timeforcoffee.zvv.StationsResponse;
+import ch.liip.timeforcoffee.backend.Station;
+import ch.liip.timeforcoffee.backend.StationsResponse;
 
 import static org.junit.Assert.assertEquals;
 

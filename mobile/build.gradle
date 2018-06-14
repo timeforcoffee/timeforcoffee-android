@@ -79,7 +79,6 @@ dependencies {
     annotationProcessor 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     wearApp project(':wear')
-    implementation project(':opendata')
     implementation project(':api')
     implementation project(':common')
     implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
