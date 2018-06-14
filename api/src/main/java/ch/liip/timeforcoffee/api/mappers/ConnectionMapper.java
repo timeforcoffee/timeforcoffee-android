@@ -1,7 +1,6 @@
 package ch.liip.timeforcoffee.api.mappers;
 
 import android.location.Location;
-import android.support.annotation.Nullable;
 
 import java.util.Date;
 
@@ -9,21 +8,25 @@ import ch.liip.timeforcoffee.api.models.Connection;
 
 public class ConnectionMapper {
 
-    public static @Nullable Connection fromZvv(ch.liip.timeforcoffee.zvv.CheckPoint checkPoint) {
-        int checkPointId = Integer.parseInt(checkPoint.getId());
-        Location checkPointLocation = new Location("reverseGeocoded");
-        checkPointLocation.setLongitude(checkPoint.getLocation().getLng());
-        checkPointLocation.setLatitude(checkPoint.getLocation().getLat());
+    public static Connection fromBackend(ch.liip.timeforcoffee.backend.Connection backendConnection) {
+        Location stationLocation = new Location("reverseGeocoded");
+        stationLocation.setLongitude(backendConnection.getStation().getLocation().getX());
+        stationLocation.setLatitude(backendConnection.getStation().getLocation().getY());
 
-        Date departureScheduled = checkPoint.getDeparture() == null ? null : checkPoint.getDeparture().getScheduled();
-        Date departureRealtime = checkPoint.getDeparture() == null ? null : checkPoint.getDeparture().getRealtime();
-        Date arrivalScheduled = checkPoint.getArrival() == null ? null : checkPoint.getArrival().getScheduled();
+        Date timeScheduled = null;
+        Date timeRealtime = null;
 
-        // If there is no specified departure and arrival, it is not a valid connection
-        if(arrivalScheduled == null && departureScheduled == null) {
-            return null;
+        if(backendConnection.getTime() != null) {
+            timeScheduled = backendConnection.getTime().getScheduled();
+            timeRealtime = backendConnection.getTime().getRealtime();
         }
 
-        return new Connection(checkPointId, checkPoint.getName(), checkPointLocation, departureScheduled, departureRealtime, arrivalScheduled);
+        return new Connection(
+                backendConnection.getStation().getId(),
+                backendConnection.getStation().getName(),
+                stationLocation,
+                timeScheduled,
+                timeRealtime
+        );
     }
 }

@@ -236,16 +236,17 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
         detailIntent.putExtra(ConnectionsActivity.ARG_STATION_LATITUDE, station.getLocation().getLatitude());
         detailIntent.putExtra(ConnectionsActivity.ARG_STATION_LONGITUDE, station.getLocation().getLongitude());
         detailIntent.putExtra(ConnectionsActivity.ARG_STATION_IS_FAVORITE, station.getIsFavorite());
-        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_NAME, departure.getName());
-        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DESTINATION_ID, departure.getDestinationId());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DESTINATION_NAME, departure.getDestinationName());
-        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_PLATFORM, departure.getPlatform());
-        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_COLOR_FG, departure.getColorFg());
-        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_COLOR_BG, departure.getColorBg());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DEPARTURE_SCHEDULED, departure.getDepartureScheduled());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_DEPARTURE_REALTIME, departure.getDepartureRealtime());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_ARRIVAL_SCHEDULED, departure.getArrivalScheduled());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_ARRIVAL_REALTIME, departure.getArrivalRealtime());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_LINE, departure.getLine());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_PLATFORM, departure.getPlatform());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_COLOR_FG, departure.getColorFg());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_COLOR_BG, departure.getColorBg());
+        detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_ACCESSIBLE, departure.isAccessible());
         detailIntent.putExtra(ConnectionsActivity.ARG_DEPARTURE_IS_FAVORITE, departure.getIsFavorite());
 
         startActivity(detailIntent);

@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.ConnectionsActivity;
 import ch.liip.timeforcoffee.api.ConnectionService;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.ConnectionsFetchedEvent;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsErrorEvent;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsEvent;
@@ -21,6 +20,7 @@ import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.StationsSearchOn
 import ch.liip.timeforcoffee.api.models.Connection;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
+import ch.liip.timeforcoffee.backend.BackendService;
 import ch.liip.timeforcoffee.common.presenter.Presenter;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 import ch.liip.timeforcoffee.widget.SnackBars;
@@ -39,7 +39,7 @@ public class ConnectionsPresenter implements Presenter {
     ConnectionService connectionService;
 
     @Inject
-    ZvvApiService zvvApiService;
+    BackendService backendService;
 
     @Inject
     FavoritesDataSource favoritesDataSource;
@@ -85,8 +85,9 @@ public class ConnectionsPresenter implements Presenter {
 
         if (mDeparture.getDestinationId() == 0) {
             mEventBus.post(new FetchStationsSearchOneEvent(mDeparture.getDestinationName()));
-        } else {
-            mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv(), mDeparture.getArrivalStrForZvv()));
+        }
+        else {
+            mEventBus.post(new FetchConnectionsEvent(mStation.getIdStr(), mDeparture.getDestinationIdStr(), mDeparture.getDepartureStrForZvv()));
         }
     }
 
@@ -95,7 +96,8 @@ public class ConnectionsPresenter implements Presenter {
             //Remove from fav
             mDeparture.setIsFavorite(false);
             favoritesDataSource.deleteFavoriteLine(mActivity, mDeparture);
-        } else {
+        }
+        else {
             //Add to fav
             mDeparture.setIsFavorite(true);
             favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);

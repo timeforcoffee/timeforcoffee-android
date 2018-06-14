@@ -1,8 +1,5 @@
 package ch.liip.timeforcoffee.api.events.departuresEvents;
 
-/**
- * Created by fsantschi on 11/03/15.
- */
 public class FetchDeparturesEvent {
 
     private final String stationId;
