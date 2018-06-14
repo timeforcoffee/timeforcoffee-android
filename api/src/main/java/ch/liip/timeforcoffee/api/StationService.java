@@ -16,9 +16,6 @@ import ch.liip.timeforcoffee.api.events.stationsLocationEvents.StationsLocationF
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchErrorEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.StationsSearchFetchedEvent;
-import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchStationsOneSearchErrorEvent;
-import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchStationsSearchOneEvent;
-import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.StationsSearchOneFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.backend.BackendService;
@@ -64,36 +61,6 @@ public class StationService {
                         }
 
                         eventBus.post(new StationsSearchFetchedEvent(stations));
-                    }
-                });
-    }
-
-    @Subscribe
-    public void onEvent(FetchStationsSearchOneEvent event) {
-        if (event.getSearchQuery().isEmpty()) {
-            eventBus.post(new StationsSearchOneFetchedEvent(null));
-            return;
-        }
-
-        Map<String, String> query = new HashMap<>();
-        query.put("query", event.getSearchQuery());
-
-        backendService.getStations(query)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
-                    @Override
-                    public void onCompleted() { }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        eventBus.post(new FetchStationsOneSearchErrorEvent(e))   ;
-                    }
-
-                    @Override
-                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> bakendStations) {
-                        Station station = StationMapper.fromBackend(bakendStations.get(0));
-                        eventBus.post(new StationsSearchOneFetchedEvent(station));
                     }
                 });
     }
