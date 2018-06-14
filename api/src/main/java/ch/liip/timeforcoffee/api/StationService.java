@@ -5,6 +5,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -21,7 +22,6 @@ import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.StationsSearchOn
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.backend.BackendService;
-import ch.liip.timeforcoffee.backend.StationsResponse;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -47,11 +47,9 @@ public class StationService {
         backendService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationsResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
+                    public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable e) {
@@ -59,9 +57,9 @@ public class StationService {
                     }
 
                     @Override
-                    public void onNext(StationsResponse stationsResponse) {
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> backendStations) {
                         ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Station backendStation : stationsResponse.getStations()) {
+                        for (ch.liip.timeforcoffee.backend.Station backendStation : backendStations) {
                             stations.add(StationMapper.fromBackend(backendStation));
                         }
 
@@ -83,11 +81,9 @@ public class StationService {
         backendService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationsResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
+                    public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable e) {
@@ -95,11 +91,8 @@ public class StationService {
                     }
 
                     @Override
-                    public void onNext(StationsResponse stationsResponse) {
-                        Station station = StationMapper.fromBackend(
-                                stationsResponse.getStations().get(0)
-                        );
-
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> bakendStations) {
+                        Station station = StationMapper.fromBackend(bakendStations.get(0));
                         eventBus.post(new StationsSearchOneFetchedEvent(station));
                     }
                 });
@@ -114,7 +107,7 @@ public class StationService {
         backendService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationsResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
                     @Override
                     public void onCompleted() {
 
@@ -126,9 +119,9 @@ public class StationService {
                     }
 
                     @Override
-                    public void onNext(StationsResponse stationsResponse) {
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> backendStations) {
                         ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Station backendStation : stationsResponse.getStations()) {
+                        for (ch.liip.timeforcoffee.backend.Station backendStation : backendStations) {
                             stations.add(StationMapper.fromBackend(backendStation));
                         }
 

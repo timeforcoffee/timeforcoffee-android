@@ -12,6 +12,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -22,8 +23,6 @@ import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.backend.BackendService;
-import ch.liip.timeforcoffee.backend.StationboardResponse;
-import ch.liip.timeforcoffee.backend.StationsResponse;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -129,7 +128,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         backendService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationsResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
 
                     @Override
                     public void onCompleted() {
@@ -142,9 +141,9 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(StationsResponse stationsResponse) {
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> backendStations) {
                         ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Station station : stationsResponse.getStations()) {
+                        for (ch.liip.timeforcoffee.backend.Station station : backendStations) {
                             stations.add( StationMapper.fromBackend(station));
                         }
 
@@ -177,7 +176,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         backendService.getDepartures(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationboardResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Departure>>() {
                     @Override
                     public void onCompleted() {
                         _gettingStations = false;
@@ -189,9 +188,9 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(StationboardResponse stationboard) {
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Departure> backendDepartures) {
                         ArrayList<Departure> departures = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : stationboard.getDepartures()) {
+                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : backendDepartures) {
                             departures.add(DepartureMapper.fromBackend(backendDeparture));
                         }
 

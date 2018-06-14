@@ -37,6 +37,8 @@ android {
         targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
+        buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
+        buildConfigField "String", "BACKEND_BASIC_AUTH_PASSWORD", "\"" + project.BACKEND_BASIC_AUTH_PASSWORD + "\""
     }
     buildTypes {
         debug {
@@ -95,6 +97,6 @@ dependencies {
         transitive = false
     }
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
-        transitive = true;
+        transitive = true
     }
 }

@@ -16,7 +16,6 @@ import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsEvent;
 import ch.liip.timeforcoffee.api.mappers.ConnectionMapper;
 import ch.liip.timeforcoffee.api.models.Connection;
 import ch.liip.timeforcoffee.backend.BackendService;
-import ch.liip.timeforcoffee.backend.ConnectionsResponse;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -36,14 +35,14 @@ public class ConnectionService {
     @Subscribe
     public void onEvent(FetchConnectionsEvent event) {
         Map<String, String> query = new HashMap<>();
-        query.put("station_id", event.getStationId());
-        query.put("destination_id", event.getStationId());
+        query.put("station_id", String.valueOf(event.getStationId()));
+        query.put("destination_id", String.valueOf(event.getDestinationId()));
         query.put("departure", event.getDepartureString());
 
         backendService.getConnections(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ConnectionsResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Connection>>() {
                     @Override
                     public void onCompleted() {
 
@@ -55,13 +54,10 @@ public class ConnectionService {
                     }
 
                     @Override
-                    public void onNext(ConnectionsResponse connectionsResponse) {
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Connection> backendConnections) {
                         List<Connection> connections = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Connection backendConnection : connectionsResponse.getConnections()) {
-                            Connection connection = ConnectionMapper.fromBackend(backendConnection);
-                            if(connection != null) {
-                                connections.add(connection);
-                            }
+                        for (ch.liip.timeforcoffee.backend.Connection backendConnection : backendConnections) {
+                            connections.add(ConnectionMapper.fromBackend(backendConnection));
                         }
 
                         eventBus.post(new ConnectionsFetchedEvent(connections));

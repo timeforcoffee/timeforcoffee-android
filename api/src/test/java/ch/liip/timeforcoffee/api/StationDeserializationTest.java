@@ -15,7 +15,6 @@ import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.opendata.Location;
 import ch.liip.timeforcoffee.opendata.LocationsResponse;
 import ch.liip.timeforcoffee.backend.Station;
-import ch.liip.timeforcoffee.backend.StationsResponse;
 
 import static org.junit.Assert.assertEquals;
 

@@ -105,7 +105,7 @@ public class DeparturesPresenter implements Presenter {
             mActivity.setAreDeparturesLoading(true);
         }
 
-        mEventBus.post(new FetchDeparturesEvent(mStation.getIdStr()));
+        mEventBus.post(new FetchDeparturesEvent(mStation.getId()));
     }
 
     public void updateFavorites() {
