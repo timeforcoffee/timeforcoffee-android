@@ -36,9 +36,8 @@ ext {
     BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername'): ""
     BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword'): ""
 
-    // TODO: do the same for these google api keys as for the backend basic auth credentials
-    RELEASE_MAP_API_KEY = "AIzaSyD1a4ATVxYCJdzxlhVq8Qcpa7okxSo1sxU"
-    DEBUG_MAP_API_KEY = "AIzaSyAwy5pW4FeqNbBJpFVTdAoYXeadLNeKSDE"
+    DEBUG_MAP_API_KEY = project.hasProperty('googleMapsApiKeyDebug') ? project.property('googleMapsApiKeyDebug'): ""
+    RELEASE_MAP_API_KEY = project.hasProperty('googleMapsApiKeyRelease') ? project.property('googleMapsApiKeyRelease'): ""
 
     PLAY_SERVICES_VERSION = "9.4.0"
     SUPPORT_VERSION = "27.1.0"
