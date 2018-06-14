@@ -5,6 +5,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -15,7 +16,6 @@ import ch.liip.timeforcoffee.api.events.departuresEvents.FetchDeparturesEvent;
 import ch.liip.timeforcoffee.api.mappers.DepartureMapper;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.backend.BackendService;
-import ch.liip.timeforcoffee.backend.StationboardResponse;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -35,12 +35,12 @@ public class DepartureService {
     @Subscribe
     public void onEvent(FetchDeparturesEvent event) {
         Map<String, String> query = new HashMap<>();
-        query.put("station_id", event.getStationId());
+        query.put("station_id", String.valueOf(event.getStationId()));
 
         backendService.getDepartures(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StationboardResponse>() {
+                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Departure>>() {
                     @Override
                     public void onCompleted() {
 
@@ -52,9 +52,9 @@ public class DepartureService {
                     }
 
                     @Override
-                    public void onNext(StationboardResponse stationboardResponse) {
+                    public void onNext(List<ch.liip.timeforcoffee.backend.Departure> backendDepartures) {
                         ArrayList<Departure> departures = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : stationboardResponse.getDepartures()) {
+                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : backendDepartures) {
                             departures.add(DepartureMapper.fromBackend(backendDeparture));
                         }
 

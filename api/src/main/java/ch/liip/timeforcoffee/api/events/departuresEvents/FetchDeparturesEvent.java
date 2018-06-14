@@ -2,13 +2,13 @@ package ch.liip.timeforcoffee.api.events.departuresEvents;
 
 public class FetchDeparturesEvent {
 
-    private final String stationId;
+    private final int stationId;
 
-    public FetchDeparturesEvent(String stationId) {
+    public FetchDeparturesEvent(int stationId) {
         this.stationId = stationId;
     }
 
-    public String getStationId() {
+    public int getStationId() {
         return stationId;
     }
 }

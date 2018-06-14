@@ -41,6 +41,30 @@ public class Station implements RoutingListener {
         this.isFavorite = isFavorite;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public boolean getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
     public WalkingDistance getDistanceForDisplay(Location userLocation) {
         if (userLocation == null || location == null || userLocation == null) {
             onDistanceComputedListener.onDistanceComputed(null);
@@ -165,34 +189,6 @@ public class Station implements RoutingListener {
     @Override
     public void onRoutingCancelled() {
         onDistanceComputedListener.onDistanceComputed(null);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getIdStr() {
-        return String.valueOf(id);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public float getDistance() {
-        return distance;
-    }
-
-    public boolean getIsFavorite() {
-        return isFavorite;
-    }
-
-    public void setIsFavorite(boolean isFavorite) {
-        this.isFavorite = isFavorite;
     }
 
     @Override

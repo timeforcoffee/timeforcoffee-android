@@ -49,10 +49,6 @@ public class Departure {
         return destinationId;
     }
 
-    public String getDestinationIdStr() {
-        return String.valueOf(destinationId);
-    }
-
     public void setDestinationId(int destinationId) {
         this.destinationId = destinationId;
     }
@@ -109,19 +105,10 @@ public class Departure {
         return null;
     }
 
-    public String getDepartureStrForZvv() {
+    public String getDepartureStrForBackend() {
         DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         if (departureScheduled != null) {
             return dt.format(departureScheduled);
-        }
-
-        return null;
-    }
-
-    public String getArrivalStrForZvv() {
-        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        if (arrivalScheduled != null) {
-            return dt.format(arrivalScheduled);
         }
 
         return null;
