@@ -33,6 +33,10 @@ ext {
     KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath'): "."
     KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass'): ""
 
+    BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername'): ""
+    BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword'): ""
+
+    // TODO: do the same for these google api keys as for the backend basic auth credentials
     RELEASE_MAP_API_KEY = "***REMOVED***"
     DEBUG_MAP_API_KEY = "***REMOVED***"
 

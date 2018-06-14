@@ -1,5 +1,7 @@
 package ch.liip.timeforcoffee;
 
+import android.util.Base64;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -25,6 +27,7 @@ import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
 import ch.liip.timeforcoffee.wear.DataService;
 import dagger.Module;
 import dagger.Provides;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -59,6 +62,19 @@ class TimeForCoffeeModule {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://timeforcoffee-backend.herokuapp.com")
                 .setConverter(new GsonConverter(gson))
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        String username = BuildConfig.BACKEND_BASIC_AUTH_USERNAME;
+                        String password = BuildConfig.BACKEND_BASIC_AUTH_PASSWORD;
+                        String basicString = "Basic " + Base64.encodeToString(
+                                (username + ":" + password).getBytes(), Base64.NO_WRAP
+                        );
+
+                        request.addHeader("Authorization", basicString);
+                        request.addQueryParam("format", "json");
+                    }
+                })
                 .build();
 
         return restAdapter.create(BackendService.class);

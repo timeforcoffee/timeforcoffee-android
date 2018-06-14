@@ -14,7 +14,6 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.backend.CheckPoint;
-import ch.liip.timeforcoffee.backend.ConnectionsResponse;
 
 import static org.junit.Assert.assertEquals;
 

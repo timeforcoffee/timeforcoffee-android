@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.backend;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit.http.GET;
@@ -11,13 +12,13 @@ public interface BackendService {
 
     @Headers("Cache-Control:public, max-age=20")
     @GET("/api/stations")
-    Observable<StationsResponse> getStations(@QueryMap Map<String, String> query);
+    Observable<List<Station>> getStations(@QueryMap Map<String, String> query);
 
     @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/ch/stationboard")
-    Observable<StationboardResponse> getDepartures(@QueryMap Map<String, String> query);
+    @GET("/api/stationboard")
+    Observable<List<Departure>> getDepartures(@QueryMap Map<String, String> query);
 
     @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/ch/connections")
-    Observable<ConnectionsResponse> getConnections(@QueryMap Map<String, String> query);
+    @GET("/api/connections")
+    Observable<List<Connection>> getConnections(@QueryMap Map<String, String> query);
 }
