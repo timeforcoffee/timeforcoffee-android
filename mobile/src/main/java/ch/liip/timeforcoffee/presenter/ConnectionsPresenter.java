@@ -15,8 +15,6 @@ import ch.liip.timeforcoffee.api.ConnectionService;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.ConnectionsFetchedEvent;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsErrorEvent;
 import ch.liip.timeforcoffee.api.events.connectionsEvents.FetchConnectionsEvent;
-import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.FetchStationsSearchOneEvent;
-import ch.liip.timeforcoffee.api.events.stationsSearchOneEvents.StationsSearchOneFetchedEvent;
 import ch.liip.timeforcoffee.api.models.Connection;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
@@ -83,16 +81,11 @@ public class ConnectionsPresenter implements Presenter {
             mActivity.showProgressLayout(true);
         }
 
-        if (mDeparture.getDestinationId() == 0) {
-            mEventBus.post(new FetchStationsSearchOneEvent(mDeparture.getDestinationName()));
-        }
-        else {
-            mEventBus.post(new FetchConnectionsEvent(
-                    mStation.getId(),
-                    mDeparture.getDestinationId(),
-                    mDeparture.getDepartureStrForBackend())
-            );
-        }
+        mEventBus.post(new FetchConnectionsEvent(
+                mStation.getId(),
+                mDeparture.getDestinationId(),
+                mDeparture.getDepartureStrForBackend())
+        );
     }
 
     public void toggleFavorite() {
@@ -106,14 +99,6 @@ public class ConnectionsPresenter implements Presenter {
             mDeparture.setIsFavorite(true);
             favoritesDataSource.insertFavoriteLine(mActivity, mDeparture);
         }
-    }
-
-    @Subscribe
-    public void onStationsFetchedEvent(StationsSearchOneFetchedEvent event) {
-        int destinationId = event.getStation().getId();
-        mDeparture.setDestinationId(destinationId);
-
-        updateConnections();
     }
 
     @Subscribe
