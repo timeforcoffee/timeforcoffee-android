@@ -39,6 +39,7 @@ android {
         versionName project.VERSION
         buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
         buildConfigField "String", "BACKEND_BASIC_AUTH_PASSWORD", "\"" + project.BACKEND_BASIC_AUTH_PASSWORD + "\""
+        resValue "string", "google_maps_api_key", project.GOOGLE_MAP_API_KEY
     }
     buildTypes {
         debug {
@@ -46,13 +47,11 @@ android {
             minifyEnabled false
             applicationIdSuffix '.dev'
             versionNameSuffix '-DEV'
-            resValue "string", "google_maps_api_key", project.DEBUG_MAP_API_KEY
         }
         release {
             debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
             signingConfig signingConfigs.release
         }
     }

@@ -28,16 +28,15 @@ ext {
     VERSION = "1.3.0"
     VERSION_CODE = getVersionCode()
 
-    KEYSTORE_KEY_ALIAS = project.hasProperty('keystoreKeyAlias') ? project.property('keystoreKeyAlias') : ""
-    KEYSTORE_KEY_PASS = project.hasProperty('keystoreKeyPass') ? project.property('keystoreKeyPass'): ""
+    KEYSTORE_KEY_ALIAS = project.hasProperty('keystoreKeyAlias') ? project.property('keystoreKeyAlias') : "."
+    KEYSTORE_KEY_PASS = project.hasProperty('keystoreKeyPass') ? project.property('keystoreKeyPass'): "."
     KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath'): "."
-    KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass'): ""
+    KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass'): "."
 
-    BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername'): ""
-    BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword'): ""
+    BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername'): "."
+    BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword'): "."
 
-    DEBUG_MAP_API_KEY = project.hasProperty('googleMapsApiKeyDebug') ? project.property('googleMapsApiKeyDebug'): ""
-    RELEASE_MAP_API_KEY = project.hasProperty('googleMapsApiKeyRelease') ? project.property('googleMapsApiKeyRelease'): ""
+    GOOGLE_MAP_API_KEY = project.hasProperty('googleMapsApiKey') ? project.property('googleMapsApiKey'): "AIzaSyAwy5pW4FeqNbBJpFVTdAoYXeadLNeKSDE"
 
     PLAY_SERVICES_VERSION = "9.4.0"
     SUPPORT_VERSION = "27.1.0"
