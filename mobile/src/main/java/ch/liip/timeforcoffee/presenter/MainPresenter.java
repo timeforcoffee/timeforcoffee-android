@@ -84,10 +84,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     @Override
     public void onRefreshView() {
-        // Empty list before reloading
-        mActivity.updateStations(new ArrayList<Station>());
-
-        updateStationsWithLastPosition();
+        loadStationsWithLastPosition();
     }
 
     public void onDestroy() {
@@ -95,47 +92,99 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         mEventBus.unregister(this);
     }
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
+
+                if (!(permission.equals(locationPermission))) {
+                    continue;
+                }
+
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    startLocation();
+                } else {
+                    mActivity.setIsPositionLoading(false);
+                    SnackBars.showLocalisationSettings(mActivity);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onLocationUpdated(Location location) {
+        Log.i(LOG_TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
+        mLastLocation = location;
+
+        loadStations(location);
+    }
+
+    @Subscribe
+    public void onStationsFetched(StationsLocationFetchedEvent event) {
+        mActivity.setIsPositionLoading(false);
+
+        mStations = event.getStations();
+        mActivity.updateStations(mStations);
+
+        updateFavorites();
+    }
+
+    @Subscribe
+    public void onFetchErrorEvent(FetchStationsLocationErrorEvent event) {
+        mActivity.setIsPositionLoading(false);
+        SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadStationsWithLastPosition();
+            }
+        });
+    }
+
     public void updateStations() {
         if (Build.FINGERPRINT.contains("generic")) { //emulator
-            updateStationsWithLastPosition();
-        } else if (!mIsCapturingLocation) {
+            loadStationsWithLastPosition();
+        }
+        else if (!mIsCapturingLocation) {
             startLocation();
         }
     }
 
     public void updateFavorites() {
-        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        mActivity.updateFavorites(mFavoriteStations);
 
         if(mStations != null) {
             for(Station station : mStations) {
-                station.setIsFavorite(favoriteStations.contains(station));
+                station.setIsFavorite(mFavoriteStations.contains(station));
             }
 
             mActivity.updateStations(mStations);
         }
-
-        mFavoriteStations = favoriteStations;
-        mActivity.updateFavorites(mFavoriteStations);
     }
 
-    private void updateStationsWithLastPosition() {
-        mActivity.setIsPositionLoading(true);
-
-        if (Build.FINGERPRINT.contains("generic")) { //emulator
-            mLastLocation = new Location("emulator");
-            mLastLocation.setLatitude(46.8017);
-            mLastLocation.setLongitude(7.1456);
+    public void updateStationIsFavorite(Station station, boolean isFavorite) {
+        if (isFavorite) {
+            favoritesDataSource.insertFavoriteStation(mActivity, station);
+        }
+        else {
+            favoritesDataSource.deleteFavoriteStation(mActivity, station);
         }
 
-        if (mLastLocation != null) {
-            updateStations(mLastLocation);
-        } else {
-            startLocation();
+        updateFavoritesOnFavoriteList();
+        if(mFavoriteStations.size() == 0) {
+            mActivity.displayStationList();
         }
+    }
+
+    private void updateFavoritesOnFavoriteList() {
+        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        mActivity.updateFavorites(mFavoriteStations);
     }
 
     private void startLocation() {
         if (!permissionsChecker.LacksPermission(locationPermission)) {
+            mActivity.updateStations(new ArrayList<Station>());
             mActivity.setIsPositionLoading(true);
 
             if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
@@ -159,32 +208,12 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            for (int i = 0; i < permissions.length; i++) {
-                String permission = permissions[i];
-                int grantResult = grantResults[i];
-
-                if (!(permission.equals(locationPermission))) {
-                    continue;
-                }
-
-                if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    startLocation();
-                } else {
-                    mActivity.setIsPositionLoading(false);
-                    SnackBars.showLocalisationSettings(mActivity);
-                }
-            }
-        }
-    }
-
     private void stopLocation() {
         mIsCapturingLocation = false;
         SmartLocation.with(mActivity).location().stop();
     }
 
-    private void updateStations(Location location) {
+    private void loadStations(Location location) {
         if (location != null) {
             Map<String, String> query = new HashMap<>();
             query.put("x", Double.toString(location.getLatitude()));
@@ -195,32 +224,20 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
     }
 
-    @Override
-    public void onLocationUpdated(Location location) {
-        Log.i(LOG_TAG, "onLocationUpdated : lat = " + location.getLatitude() + " , long = " + location.getLongitude());
-        mLastLocation = location;
+    private void loadStationsWithLastPosition() {
+        mActivity.updateStations(new ArrayList<Station>());
+        mActivity.setIsPositionLoading(true);
 
-        updateStations(location);
-    }
+        if (Build.FINGERPRINT.contains("generic")) { //emulator
+            mLastLocation = new Location("emulator");
+            mLastLocation.setLatitude(46.8017);
+            mLastLocation.setLongitude(7.1456);
+        }
 
-    @Subscribe
-    public void onStationsFetched(StationsLocationFetchedEvent event) {
-        mActivity.setIsPositionLoading(false);
-
-        mStations = event.getStations();
-        mActivity.updateStations(mStations);
-
-        updateFavorites();
-    }
-
-    @Subscribe
-    public void onFetchErrorEvent(FetchStationsLocationErrorEvent event) {
-        mActivity.setIsPositionLoading(false);
-        SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateStationsWithLastPosition();
-            }
-        });
+        if (mLastLocation != null) {
+            loadStations(mLastLocation);
+        } else {
+            startLocation();
+        }
     }
 }

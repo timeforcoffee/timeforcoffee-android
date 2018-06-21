@@ -7,10 +7,11 @@
     <string name="action_search">"Recherche</string>
     <string name="action_about">"A propos de cette appli"</string>
     <string name="action_favorite">"Ajouter aux favoris"</string>
-    <string name="title_loading_position">Nous essayons de vous localiser...</string>
+    <string name="title_loading_position">Nous essayons de vous localiser…</string>
     <string name="title_no_stations">"Pas d'arrêts trouvés"</string>
     <string name="title_enter_search">"Entrer votre recherche"</string>
-    <string name="title_no_favorites">"Pas de favoris</string>
+    <string name="title_no_favorites">Pas de favoris</string>
+    <string name="title_no_departures">Pas de départs</string>
     <string name="title_add_favorite_end">"pour ajouter un arrêt comme favori"</string>
     <string name="title_add_favorite_start">"Tape sur l'icône"</string>
     <string name="platform">"- Voie: %s"</string>
@@ -36,4 +37,5 @@
     <string name="departure_action_add_2">à</string>
     <string name="departure_action_remove">supprimé</string>
     <string name="departure_action_remove_2">de</string>
+    <string name="map_loading">Chargement…</string>
 </resources>

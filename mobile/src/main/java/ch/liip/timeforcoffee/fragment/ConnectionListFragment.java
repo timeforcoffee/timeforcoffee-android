@@ -1,5 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,22 +25,11 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
     private ConnectionListAdapter mConnectionListAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private ConnectionListFragment.Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
-        void onConnectionSelected(Connection connection);
         void onRefresh();
     }
-
-    private static ConnectionListFragment.Callbacks sDummyCallbacks = new ConnectionListFragment.Callbacks() {
-        @Override
-        public void onConnectionSelected(Connection connection) {
-        }
-
-        @Override
-        public void onRefresh() {
-        }
-    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,7 +51,7 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_connection_list, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         return rootView;
@@ -81,24 +70,28 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCallbacks.onRefresh();
                 mSwipeRefreshLayout.setRefreshing(false);
+                if(mCallbacks != null) {
+                    mCallbacks.onRefresh();
+                }
             }
         }, 100);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (!(context instanceof ConnectionListFragment.Callbacks)) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof ConnectionListFragment.Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-        mCallbacks = (ConnectionListFragment.Callbacks) context;
+
+        mCallbacks = (ConnectionListFragment.Callbacks) activity;
     }
 
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-        super.onListItemClick(listView, view, position, id);
-        mCallbacks.onConnectionSelected(mConnectionListAdapter.getConnexion(position));
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     public void setConnections(List<Connection> connections) {

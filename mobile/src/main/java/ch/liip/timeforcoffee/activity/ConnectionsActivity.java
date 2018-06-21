@@ -24,7 +24,7 @@ import ch.liip.timeforcoffee.fragment.ConnectionListFragment;
 import ch.liip.timeforcoffee.fragment.StationMapFragment;
 import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
 
-public class ConnectionsActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, ConnectionListFragment.Callbacks {
+public class ConnectionsActivity extends AppCompatActivity implements SlidingUpPanelLayout.PanelSlideListener, StationMapFragment.Callbacks, ConnectionListFragment.Callbacks {
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
@@ -90,18 +90,11 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
-        mStationMapFragment.setup(station, departure, getResources().getString(R.string.connection_from));
-
-        mProgressLayout = findViewById(R.id.progressLayout);
-        mSlidingLayout = findViewById(R.id.sliding_layout);
-        mSlidingLayout.setPanelSlideListener(this);
-
         // Fragments
         if (savedInstanceState == null) {
             mConnectionListFragment = (ConnectionListFragment) Fragment.instantiate(this, ConnectionListFragment.class.getName());
         }
-        else{
+        else {
             mConnectionListFragment = (ConnectionListFragment) getSupportFragmentManager().getFragment(savedInstanceState, CONNECTION_LIST_FRAGMENT_KEY);
         }
 
@@ -109,6 +102,14 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
                 .beginTransaction()
                 .replace(R.id.content_frame, mConnectionListFragment)
                 .commit();
+
+        // View
+        mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
+
+        mProgressLayout = findViewById(R.id.progressLayout);
+        mSlidingLayout = findViewById(R.id.sliding_layout);
+        mSlidingLayout.setPanelSlideListener(this);
+        mSlidingLayout.setTouchEnabled(false);
     }
 
     @Override
@@ -193,13 +194,16 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public void onPanelHidden(View panel) { }
 
     @Override
-    public void onConnectionSelected(Connection connection) { }
+    public void onMapLoaded() {
+        mSlidingLayout.setTouchEnabled(true);
+    }
 
     public void performConnectionsUpdate() {
         mPresenter.updateConnections();
     }
 
     public void updateConnections(List<Connection> connections) {
+        mStationMapFragment.setup(connections);
         mConnectionListFragment.setConnections(connections);
     }
 

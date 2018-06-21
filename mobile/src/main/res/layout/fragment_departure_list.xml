@@ -9,12 +9,37 @@
         android:layout_height="match_parent">
 
         <ListView android:id="@id/android:list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:drawSelectorOnTop="false"
-                android:listSelector="@android:color/transparent" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawSelectorOnTop="false"
+            android:listSelector="@android:color/transparent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/noDeparturesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/title_no_departures"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:id="@+id/loadingDeparturesSpinner"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"/>
 
 </RelativeLayout>

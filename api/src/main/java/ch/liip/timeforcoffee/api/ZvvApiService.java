@@ -60,7 +60,7 @@ public class ZvvApiService {
         fetchZvvStation(event.getSearchQuery());
     }
 
-    public void fetchZvvConnections(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
+    private void fetchZvvConnections(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
         zvvService.getConnections(fromStationId, toStationId, startDateStr, endDateStr)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -82,7 +82,7 @@ public class ZvvApiService {
                 });
     }
 
-    public void fetchZvvDepartures(String stationId) {
+    private void fetchZvvDepartures(String stationId) {
         zvvService.getDepartures(stationId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -104,7 +104,7 @@ public class ZvvApiService {
                 });
     }
 
-    public void fetchZvvStations(String searchQuery) {
+    private void fetchZvvStations(String searchQuery) {
         if (searchQuery.isEmpty()) { //search query is empty =>  return an empty station list
             List<Station> stations = new ArrayList<>();
             eventBus.post(new ZvvStationsSearchFetchedEvent(stations));
@@ -132,7 +132,7 @@ public class ZvvApiService {
                 });
     }
 
-    public void fetchZvvStation(String searchQuery) {
+    private void fetchZvvStation(String searchQuery) {
         if (searchQuery.isEmpty()) { //search query is empty =>  return null
             eventBus.post(new ZvvStationsSearchOneFetchedEvent(null));
             return;

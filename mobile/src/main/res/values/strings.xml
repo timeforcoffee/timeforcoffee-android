@@ -9,10 +9,11 @@
     <string name="action_search">Search</string>
     <string name="action_about">About</string>
     <string name="action_favorite">Add to favorites</string>
-    <string name="title_loading_position">We are trying to locate you...</string>
+    <string name="title_loading_position">We are trying to locate you…</string>
     <string name="title_no_stations">No stations found</string>
     <string name="title_enter_search">"Enter your search"</string>
     <string name="title_no_favorites">No favorites</string>
+    <string name="title_no_departures">No departures</string>
     <string name="title_add_favorite_end">to add a station as favorite</string>
     <string name="title_add_favorite_start">Tap on the icon</string>
     <string name="platform">- Pl: %s</string>
@@ -54,6 +55,8 @@
     <string name="nicolas_dougoud_twitter_id">"17496639"</string>
     <string name="luca_sardonini">Luca Sardonini /</string>
     <string name="luca_sardonini_github_username">"@lucasardonini"</string>
+    <string name="pascal_cudre">Pascal Cudré /</string>
+    <string name="pascal_cudre_github_username">"@friedrichIII"</string>
     <string name="title_activity_about">About</string>
     <string name="station_search_placeholder">…</string>
     <string name="connection_departure">Dep: </string>
@@ -64,4 +67,5 @@
     <string name="departure_action_add_2">to</string>
     <string name="departure_action_remove">removed</string>
     <string name="departure_action_remove_2">from</string>
+    <string name="map_loading">Loading…</string>
 </resources>

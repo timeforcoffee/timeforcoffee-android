@@ -1,0 +1,76 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :ci_test do
+
+  # Setup the environment variables
+    gradleProperties = nil
+    if ENV['CI']
+      gradleProperties = {
+          versionCode: ENV['CI_JOB_ID'],
+          keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
+          keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
+          keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
+          keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
+      }
+    end
+
+    # We make sure the app compiles
+    gradle(
+        task: "assemble",
+        flavor: "Full",
+        build_type: "Debug",
+        properties: gradleProperties
+    )
+
+    # Then run the unit tests
+    gradle(
+      task: "test",
+      flavor: "Full",
+      build_type: "DebugUnitTest"
+    )
+
+    gradle(
+      task: "api:test",
+    )
+  end
+
+  desc "Submit a build to Google Play, in the alpha lane"
+  lane :release do
+
+    gradleProperties = nil
+    if ENV['CI']
+        gradleProperties = {
+            versionCode: ENV['CI_JOB_ID'],
+            keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
+            keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
+            keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
+            keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
+        }
+    end
+
+    gradle(
+        task: "assemble",
+        flavor: "Full",
+        build_type: "Release",
+        properties: gradleProperties
+    )
+
+    supply(
+        track: 'alpha',
+        apk: 'mobile/build/outputs/apk/full/release/mobile-full-release.apk'
+    )
+  end
+end
