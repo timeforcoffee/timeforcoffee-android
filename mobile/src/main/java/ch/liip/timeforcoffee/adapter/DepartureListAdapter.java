@@ -25,10 +25,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     private List<Departure> mDepartures;
 
     private Context mContext;
-    private Callbacks mCallbacks = new Callbacks() {
-        @Override
-        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
-    };
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onDepartureFavoriteToggled(Departure departure, boolean isFavorite);
@@ -110,11 +107,11 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     }
 
     private void setLineName(TextView textView, Departure departure) {
-        String name = departure.getName();
-        textView.setText(name);
+        String line = departure.getLine();
+        textView.setText(line);
 
         try {
-            if (Arrays.asList(linesWithSymbol).contains(name)) {
+            if (Arrays.asList(linesWithSymbol).contains(line)) {
                 Typeface type = Typefaces.get(mContext, "trainsymbol");
                 textView.setTypeface(type);
                 textView.setTextColor(Color.WHITE);
@@ -122,7 +119,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             }
             else {
                 textView.setTypeface(Typeface.DEFAULT_BOLD);
-                textView.setTextColor(name.equals("RE") ? Color.RED : departure.getColorFg());
+                textView.setTextColor(line.equals("RE") ? Color.RED : departure.getColorFg());
                 textView.setBackgroundColor(departure.getColorBg() == Color.WHITE ? mContext.getResources().getColor(R.color.gray) : departure.getColorBg());
             }
         }

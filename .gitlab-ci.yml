@@ -27,4 +27,3 @@ release:
     expire_in: 6 months
     paths:
       - mobile/build/outputs/
-

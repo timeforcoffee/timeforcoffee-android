@@ -1,71 +1,62 @@
-{
-  "meta": {
-    "station_id": "8577725",
-    "station_name": "Bulle, gare"
-  },
-  "departures": [
-    {
-      "departure": {
-        "scheduled": "2018-03-09T15:44:00.000+01:00",
-        "realtime": null
-      },
-      "arrival": {
-        "scheduled": "2018-03-09T15:50:00.000+01:00"
-      },
-      "name": "201",
-      "dt": "2018-03-09T15:44:00.000+01:00",
-      "type": "bus",
-      "colors": {
-        "fg": "#000000",
-        "bg": "#FFFFFF"
-      },
-      "source": "zvv",
-      "id": "8593286",
-      "accessible": false,
-      "platform": null,
-      "to": "La Tour-de-Trême, Le Closalet"
+[
+  {
+    "destination": {
+      "id": 8583270,
+      "name": "Sion, Gare Bus Sédunois"
     },
-    {
-      "departure": {
-        "scheduled": "2018-03-09T15:44:00.000+01:00",
-        "realtime": null
-      },
-      "arrival": {
-        "scheduled": "2018-03-09T15:53:00.000+01:00"
-      },
-      "name": "202",
-      "dt": "2018-03-09T15:44:00.000+01:00",
-      "type": "bus",
-      "colors": {
-        "fg": "#000000",
-        "bg": "#FFFFFF"
-      },
-      "source": "zvv",
-      "id": "8593291",
-      "accessible": false,
-      "platform": null,
-      "to": "Vuadens, gare"
+    "departure": {
+      "scheduled": "2018-06-21T10:21:00",
+      "realtime": "2018-06-21T10:22:00"
     },
-    {
-      "departure": {
-        "scheduled": "2018-03-09T15:45:00.000+01:00",
-        "realtime": null
-      },
-      "arrival": {
-        "scheduled": "2018-03-09T15:58:00.000+01:00"
-      },
-      "name": "202",
-      "dt": "2018-03-09T15:45:00.000+01:00",
-      "type": "bus",
-      "colors": {
-        "fg": "#000000",
-        "bg": "#FFFFFF"
-      },
-      "source": "zvv",
-      "id": "8593289",
-      "accessible": false,
-      "platform": null,
-      "to": "Morlon, Eglise"
+    "arrival": {
+      "scheduled": "2018-06-21T10:36:00",
+      "realtime": "2018-06-21T10:37:00"
+    },
+    "line": "1",
+    "platform": null,
+    "color": {
+      "fg": "#000000",
+      "bg": "#FFFFFF"
     }
-  ]
-}
+  },
+  {
+    "destination": {
+      "id": 8583271,
+      "name": "Sion, Garenne"
+    },
+    "departure": {
+      "scheduled": "2018-06-21T10:50:00",
+      "realtime": "2018-06-21T10:51:00"
+    },
+    "arrival": {
+      "scheduled": "2018-06-21T10:55:00",
+      "realtime": "2018-06-21T10:56:00"
+    },
+    "line": "1",
+    "platform": null,
+    "color": {
+      "fg": "#000000",
+      "bg": "#FFFFFF"
+    }
+  },
+  {
+    "destination": {
+      "id": 8583270,
+      "name": "Sion, Gare Bus Sédunois"
+    },
+    "departure": {
+      "scheduled": "2018-06-21T11:00:00",
+      "realtime": null
+    },
+    "arrival": {
+      "scheduled": "2018-06-21T11:15:00",
+      "realtime": null
+    },
+    "line": "1",
+    "platform": null,
+    "color": {
+      "fg": "#000000",
+      "bg": "#FFFFFF"
+    }
+  }
+]
