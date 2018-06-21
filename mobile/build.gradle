@@ -26,7 +26,6 @@ android {
     }
 
     compileSdkVersion project.COMPILE_SDK
-    buildToolsVersion project.BUILD_TOOL
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
@@ -34,7 +33,6 @@ android {
     defaultConfig {
         applicationId project.PACKAGE_NAME
         minSdkVersion project.MIN_SDK
-        targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
         buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
