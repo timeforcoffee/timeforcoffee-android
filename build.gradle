@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.3'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -20,8 +20,6 @@ ext {
 
     MIN_SDK = 19
     COMPILE_SDK = 27
-    TARGET_SDK = 27
-    BUILD_TOOL = "27.0.1"
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
@@ -29,12 +27,14 @@ ext {
     VERSION_CODE = getVersionCode()
 
     KEYSTORE_KEY_ALIAS = project.hasProperty('keystoreKeyAlias') ? project.property('keystoreKeyAlias') : ""
-    KEYSTORE_KEY_PASS = project.hasProperty('keystoreKeyPass') ? project.property('keystoreKeyPass'): ""
-    KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath'): "."
-    KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass'): ""
+    KEYSTORE_KEY_PASS = project.hasProperty('keystoreKeyPass') ? project.property('keystoreKeyPass') : ""
+    KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath') : "."
+    KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass') : ""
 
-    RELEASE_MAP_API_KEY = "***REMOVED***"
-    DEBUG_MAP_API_KEY = "***REMOVED***"
+    BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername') : ""
+    BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword') : ""
+
+    GOOGLE_MAPS_API_KEY = project.hasProperty('googleMapsApiKey') ? project.property('googleMapsApiKey') : ""
 
     PLAY_SERVICES_VERSION = "9.4.0"
     SUPPORT_VERSION = "27.1.0"

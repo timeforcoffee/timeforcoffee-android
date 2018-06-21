@@ -26,7 +26,6 @@ android {
     }
 
     compileSdkVersion project.COMPILE_SDK
-    buildToolsVersion project.BUILD_TOOL
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
@@ -34,9 +33,11 @@ android {
     defaultConfig {
         applicationId project.PACKAGE_NAME
         minSdkVersion project.MIN_SDK
-        targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
+        buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
+        buildConfigField "String", "BACKEND_BASIC_AUTH_PASSWORD", "\"" + project.BACKEND_BASIC_AUTH_PASSWORD + "\""
+        resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
     }
     buildTypes {
         debug {
@@ -44,13 +45,11 @@ android {
             minifyEnabled false
             applicationIdSuffix '.dev'
             versionNameSuffix '-DEV'
-            resValue "string", "google_maps_api_key", project.DEBUG_MAP_API_KEY
         }
         release {
             debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
             signingConfig signingConfigs.release
         }
     }
@@ -79,7 +78,6 @@ dependencies {
     annotationProcessor 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     wearApp project(':wear')
-    implementation project(':opendata')
     implementation project(':api')
     implementation project(':common')
     implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
@@ -96,6 +94,6 @@ dependencies {
         transitive = false
     }
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
-        transitive = true;
+        transitive = true
     }
 }
