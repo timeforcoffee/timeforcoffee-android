@@ -19,7 +19,7 @@ release:
     - the-mob-android
   when: manual
   only:
-    - master
+    - develop
   script:
     - bundle exec fastlane release
   artifacts:
