@@ -8,8 +8,8 @@ public class StationMapper {
 
     public static Station fromBackend(ch.liip.timeforcoffee.backend.Station backendStation) {
         Location location = new Location("reverseGeocoded");
-        location.setLongitude(backendStation.getLocation().getX());
-        location.setLatitude(backendStation.getLocation().getY());
+        location.setLatitude(backendStation.getLocation().getX());
+        location.setLongitude(backendStation.getLocation().getY());
 
         return new Station(
                 backendStation.getId(),
