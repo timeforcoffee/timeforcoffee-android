@@ -10,8 +10,8 @@ public class ConnectionMapper {
 
     public static Connection fromBackend(ch.liip.timeforcoffee.backend.Connection backendConnection) {
         Location stationLocation = new Location("reverseGeocoded");
-        stationLocation.setLongitude(backendConnection.getStation().getLocation().getX());
-        stationLocation.setLatitude(backendConnection.getStation().getLocation().getY());
+        stationLocation.setLatitude(backendConnection.getStation().getLocation().getX());
+        stationLocation.setLongitude(backendConnection.getStation().getLocation().getY());
 
         Date timeScheduled = null;
         Date timeRealtime = null;
