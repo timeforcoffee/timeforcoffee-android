@@ -50,7 +50,7 @@ platform :android do
     )
   end
 
-  desc "Submit a build to Google Play, in the alpha lane"
+  desc "Submit a build to Google Play, in the internal test lane"
   lane :release do
 
     gradleProperties = nil
@@ -75,7 +75,7 @@ platform :android do
     )
 
     supply(
-        track: 'alpha',
+        track: 'internal test',
         apk: 'mobile/build/outputs/apk/full/release/mobile-full-release.apk'
     )
   end
