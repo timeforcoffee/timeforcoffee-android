@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.StationSearchActivity;
 import ch.liip.timeforcoffee.api.StationService;
-import ch.liip.timeforcoffee.api.ZvvApiService;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchErrorEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.StationsSearchFetchedEvent;
@@ -32,9 +31,6 @@ public class StationSearchPresenter implements Presenter {
 
     @Inject
     StationService stationService;
-
-    @Inject
-    ZvvApiService zvvApiService;
 
     @Inject
     FavoritesDataSource favoritesDataSource;

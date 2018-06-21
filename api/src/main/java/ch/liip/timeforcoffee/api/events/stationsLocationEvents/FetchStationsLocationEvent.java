@@ -1,16 +1,20 @@
 package ch.liip.timeforcoffee.api.events.stationsLocationEvents;
 
-import java.util.Map;
-
 public class FetchStationsLocationEvent {
 
-    private Map<String,String> query;
+    private double x;
+    private double y;
 
-    public FetchStationsLocationEvent(Map<String,String> query) {
-        this.query = query;
+    public FetchStationsLocationEvent(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public Map<String,String> getQuery() {
-        return query;
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 }

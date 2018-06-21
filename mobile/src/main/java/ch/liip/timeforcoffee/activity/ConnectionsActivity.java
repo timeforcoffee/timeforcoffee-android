@@ -41,16 +41,17 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public static final String ARG_STATION_LONGITUDE = "station_longitude";
     public static final String ARG_STATION_LATITUDE = "station_latitude";
     public static final String ARG_STATION_IS_FAVORITE = "station_is_favorite";
-    public static final String ARG_DEPARTURE_NAME = "departure_name";
-    public static final String ARG_DEPARTURE_ACCESSIBLE = "departure_accessible";
     public static final String ARG_DEPARTURE_DESTINATION_ID = "departure_destination_id";
     public static final String ARG_DEPARTURE_DESTINATION_NAME = "departure_destination_name";
-    public static final String ARG_DEPARTURE_PLATFORM = "departure_platform";
     public static final String ARG_DEPARTURE_DEPARTURE_SCHEDULED = "departure_departure_scheduled";
     public static final String ARG_DEPARTURE_DEPARTURE_REALTIME = "departure_departure_realtime";
     public static final String ARG_DEPARTURE_ARRIVAL_SCHEDULED = "departure_arrival_scheduled";
+    public static final String ARG_DEPARTURE_ARRIVAL_REALTIME = "departure_arrival_scheduled";
+    public static final String ARG_DEPARTURE_LINE = "departure_line";
+    public static final String ARG_DEPARTURE_PLATFORM = "departure_platform";
     public static final String ARG_DEPARTURE_COLOR_FG = "departure_color_fg";
     public static final String ARG_DEPARTURE_COLOR_BG = "departure_color_bg";
+    public static final String ARG_DEPARTURE_ACCESSIBLE = "departure_accessible";
     public static final String ARG_DEPARTURE_IS_FAVORITE = "departure_is_favorite";
 
     @Override
@@ -68,21 +69,34 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
         stationLoc.setLatitude(getIntent().getDoubleExtra(ARG_STATION_LATITUDE, 0.0));
         stationLoc.setLongitude(getIntent().getDoubleExtra(ARG_STATION_LONGITUDE, 0.0));
 
-        String departureName = getIntent().getStringExtra(ARG_DEPARTURE_NAME);
-        boolean departureAccessible = getIntent().getBooleanExtra(ARG_DEPARTURE_ACCESSIBLE, true);
         int departureDestinationId = getIntent().getIntExtra(ARG_DEPARTURE_DESTINATION_ID, 0);
         String departureDestinationName = getIntent().getStringExtra(ARG_DEPARTURE_DESTINATION_NAME);
-        String departurePlatform = getIntent().getStringExtra(ARG_DEPARTURE_PLATFORM);
         Date departureScheduled = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_DEPARTURE_SCHEDULED);
         Date departureRealtime = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_DEPARTURE_REALTIME);
         Date arrivalScheduled = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_ARRIVAL_SCHEDULED);
+        Date arrivalRealtime = (Date) getIntent().getSerializableExtra(ARG_DEPARTURE_ARRIVAL_REALTIME);
+        String departureLine = getIntent().getStringExtra(ARG_DEPARTURE_LINE);
+        String departurePlatform = getIntent().getStringExtra(ARG_DEPARTURE_PLATFORM);
         int departureColorFg = getIntent().getIntExtra(ARG_DEPARTURE_COLOR_FG, 0);
         int departureColorBg = getIntent().getIntExtra(ARG_DEPARTURE_COLOR_BG, 0);
+        boolean departureAccessible = getIntent().getBooleanExtra(ARG_DEPARTURE_ACCESSIBLE, true);
         boolean departureIsFavorite = getIntent().getBooleanExtra(ARG_DEPARTURE_IS_FAVORITE, false);
 
         Station station = new Station(stationId, stationName, stationDistance, stationLoc, stationIsFavorite);
-        Departure departure = new Departure(departureName, departureDestinationId, departureDestinationName, departurePlatform, departureColorFg, departureColorBg,
-                departureScheduled, departureRealtime, arrivalScheduled, departureAccessible, departureIsFavorite);
+        Departure departure = new Departure(
+                departureDestinationId,
+                departureDestinationName,
+                departureScheduled,
+                departureRealtime,
+                arrivalScheduled,
+                arrivalRealtime,
+                departureLine,
+                departurePlatform,
+                departureColorFg,
+                departureColorBg,
+                departureAccessible,
+                departureIsFavorite
+        );
 
         mPresenter = new ConnectionsPresenter(this, station, departure);
 

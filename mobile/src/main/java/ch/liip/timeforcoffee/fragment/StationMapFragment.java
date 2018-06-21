@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Connection;
-import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.api.models.WalkingDistance;
 import io.nlopez.smartlocation.SmartLocation;
@@ -137,8 +135,8 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         Connection departure = mConnections.get(0);
         Connection destination = mConnections.get(mConnections.size() - 1);
 
-        mTitleTextView.setText(destination.getName());
-        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getName()));
+        mTitleTextView.setText(destination.getStationName());
+        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getStationName()));
         mSubtitleTextView.setVisibility(View.VISIBLE);
 
         loadMap();
@@ -206,20 +204,20 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         mConnections.remove(destination);
 
         // Departure
-        LatLng departureLocation = new LatLng(departure.getLocation().getLatitude(), departure.getLocation().getLongitude());
-        mMap.addMarker(new MarkerOptions().position(departureLocation).title(departure.getName()));
+        LatLng departureLocation = new LatLng(departure.getStationLocation().getLatitude(), departure.getStationLocation().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(departureLocation).title(departure.getStationName()));
         checkpoints.add(departureLocation);
 
         // Checkpoints
         for(Connection connection : mConnections) {
-            LatLng location = new LatLng(connection.getLocation().getLatitude(), connection.getLocation().getLongitude());
-            mMap.addMarker(new MarkerOptions().position(location).icon(checkpointIcon).anchor(0.5f, 0.9f).title(connection.getName()));
+            LatLng location = new LatLng(connection.getStationLocation().getLatitude(), connection.getStationLocation().getLongitude());
+            mMap.addMarker(new MarkerOptions().position(location).icon(checkpointIcon).anchor(0.5f, 0.9f).title(connection.getStationName()));
             checkpoints.add(location);
         }
 
         // Destination
-        LatLng destinationLocation = new LatLng(destination.getLocation().getLatitude(), destination.getLocation().getLongitude());
-        mMap.addMarker(new MarkerOptions().position(destinationLocation).icon(destinationIcon).anchor(0.2f, 0.9f).title(destination.getName()));
+        LatLng destinationLocation = new LatLng(destination.getStationLocation().getLatitude(), destination.getStationLocation().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(destinationLocation).icon(destinationIcon).anchor(0.2f, 0.9f).title(destination.getStationName()));
         checkpoints.add(destinationLocation);
 
         mVisiblePoints.addAll(checkpoints);

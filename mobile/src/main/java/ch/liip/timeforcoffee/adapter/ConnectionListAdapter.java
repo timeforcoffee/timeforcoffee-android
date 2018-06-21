@@ -34,8 +34,6 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ConnectionListAdapter.ConnexionViewHolder viewHolder;
-        String departureLabel = mContext.getResources().getString(R.string.connection_departure);
-        String arrivalLabel = mContext.getResources().getString(R.string.connection_arrival);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,8 +55,8 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
         }
 
         Connection connection = this.mConnexions.get(position);
-        viewHolder.stationTextView.setText(connection.getName());
-        viewHolder.timeLabelTextView.setText(connection.getTimeLabel(departureLabel, arrivalLabel));
+        viewHolder.stationTextView.setText(connection.getStationName());
+        viewHolder.timeLabelTextView.setText(mContext.getResources().getString(R.string.connection_departure));
         viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
         viewHolder.departureTextView.setText(connection.getDepartureInMinutes());
 

@@ -18,5 +18,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':api')
+    implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
+    api 'com.squareup.retrofit:retrofit:' + project.RETROFIT_VERSION
+    api 'io.reactivex:rxjava:' + project.RXJAVA_VERSION
+    api 'io.reactivex:rxandroid:' + project.RXANDROID_VERSION
 }
