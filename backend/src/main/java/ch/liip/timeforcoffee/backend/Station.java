@@ -2,13 +2,13 @@ package ch.liip.timeforcoffee.backend;
 
 public class Station {
 
-    private Integer id;
+    private int id;
     private String name;
     private Location location;
 
     public Station() {}
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
