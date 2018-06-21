@@ -1,0 +1,26 @@
+[
+  {
+    "id": 8587062,
+    "name": "Genève, Jonction",
+    "location": {
+      "y": 6.129676,
+      "x": 46.200806
+    }
+  },
+  {
+    "id": 8504975,
+    "name": "Marly, Jonction",
+    "location": {
+      "y": 7.150412,
+      "x": 46.780724
+    }
+  },
+  {
+    "id": 8583274,
+    "name": "Sion, Jonction",
+    "location": {
+      "y": 7.336374,
+      "x": 46.225727
+    }
+  }
+]

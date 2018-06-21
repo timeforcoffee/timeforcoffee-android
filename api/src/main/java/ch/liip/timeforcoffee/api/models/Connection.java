@@ -3,55 +3,47 @@ package ch.liip.timeforcoffee.api.models;
 import android.location.Location;
 import android.support.annotation.Nullable;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Connection {
 
-    private int id;
-    private String name;
-    private Location location;
-    private Date scheduledDeparture;
-    private Date realtimeDeparture;
-    private Date scheduledArrival;
+    private int stationId;
+    private String stationName;
+    private Location stationLocation;
+    private Date scheduledTime;
+    private Date realtimeTime;
 
-    public Connection(int id, String name, Location location, Date scheduledDeparture, Date realtimeDeparture, Date scheduledArrival) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.scheduledDeparture = scheduledDeparture;
-        this.realtimeDeparture = realtimeDeparture;
-        this.scheduledArrival = scheduledArrival;
+
+    public Connection(int stationId, String stationName, Location stationLocation, Date scheduledTime, Date realtimeTime) {
+        this.stationId = stationId;
+        this.stationName = stationName;
+        this.stationLocation = stationLocation;
+        this.scheduledTime = scheduledTime;
+        this.realtimeTime = realtimeTime;
     }
 
-    public int getId() {
-        return id;
+    public int getStationId() {
+        return stationId;
     }
 
-    public String getName() {
-        return name;
+    public String getStationName() {
+        return stationName;
     }
 
-    public Location getLocation() {
-        return location;
+    public Location getStationLocation() {
+        return stationLocation;
     }
 
-    public String getTimeLabel(String departureLabel, String arrivalLabel) {
-        if(scheduledArrival != null && scheduledDeparture != null) {
-            if(scheduledArrival.getTime() == scheduledDeparture.getTime()) {
-                return arrivalLabel;
-            }
-        }
-
-        return departureLabel;
+    public Boolean isLate() {
+        return scheduledTime != null && realtimeTime != null && realtimeTime.compareTo(scheduledTime) != 0;
     }
 
     public @Nullable String getScheduledDepartureStr() {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        if (scheduledDeparture != null) {
-            return dt.format(scheduledDeparture);
+        if (scheduledTime != null) {
+            return dt.format(scheduledTime);
         }
 
         return null;
@@ -59,8 +51,8 @@ public class Connection {
 
     public @Nullable String getRealtimeDepartureStr() {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        if (realtimeDeparture != null) {
-            return dt.format(realtimeDeparture);
+        if (realtimeTime != null) {
+            return dt.format(realtimeTime);
         }
 
         return null;
@@ -78,20 +70,19 @@ public class Connection {
         return timeInterval +"'";
     }
 
-    long getDepartureTimeDiffInMinutes() {
+    private long getDepartureTimeDiffInMinutes() {
         Date now = new Date();
         long diff = -1;
 
-        if (realtimeDeparture != null){
-            diff = realtimeDeparture.getTime() - now.getTime();
-        } else if (scheduledDeparture != null){
-            diff = scheduledDeparture.getTime() - now.getTime();
+        if (realtimeTime != null){
+            diff = realtimeTime.getTime() - now.getTime();
+        }
+        else if (scheduledTime != null){
+            diff = scheduledTime.getTime() - now.getTime();
         }
 
         return TimeUnit.MILLISECONDS.toMinutes(diff);
     }
 
-    public Boolean isLate() {
-        return realtimeDeparture != null && scheduledDeparture != null && realtimeDeparture.compareTo(scheduledDeparture) != 0;
-    }
+
 }

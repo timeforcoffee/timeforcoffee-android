@@ -3,21 +3,17 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion project.COMPILE_SDK
-    buildToolsVersion project.BUILD_TOOL
 
     defaultConfig {
         applicationId project.PACKAGE_NAME
         minSdkVersion project.MIN_SDK
-        targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
+        resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
     }
     buildTypes {
-        debug {
-            resValue "string", "google_maps_api_key", project.DEBUG_MAP_API_KEY
-        }
+        debug {}
         release {
-            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -35,7 +31,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(':opendata')
     implementation project(':api')
     implementation project(':common')
 

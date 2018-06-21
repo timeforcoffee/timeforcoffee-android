@@ -2,31 +2,25 @@ package ch.liip.timeforcoffee.api.events.connectionsEvents;
 
 public class FetchConnectionsEvent {
 
-    private final String fromStationId;
-    private final String toStationId;
-    private final String startDateStr;
-    private final String endDateStr;
+    private final int stationId;
+    private final int destinationId;
+    private final String departureString;
 
-    public FetchConnectionsEvent(String fromStationId, String toStationId, String startDateStr, String endDateStr) {
-        this.fromStationId = fromStationId;
-        this.toStationId = toStationId;
-        this.startDateStr = startDateStr;
-        this.endDateStr = endDateStr;
+    public FetchConnectionsEvent(int stationId, int destinationId, String departureString) {
+        this.stationId = stationId;
+        this.destinationId = destinationId;
+        this.departureString = departureString;
     }
 
-    public String getFromStationId() {
-        return fromStationId;
+    public int getStationId() {
+        return stationId;
     }
 
-    public String getToStationId() {
-        return toStationId;
+    public int getDestinationId() {
+        return destinationId;
     }
 
-    public String getStartDateStr() {
-        return startDateStr;
-    }
-
-    public String getEndDateStr() {
-        return endDateStr;
+    public String getDepartureString() {
+        return departureString;
     }
 }
