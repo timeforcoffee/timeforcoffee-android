@@ -39,7 +39,7 @@ android {
         versionName project.VERSION
         buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
         buildConfigField "String", "BACKEND_BASIC_AUTH_PASSWORD", "\"" + project.BACKEND_BASIC_AUTH_PASSWORD + "\""
-        resValue "string", "google_maps_api_key", project.GOOGLE_MAP_API_KEY
+        resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
     }
     buildTypes {
         debug {

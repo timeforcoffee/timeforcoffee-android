@@ -24,6 +24,9 @@ platform :android do
           keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
           keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
           keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
+          backendBasicAuthUsername: ENV['BACKEND_BASIC_AUTH_USERNAME'],
+          backendBasicAuthPassword: ENV['BACKEND_BASIC_AUTH_PASSWORD'],
+          googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY']
       }
     end
 
@@ -58,6 +61,9 @@ platform :android do
             keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
             keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
             keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
+            backendBasicAuthUsername: ENV['BACKEND_BASIC_AUTH_USERNAME'],
+            backendBasicAuthPassword: ENV['BACKEND_BASIC_AUTH_PASSWORD'],
+            googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY']
         }
     end
 
