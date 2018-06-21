@@ -92,8 +92,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     }
 
     private void setLineName(TextView textView, Departure departure) {
-
-        String name = departure.getName();
+        String name = departure.getLine();
         textView.setText(name);
 
         try {
