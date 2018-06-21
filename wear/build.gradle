@@ -11,13 +11,11 @@ android {
         targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
+        resValue "string", "google_maps_api_key", project.GOOGLE_MAP_API_KEY
     }
     buildTypes {
-        debug {
-            resValue "string", "google_maps_api_key", project.DEBUG_MAP_API_KEY
-        }
+        debug {}
         release {
-            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
