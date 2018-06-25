@@ -20,6 +20,7 @@ ext {
 
     MIN_SDK = 19
     COMPILE_SDK = 27
+    TARGET_SDK = 27
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
