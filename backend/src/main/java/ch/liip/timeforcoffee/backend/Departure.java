@@ -5,6 +5,7 @@ public class Departure {
     private Station destination;
     private String line;
     private String platform;
+    private boolean accessible;
     private Color color;
     private Time departure;
     private Time arrival;
@@ -21,6 +22,10 @@ public class Departure {
 
     public String getPlatform() {
         return platform;
+    }
+
+    public boolean isAccessible() {
+        return accessible;
     }
 
     public Color getColor() {
