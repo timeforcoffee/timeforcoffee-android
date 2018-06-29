@@ -60,7 +60,7 @@ class TimeForCoffeeModule {
                 .create();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("https://timeforcoffee-backend.herokuapp.com")
+                .setEndpoint(BuildConfig.BACKEND_URL)
                 .setConverter(new GsonConverter(gson))
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override

@@ -46,12 +46,14 @@ android {
             minifyEnabled false
             applicationIdSuffix '.dev'
             versionNameSuffix '-DEV'
+            buildConfigField "String", "BACKEND_URL", "\"" + project.BACKEND_DEV_URL + "\""
         }
         release {
             debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            buildConfigField "String", "BACKEND_URL", "\"" + project.BACKEND_PROD_URL + "\""
         }
     }
     flavorDimensions "mobile"
