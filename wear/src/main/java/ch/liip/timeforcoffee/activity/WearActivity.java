@@ -9,6 +9,10 @@ import android.support.wearable.view.DotsPageIndicator;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MotionEvent;
+
+import java.util.List;
+import java.util.Vector;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
@@ -19,9 +23,6 @@ import ch.liip.timeforcoffee.fragment.RefreshActionFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.WearPresenter;
 import ch.liip.timeforcoffee.view.FragmentViewPager;
-
-import java.util.List;
-import java.util.Vector;
 
 public class WearActivity extends Activity {
 
