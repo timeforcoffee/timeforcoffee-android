@@ -16,7 +16,6 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Departure;
-import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
@@ -139,7 +138,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     }
 
     private static class DepartureViewHolder {
-        FontFitTextView lineNameTextView;
+        TextView lineNameTextView;
         TextView destinationTextView;
         TextView departureTextView;
         TextView scheduledTimeTextView;
