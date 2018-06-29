@@ -79,10 +79,11 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         }
 
         if (departure.getPlatform() != null) {
+            viewHolder.platformTextView.setVisibility(View.VISIBLE);
             viewHolder.platformTextView.setText(String.format(getContext().getString(R.string.platform), departure.getPlatform()));
         }
         else {
-            viewHolder.platformTextView.setText("");
+            viewHolder.platformTextView.setVisibility(View.GONE);
         }
 
         if (departure.isAccessible()) {
