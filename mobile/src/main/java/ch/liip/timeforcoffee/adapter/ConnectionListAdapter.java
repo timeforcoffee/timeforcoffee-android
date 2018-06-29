@@ -56,9 +56,15 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
         Connection connection = this.mConnexions.get(position);
         viewHolder.stationTextView.setText(connection.getStationName());
-        viewHolder.timeLabelTextView.setText(mContext.getResources().getString(R.string.connection_departure));
         viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
         viewHolder.departureTextView.setText(connection.getDepartureInMinutes());
+
+        if(position != mConnexions.size() - 1) {
+            viewHolder.timeLabelTextView.setText(mContext.getResources().getString(R.string.connection_departure));
+        }
+        else {
+            viewHolder.timeLabelTextView.setText(mContext.getResources().getString(R.string.connection_arrival));
+        }
 
         if (connection.isLate()) {
             viewHolder.realtimeDepartureTextView.setVisibility(View.VISIBLE);
