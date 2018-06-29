@@ -82,12 +82,123 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
 
     @Override
     public void onRefreshView() {
-        loadStationsWithLastPosition();
+        loadStationsWithLastPositionForce();
     }
 
     public void onDestroy() {
         mActivity = null;
         mEventBus.unregister(this);
+    }
+
+    public void updateStations() {
+        if (Build.FINGERPRINT.contains("generic")) { //emulator
+            mLastLocation = new Location("emulator");
+            mLastLocation.setLatitude(46.8017);
+            mLastLocation.setLongitude(7.1456);
+
+            loadStationsWithLastPosition();
+        }
+        else if (!mIsCapturingLocation) {
+            startLocation();
+        }
+    }
+
+    public void updateFavorites() {
+        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        mActivity.updateFavorites(mFavoriteStations);
+
+        if(mStations != null) {
+            for(Station station : mStations) {
+                station.setIsFavorite(mFavoriteStations.contains(station));
+            }
+
+            mActivity.updateStations(mStations);
+        }
+    }
+
+    public void updateStationIsFavorite(Station station, boolean isFavorite) {
+        if (isFavorite) {
+            favoritesDataSource.insertFavoriteStation(mActivity, station);
+        }
+        else {
+            favoritesDataSource.deleteFavoriteStation(mActivity, station);
+        }
+
+        updateFavoritesOnFavoriteList();
+        if(mFavoriteStations.size() == 0) {
+            mActivity.displayStationList();
+        }
+    }
+
+    private void updateFavoritesOnFavoriteList() {
+        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        mActivity.updateFavorites(mFavoriteStations);
+    }
+
+    private void startLocation() {
+        if (!permissionsChecker.LacksPermission(locationPermission)) {
+            if(mStations == null || mStations.size() == 0) {
+                mActivity.setIsPositionLoading(true);
+            }
+
+            if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
+                SnackBars.showLocalisationServiceOff(mActivity);
+                mActivity.setIsPositionLoading(false);
+                return;
+            }
+            else if(SmartLocation.with(mActivity).location().state().isGpsAvailable() && !SmartLocation.with(mActivity).location().state().isNetworkAvailable()) {
+                SnackBars.showLocalisationServiceSetToDeviceOnly(mActivity);
+                mActivity.setIsPositionLoading(false);
+                return;
+            }
+
+            mIsCapturingLocation = true;
+            LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
+            SmartLocation.with(mActivity).location()
+                    .config(locationParams)
+                    .oneFix()
+                    .start(this);
+        }
+        else {
+            permissionsChecker.RequestPermission(mActivity, locationPermission, PERMISSION_REQUEST_CODE, mActivity.getResources().getString(R.string.permission_message));
+        }
+    }
+
+    private void stopLocation() {
+        mIsCapturingLocation = false;
+        SmartLocation.with(mActivity).location().stop();
+    }
+
+    private void loadStationsWithLastPosition() {
+        if(mStations == null || mStations.size() == 0) {
+            mActivity.setIsPositionLoading(true);
+        }
+
+        if (mLastLocation != null) {
+            loadStations(mLastLocation);
+        }
+        else {
+            startLocation();
+        }
+    }
+
+    private void loadStationsWithLastPositionForce() {
+        mActivity.updateStations(new ArrayList<Station>());
+        mActivity.setIsPositionLoading(true);
+
+        if (mLastLocation != null) {
+            loadStations(mLastLocation);
+        }
+        else {
+            startLocation();
+        }
+    }
+
+    private void loadStations(Location location) {
+        if (location != null) {
+            Log.i(LOG_TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
+            mEventBus.post(new FetchStationsLocationEvent(location.getLatitude(), location.getLongitude()));
+        }
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -137,101 +248,5 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
                 loadStationsWithLastPosition();
             }
         });
-    }
-
-    public void updateStations() {
-        if (Build.FINGERPRINT.contains("generic")) { //emulator
-            loadStationsWithLastPosition();
-        }
-        else if (!mIsCapturingLocation) {
-            startLocation();
-        }
-    }
-
-    public void updateFavorites() {
-        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
-        mActivity.updateFavorites(mFavoriteStations);
-
-        if(mStations != null) {
-            for(Station station : mStations) {
-                station.setIsFavorite(mFavoriteStations.contains(station));
-            }
-
-            mActivity.updateStations(mStations);
-        }
-    }
-
-    public void updateStationIsFavorite(Station station, boolean isFavorite) {
-        if (isFavorite) {
-            favoritesDataSource.insertFavoriteStation(mActivity, station);
-        }
-        else {
-            favoritesDataSource.deleteFavoriteStation(mActivity, station);
-        }
-
-        updateFavoritesOnFavoriteList();
-        if(mFavoriteStations.size() == 0) {
-            mActivity.displayStationList();
-        }
-    }
-
-    private void updateFavoritesOnFavoriteList() {
-        mFavoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
-        mActivity.updateFavorites(mFavoriteStations);
-    }
-
-    private void startLocation() {
-        if (!permissionsChecker.LacksPermission(locationPermission)) {
-            mActivity.updateStations(new ArrayList<Station>());
-            mActivity.setIsPositionLoading(true);
-
-            if (!SmartLocation.with(mActivity).location().state().locationServicesEnabled()) {
-                SnackBars.showLocalisationServiceOff(mActivity);
-                mActivity.setIsPositionLoading(false);
-                return;
-            } else if(SmartLocation.with(mActivity).location().state().isGpsAvailable() && !SmartLocation.with(mActivity).location().state().isNetworkAvailable()) {
-                SnackBars.showLocalisationServiceSetToDeviceOnly(mActivity);
-                mActivity.setIsPositionLoading(false);
-                return;
-            }
-
-            mIsCapturingLocation = true;
-            LocationParams locationParams = new LocationParams.Builder().setAccuracy(LocationAccuracy.MEDIUM).setDistance(LOCATION_SMALLEST_DISPLACEMENT).setInterval(LOCATION_INTERVAL).build();
-            SmartLocation.with(mActivity).location()
-                    .config(locationParams)
-                    .oneFix()
-                    .start(this);
-        } else {
-            permissionsChecker.RequestPermission(mActivity, locationPermission, PERMISSION_REQUEST_CODE, mActivity.getResources().getString(R.string.permission_message));
-        }
-    }
-
-    private void stopLocation() {
-        mIsCapturingLocation = false;
-        SmartLocation.with(mActivity).location().stop();
-    }
-
-    private void loadStations(Location location) {
-        if (location != null) {
-            Log.i(LOG_TAG, "get stations for lat =  " + location.getLatitude() + " and long = " + location.getLongitude());
-            mEventBus.post(new FetchStationsLocationEvent(location.getLatitude(), location.getLongitude()));
-        }
-    }
-
-    private void loadStationsWithLastPosition() {
-        mActivity.updateStations(new ArrayList<Station>());
-        mActivity.setIsPositionLoading(true);
-
-        if (Build.FINGERPRINT.contains("generic")) { //emulator
-            mLastLocation = new Location("emulator");
-            mLastLocation.setLatitude(46.8017);
-            mLastLocation.setLongitude(7.1456);
-        }
-
-        if (mLastLocation != null) {
-            loadStations(mLastLocation);
-        } else {
-            startLocation();
-        }
     }
 }
