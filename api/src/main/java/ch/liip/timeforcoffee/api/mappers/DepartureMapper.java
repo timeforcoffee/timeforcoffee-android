@@ -37,7 +37,7 @@ public class DepartureMapper {
                 backendDeparture.getPlatform(),
                 colorFg,
                 colorBg,
-                false,
+                backendDeparture.isAccessible(),
                 false
         );
     }
