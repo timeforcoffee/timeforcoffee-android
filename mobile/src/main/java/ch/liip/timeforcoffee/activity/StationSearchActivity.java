@@ -105,6 +105,8 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        stopSearching();
         mPresenter.onDestroy();
     }
 
@@ -158,6 +160,14 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         }
     }
 
+    private void stopSearching() {
+        if (mSearchHandler != null && mSearchRunnable != null) {
+            mSearchHandler.removeCallbacks(mSearchRunnable);
+            mSearchHandler = null;
+            mSearchRunnable = null;
+        }
+    }
+
     /**
      * Responsible for handling changes in search edit text.
      */
@@ -172,11 +182,7 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         @Override
         public void afterTextChanged(Editable editable) {
             //Stop current handler since we have a new text entered
-            if (mSearchHandler != null && mSearchRunnable != null) {
-                mSearchHandler.removeCallbacks(mSearchRunnable);
-                mSearchHandler = null;
-                mSearchRunnable = null;
-            }
+            stopSearching();
 
             //Search after 1 sec. This allow to stop the search is user is still entering text
             mSearchRunnable = new Runnable() {
@@ -185,6 +191,7 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
                     mPresenter.search();
                 }
             };
+
             mSearchHandler = new android.os.Handler();
             mSearchHandler.postDelayed(mSearchRunnable, 1000);
         }
