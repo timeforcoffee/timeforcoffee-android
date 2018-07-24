@@ -78,11 +78,12 @@ dependencies {
     repositories {
         mavenCentral()
     }
-    annotationProcessor 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    wearApp project(':wear')
     implementation project(':api')
     implementation project(':common')
+    wearApp project(':wear')
+
     implementation 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
     implementation 'com.android.support:support-v4:' + project.SUPPORT_VERSION
     implementation 'com.android.support:design:' + project.SUPPORT_VERSION
@@ -93,10 +94,14 @@ dependencies {
     implementation 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
     implementation 'com.sothree.slidinguppanel:library:3.0.0'
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
+
     implementation('io.nlopez.smartlocation:library:3.3.3') {
         transitive = false
     }
-    implementation('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
     }
+
+    annotationProcessor 'com.squareup.dagger:dagger-compiler:' + project.DAGGER_VERSION
 }
