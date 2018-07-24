@@ -40,5 +40,4 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
     implementation 'com.android.support:support-v13:' + project.SUPPORT_VERSION
     implementation 'com.google.android.support:wearable:' + project.SUPPORT_WEARABLE_VERSION
-
 }
