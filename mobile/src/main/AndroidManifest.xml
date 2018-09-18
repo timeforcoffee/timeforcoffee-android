@@ -34,6 +34,10 @@
             android:name="io.fabric.ApiKey"
             android:value="0f094fc97e3bdd70012cabf92bbe12aeb81072c3" />
 
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+
         <service android:name=".wear.DataService" />
 
         <service android:name=".wear.WearService">
