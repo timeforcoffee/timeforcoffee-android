@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,7 +196,11 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
     private void drawTransportPath() {
         List<LatLng> checkpoints = new ArrayList<>();
-        BitmapDescriptor checkpointIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin);
+
+        IconGenerator checkpointIcon = new IconGenerator(getContext());
+        checkpointIcon.setTextAppearance(R.style.connexionStyleText);
+        checkpointIcon.setBackground(getResources().getDrawable(R.drawable.connexion_marker));
+
         BitmapDescriptor destinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_flag);
 
         Connection departure = mConnections.get(0);
@@ -209,10 +214,12 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         checkpoints.add(departureLocation);
 
         // Checkpoints
+        int positionOfConnection = 1;
         for(Connection connection : mConnections) {
             LatLng location = new LatLng(connection.getStationLocation().getLatitude(), connection.getStationLocation().getLongitude());
-            mMap.addMarker(new MarkerOptions().position(location).icon(checkpointIcon).anchor(0.5f, 0.9f).title(connection.getStationName()));
+            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(checkpointIcon.makeIcon(Integer.toString(positionOfConnection)))).position(location).anchor(0.5f, 0.9f).title(connection.getStationName()));
             checkpoints.add(location);
+            positionOfConnection = positionOfConnection + 1;
         }
 
         // Destination
