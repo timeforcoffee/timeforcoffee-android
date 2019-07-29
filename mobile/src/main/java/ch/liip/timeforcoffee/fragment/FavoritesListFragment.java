@@ -1,12 +1,10 @@
 package ch.liip.timeforcoffee.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ListFragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.fragment.app.ListFragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +14,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
 
 
 public class FavoritesListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener, StationListAdapter.Callbacks, DepartureListAdapter.Callbacks {
