@@ -1,7 +1,7 @@
 package ch.liip.timeforcoffee.api.models;
 
 import android.location.Location;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,7 +40,8 @@ public class Connection {
         return scheduledTime != null && realtimeTime != null && realtimeTime.compareTo(scheduledTime) != 0;
     }
 
-    public @Nullable String getScheduledDepartureStr() {
+    public @Nullable
+    String getScheduledDepartureStr() {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         if (scheduledTime != null) {
             return dt.format(scheduledTime);
