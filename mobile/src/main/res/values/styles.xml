@@ -19,4 +19,10 @@
         <item name="android:background">@android:color/white</item>
     </style>
 
+    <!-- Map-marker theme. -->
+    <style name="mapMarker">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

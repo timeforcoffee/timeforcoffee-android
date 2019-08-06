@@ -39,6 +39,7 @@ android {
         buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
         buildConfigField "String", "BACKEND_BASIC_AUTH_PASSWORD", "\"" + project.BACKEND_BASIC_AUTH_PASSWORD + "\""
         resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
+        vectorDrawables.useSupportLibrary=true
     }
     buildTypes {
         debug {
@@ -94,6 +95,7 @@ dependencies {
     implementation 'com.squareup.dagger:dagger:1.2.2'
     implementation 'com.sothree.slidinguppanel:library:3.0.0'
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 
     implementation('io.nlopez.smartlocation:library:3.3.3') {
         transitive = false
