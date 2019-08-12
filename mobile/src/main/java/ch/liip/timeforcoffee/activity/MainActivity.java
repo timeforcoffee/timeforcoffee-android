@@ -16,6 +16,7 @@ import java.util.List;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
+import ch.liip.timeforcoffee.fragment.AboutFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
@@ -118,8 +119,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
                 startActivity(stationSearchIntent);
                 return true;
             case R.id.action_about:
-                Intent aboutIntent = new Intent(this, AboutActivity.class);
-                startActivity(aboutIntent);
+                //
                 return true;
         }
 
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
                     selectedFragment = new Fragment();
                     break;
                 case R.id.action_about:
-                    selectedFragment = new Fragment();
+                    selectedFragment = new AboutFragment();
             }
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
