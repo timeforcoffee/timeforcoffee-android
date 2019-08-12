@@ -1,30 +1,31 @@
-package ch.liip.timeforcoffee.activity;
+package ch.liip.timeforcoffee.fragment;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import ch.liip.timeforcoffee.BuildConfig;
 import ch.liip.timeforcoffee.R;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutFragment extends Fragment {
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        setContentView(R.layout.activity_about);
+        View view = inflater.inflate(R.layout.activity_about, container, false);
 
-        // Show the Up button in the action bar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        TextView appLink = findViewById(R.id.appLink);
+        TextView appLink = view.findViewById(R.id.appLink);
         appLink.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         appLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,7 +38,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView appTwitterLink = findViewById(R.id.appTwitterLink);
+        TextView appTwitterLink = view.findViewById(R.id.appTwitterLink);
         appTwitterLink.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         appTwitterLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,10 +47,10 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView appVersionTextView = findViewById(R.id.appVersion);
+        TextView appVersionTextView = view.findViewById(R.id.appVersion);
         appVersionTextView.setText(getAppVersionStr());
 
-        TextView francoisTwitter = findViewById(R.id.francoisTwitter);
+        TextView francoisTwitter = view.findViewById(R.id.francoisTwitter);
         francoisTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         francoisTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +59,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView christianTwitter = findViewById(R.id.christianTwitter);
+        TextView christianTwitter = view.findViewById(R.id.christianTwitter);
         christianTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         christianTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +68,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView janTwitter = findViewById(R.id.janTwitter);
+        TextView janTwitter = view.findViewById(R.id.janTwitter);
         janTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         janTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +77,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView cyrilTwitter = findViewById(R.id.cyrilTwitter);
+        TextView cyrilTwitter = view.findViewById(R.id.cyrilTwitter);
         cyrilTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         cyrilTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +86,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView fabioTwitter = findViewById(R.id.fabioTwitter);
+        TextView fabioTwitter = view.findViewById(R.id.fabioTwitter);
         fabioTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         fabioTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +95,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView nicolasTwitter = findViewById(R.id.nicolasTwitter);
+        TextView nicolasTwitter = view.findViewById(R.id.nicolasTwitter);
         nicolasTwitter.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         nicolasTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +104,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView lucaGithub = findViewById(R.id.lucaGithub);
+        TextView lucaGithub = view.findViewById(R.id.lucaGithub);
         lucaGithub.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         lucaGithub.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +113,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView pascalGithub = findViewById(R.id.pascalGithub);
+        TextView pascalGithub = view.findViewById(R.id.pascalGithub);
         pascalGithub.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         pascalGithub.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +122,8 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
+
+        return view;
     }
 
     private String getAppVersionStr() {
@@ -135,7 +138,7 @@ public class AboutActivity extends AppCompatActivity {
 
         try {
             // get the Twitter app if possible
-            this.getPackageManager().getPackageInfo("com.twitter.android", 0);
+            this.getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=" + twitterId));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } catch (Exception e) {
@@ -152,15 +155,5 @@ public class AboutActivity extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + username));
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
