@@ -9,13 +9,11 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.astuetz.PagerSlidingTabStrip;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
-import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
@@ -58,27 +56,10 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
 
-        List fragments = new Vector();
-        fragments.add(mStationListFragment);
-        fragments.add(mFavoriteListFragment);
+        // Bottom navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        // Initialize the ViewPager and bind to tabs
-        mTabsViewPager = findViewById(R.id.viewpager);
-        mTabsViewPager.setAdapter(new TabsAdapter(
-                this,
-                super.getSupportFragmentManager(),
-                new int[]{ R.string.tab_stations, R.string.tab_favorites },
-                fragments
-        ));
-
-        PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(mTabsViewPager);
-        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mPresenter.updateFavorites();
-            }
-        });
     }
 
     @Override
@@ -197,4 +178,29 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     public void displayStationList() {
         mTabsViewPager.setCurrentItem(STATION_LIST_TAB);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment selectedFragment = null;
+
+            switch (menuItem.getItemId()) {
+                case R.id.action_search:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_stations:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_favorites:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_about:
+                    selectedFragment = new Fragment();
+            }
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+
+            return true;
+        }
+    };
 }
