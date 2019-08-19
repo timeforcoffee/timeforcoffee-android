@@ -5,9 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -26,12 +26,9 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
-    private ViewPager mTabsViewPager;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
-    private static final int STATION_LIST_TAB = 0;
-    private static final int FAVORITE_LIST_TAB = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +54,13 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
 
-        // Bottom navigation
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
 
+        // Bottom navigation
+        BottomNavigationView mBottomNav = findViewById(R.id.bottom_navigation);
+        mBottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        mBottomNav.setSelectedItemId(R.id.action_stations);
     }
 
     @Override
@@ -176,10 +176,11 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     }
 
     public void displayStationList() {
-        mTabsViewPager.setCurrentItem(STATION_LIST_TAB);
+        //
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             Fragment selectedFragment = null;
@@ -189,10 +190,10 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
                     selectedFragment = new Fragment();
                     break;
                 case R.id.action_stations:
-                    selectedFragment = new Fragment();
+                    selectedFragment = mStationListFragment;
                     break;
                 case R.id.action_favorites:
-                    selectedFragment = new Fragment();
+                    selectedFragment = mFavoriteListFragment;
                     break;
                 case R.id.action_about:
                     selectedFragment = new AboutFragment();
