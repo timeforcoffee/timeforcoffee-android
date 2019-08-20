@@ -104,6 +104,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         else if(mActivity instanceof StationSearchActivity) {
             ((StationSearchActivity)mActivity).performStationsSearch();
         }
+        onRefresh();
     }
 
     @Override
