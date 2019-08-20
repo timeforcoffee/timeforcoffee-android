@@ -3,6 +3,7 @@ package ch.liip.timeforcoffee.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.view.Menu;
@@ -35,6 +36,10 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_list);
+
+        // Hide action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         // Presenter
         mPresenter = new MainPresenter(this);
@@ -103,30 +108,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                navigateUpTo(new Intent(this, MainActivity.class));
-                return true;
-            case R.id.action_search:
-                Intent stationSearchIntent = new Intent(this, StationSearchActivity.class);
-                startActivity(stationSearchIntent);
-                return true;
-            case R.id.action_about:
-                //
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
