@@ -1,10 +1,9 @@
 package ch.liip.timeforcoffee.adapter;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import ch.liip.timeforcoffee.R;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
     private final int[] titles;
     private Context context;
 
-    public TabsAdapter(Context context, FragmentManager fm, int[] titlesRes,  List fragments) {
+    public TabsAdapter(Context context, FragmentManager fm, int[] titlesRes, List fragments) {
         super(fm);
         this.context = context;
         this.titles = titlesRes;

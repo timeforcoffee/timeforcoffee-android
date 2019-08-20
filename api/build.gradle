@@ -26,12 +26,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':backend')
 
-    api 'com.android.support:appcompat-v7:' + project.SUPPORT_VERSION
+    api 'com.android.support:appcompat-v7:28.0.0'
     api 'org.greenrobot:eventbus:3.0.0'
     api 'com.github.jd-alexander:library:1.0.5'
-    implementation 'com.google.code.gson:gson:2.3.1'
-    implementation 'com.squareup.dagger:dagger:' + project.DAGGER_VERSION
-    implementation 'com.google.android.gms:play-services-location:' + project.PLAY_SERVICES_VERSION
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.dagger:dagger:1.2.2'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     testImplementation 'junit:junit:4.12'
 }

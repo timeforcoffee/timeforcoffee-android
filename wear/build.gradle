@@ -35,9 +35,9 @@ dependencies {
     implementation project(':api')
     implementation project(':common')
 
-    implementation 'com.google.android.gms:play-services-location:' + project.PLAY_SERVICES_VERSION
-    implementation 'com.google.android.gms:play-services-wearable:' + project.PLAY_SERVICES_VERSION
-    implementation 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
-    implementation 'com.android.support:support-v13:' + project.SUPPORT_VERSION
-    implementation 'com.google.android.support:wearable:' + project.SUPPORT_WEARABLE_VERSION
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-wearable:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'com.google.android.support:wearable:2.4.0'
 }
