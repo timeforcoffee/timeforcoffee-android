@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -26,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
+    private BottomNavigationView mBottomNav;
+    private int menuItemSelected;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
@@ -57,10 +58,11 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
 
         // Bottom navigation
-        BottomNavigationView mBottomNav = findViewById(R.id.bottom_navigation);
+        mBottomNav = findViewById(R.id.bottom_navigation);
         mBottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        mBottomNav.setSelectedItemId(R.id.action_stations);
+        menuItemSelected = R.id.action_stations;
+        mBottomNav.setSelectedItemId(menuItemSelected);
     }
 
     @Override
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     @Override
     public void onResume() {
         super.onResume();
+        mBottomNav.setSelectedItemId(menuItemSelected);
         mPresenter.onResumeView();
     }
 
@@ -184,22 +187,30 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             Fragment selectedFragment = null;
+            Intent stationSearchIntent = null;
 
             switch (menuItem.getItemId()) {
                 case R.id.action_search:
-                    selectedFragment = new Fragment();
+                    stationSearchIntent = new Intent(getApplicationContext(), StationSearchActivity.class);
                     break;
                 case R.id.action_stations:
+                    menuItemSelected = R.id.action_stations;
                     selectedFragment = mStationListFragment;
                     break;
                 case R.id.action_favorites:
+                    menuItemSelected = R.id.action_favorites;
                     selectedFragment = mFavoriteListFragment;
                     break;
                 case R.id.action_about:
+                    menuItemSelected = R.id.action_about;
                     selectedFragment = new AboutFragment();
             }
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+            if (selectedFragment == null) {
+                startActivity(stationSearchIntent);
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+            }
 
             return true;
         }
