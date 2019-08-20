@@ -217,6 +217,26 @@
                 android:text="@string/pascal_cudre_github_username"/>
 
         </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/sylvain_nicolet"/>
+
+            <TextView
+              android:id="@+id/sylvainGithub"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:clickable="true"
+              android:focusable="true"
+              android:text="@string/sylvain_nicolet_github_username"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>
