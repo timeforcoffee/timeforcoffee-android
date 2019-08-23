@@ -23,10 +23,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
     private List<Station> mStations;
 
     private Context mContext;
-    private Callbacks mCallbacks = new Callbacks() {
-        @Override
-        public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
-    };
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onStationFavoriteToggled(Station station, boolean isFavorite);

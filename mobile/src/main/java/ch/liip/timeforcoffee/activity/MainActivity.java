@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
@@ -28,9 +28,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private FavoritesListFragment mFavoriteListFragment;
     private BottomNavigationView mBottomNav;
     private int menuItemSelected;
-
-    public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
-    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +48,8 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         Bundle stationsFragmentArgs = new Bundle();
         stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, false);
 
-        if (savedInstanceState == null) {
-            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
-            mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
-        }
-        else{
-            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
-            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
-        }
+        mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
+        mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
 
@@ -73,10 +64,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(mStationListFragment.isAdded() && mFavoriteListFragment.isAdded()) {
-            getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
-            getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
-        }
     }
 
     @Override
