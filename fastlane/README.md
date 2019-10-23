@@ -25,7 +25,7 @@ Runs all the tests
 ```
 fastlane android release
 ```
-Submit a build to Google Play, in the alpha lane
+Submit a build to Google Play, in the internal lane
 
 ----
 
