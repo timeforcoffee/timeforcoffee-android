@@ -128,6 +128,15 @@ public class AboutFragment extends Fragment {
             }
         });
 
+        TextView sylvainGithub = rootView.findViewById(R.id.sylvainGithub);
+        sylvainGithub.setPaintFlags(appLink.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        sylvainGithub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGithub(getResources().getString(R.string.sylvain_nicolet_github_username));
+            }
+        });
+
         return rootView;
     }
 
