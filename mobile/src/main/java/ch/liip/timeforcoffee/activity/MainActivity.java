@@ -5,17 +5,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.astuetz.PagerSlidingTabStrip;
-
 import java.util.List;
-import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
@@ -27,12 +22,9 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
-    private ViewPager mTabsViewPager;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
-    private static final int STATION_LIST_TAB = 0;
-    private static final int FAVORITE_LIST_TAB = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,28 +49,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
             mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
-
-        List fragments = new Vector();
-        fragments.add(mStationListFragment);
-        fragments.add(mFavoriteListFragment);
-
-        // Initialize the ViewPager and bind to tabs
-        mTabsViewPager = findViewById(R.id.viewpager);
-        mTabsViewPager.setAdapter(new TabsAdapter(
-                this,
-                super.getSupportFragmentManager(),
-                new int[]{ R.string.tab_stations, R.string.tab_favorites },
-                fragments
-        ));
-
-        PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(mTabsViewPager);
-        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mPresenter.updateFavorites();
-            }
-        });
     }
 
     @Override
@@ -192,9 +162,5 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     public void setIsPositionLoading(boolean loading) {
         mStationListFragment.showLoadingPositionLayout(loading);
-    }
-
-    public void displayStationList() {
-        mTabsViewPager.setCurrentItem(STATION_LIST_TAB);
     }
 }
