@@ -125,9 +125,6 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
         }
 
         updateFavoritesOnFavoriteList();
-        if(mFavoriteStations.size() == 0) {
-            mActivity.displayStationList();
-        }
     }
 
     private void updateFavoritesOnFavoriteList() {
