@@ -2,16 +2,21 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
+import ch.liip.timeforcoffee.fragment.AboutFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
@@ -52,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
             mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
+
+        // Bottom navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navLister);
     }
 
     @Override
@@ -93,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
     public void onStationSelected(Station station) {
         selectStation(station);
     }
@@ -141,4 +149,28 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     public void setIsPositionLoading(boolean loading) {
         mStationListFragment.showLoadingPositionLayout(loading);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navLister = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment selectedFragment = null;
+
+            switch (menuItem.getItemId()) {
+                case R.id.action_search:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_stations:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_favorites:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_about:
+                    selectedFragment = new AboutFragment();
+            }
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+            return true;
+        }
+    };
 }
