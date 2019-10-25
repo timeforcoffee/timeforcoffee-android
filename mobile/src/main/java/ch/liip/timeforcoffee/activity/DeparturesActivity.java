@@ -6,21 +6,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.List;
-import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
@@ -122,40 +115,6 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
     public void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_fav, menu);
-        MenuItem favItem = menu.findItem(R.id.action_fav);
-
-        if (mPresenter.getStationIsFavorite()) {
-            favItem.setIcon(R.drawable.ic_action_star);
-        } else {
-            favItem.setIcon(R.drawable.ic_action_star_border);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        else if (id == R.id.action_fav) {
-            mPresenter.toggleStationIsFavorite();
-            if (mPresenter.getStationIsFavorite()) {
-                item.setIcon(R.drawable.ic_action_star);
-            } else {
-                item.setIcon(R.drawable.ic_action_star_border);
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
