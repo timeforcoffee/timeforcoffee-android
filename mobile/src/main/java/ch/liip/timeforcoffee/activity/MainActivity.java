@@ -24,8 +24,10 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
+    private FavoritesListFragment mFavoriteListFragment;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
+    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +43,20 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
         // Fragments
         Bundle stationsFragmentArgs = new Bundle();
+        Bundle favoritesFragmentArgs = new Bundle();
         stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, false);
+        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
+            mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
         }
         else{
             mStationListFragment = (StationListFragment) getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
 
         // Bottom navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     }
 
     public void updateFavorites(List<Station> favoriteStations) {
-//        mFavoriteListFragment.setStations(favoriteStations);
+        mFavoriteListFragment.setStations(favoriteStations);
     }
 
     public void setIsPositionLoading(boolean loading) {
@@ -155,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
                     selectedFragment = mStationListFragment;
                     break;
                 case R.id.action_favorites:
-                    selectedFragment = new Fragment();
+                    selectedFragment = mFavoriteListFragment;
                     break;
                 case R.id.action_about:
                     selectedFragment = new Fragment();
