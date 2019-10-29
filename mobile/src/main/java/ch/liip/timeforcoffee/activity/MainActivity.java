@@ -2,10 +2,14 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -20,10 +24,8 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
     private MainPresenter mPresenter;
     private StationListFragment mStationListFragment;
-    private FavoritesListFragment mFavoriteListFragment;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
-    public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +40,26 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         mPresenter = new MainPresenter(this);
 
         // Fragments
-        Bundle favoritesFragmentArgs = new Bundle();
-        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
-
         Bundle stationsFragmentArgs = new Bundle();
         stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, false);
 
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
-            mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
         }
         else{
-            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
-            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+            mStationListFragment = (StationListFragment) getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
         }
+
+        // Bottom navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navLister);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(mStationListFragment.isAdded() && mFavoriteListFragment.isAdded()) {
+        if(mStationListFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
-            getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
         }
     }
 
@@ -135,10 +135,34 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     }
 
     public void updateFavorites(List<Station> favoriteStations) {
-        mFavoriteListFragment.setStations(favoriteStations);
+//        mFavoriteListFragment.setStations(favoriteStations);
     }
 
     public void setIsPositionLoading(boolean loading) {
         mStationListFragment.showLoadingPositionLayout(loading);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navLister = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment selectedFragment = null;
+
+            switch (menuItem.getItemId()) {
+                case R.id.action_search:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_stations:
+                    selectedFragment = mStationListFragment;
+                    break;
+                case R.id.action_favorites:
+                    selectedFragment = new Fragment();
+                    break;
+                case R.id.action_about:
+                    selectedFragment = new Fragment();
+            }
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+            return true;
+        }
+    };
 }
