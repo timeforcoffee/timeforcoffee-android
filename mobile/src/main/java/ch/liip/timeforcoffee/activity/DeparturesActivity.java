@@ -6,14 +6,21 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.List;
+import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
@@ -25,6 +32,7 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     private SlidingUpPanelLayout mSlidingLayout;
     private StationMapFragment mStationMapFragment;
+    private ViewPager mTabsViewPager;
 
     private DeparturesPresenter mPresenter;
     private DepartureListFragment mDepartureListFragment;
@@ -32,6 +40,8 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     public static final String DEPARTURE_LIST_FRAGMENT_KEY = "departure_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
+    private static final int DEPARTURE_LIST_TAB = 0;
+    private static final int FAVORITE_LIST_TAB = 1;
 
     public static final String ARG_STATION_ID = "station_id";
     public static final String ARG__STATION_NAME = "station_name";
@@ -77,6 +87,28 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
             mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
 
+        List fragments = new Vector();
+        fragments.add(mDepartureListFragment);
+        fragments.add(mFavoriteListFragment);
+
+        // View
+        mTabsViewPager = super.findViewById(R.id.viewpager);
+        mTabsViewPager.setAdapter(new TabsAdapter(
+                this,
+                super.getSupportFragmentManager(),
+                new int[]{ R.string.tab_departures, R.string.tab_favorites },
+                fragments
+        ));
+
+        PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
+        tabs.setViewPager(mTabsViewPager);
+        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                mPresenter.updateFavorites();
+            }
+        });
+
         mStationMapFragment = (StationMapFragment) getFragmentManager().findFragmentById(R.id.station_map);
         mStationMapFragment.setup(station);
 
@@ -115,6 +147,40 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
     public void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_fav, menu);
+        MenuItem favItem = menu.findItem(R.id.action_fav);
+
+        if (mPresenter.getStationIsFavorite()) {
+            favItem.setIcon(R.drawable.ic_action_star);
+        } else {
+            favItem.setIcon(R.drawable.ic_action_star_border);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        else if (id == R.id.action_fav) {
+            mPresenter.toggleStationIsFavorite();
+            if (mPresenter.getStationIsFavorite()) {
+                item.setIcon(R.drawable.ic_action_star);
+            } else {
+                item.setIcon(R.drawable.ic_action_star_border);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -204,5 +270,9 @@ public class DeparturesActivity extends AppCompatActivity implements SlidingUpPa
 
     public void setAreDeparturesLoading(boolean loading) {
         mDepartureListFragment.showLoadingDeparturesProgressBar(loading);
+    }
+
+    public void displayDepartureList() {
+        mTabsViewPager.setCurrentItem(DEPARTURE_LIST_TAB);
     }
 }
