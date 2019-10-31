@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
                     actionBar.hide();
                     break;
                 case R.id.action_about:
-                    selectedFragment = new Fragment();
+                    selectedFragment = new AboutFragment();
                     actionBar.hide();
                     break;
             }
