@@ -1,5 +1,6 @@
-package ch.liip.timeforcoffee.activity;
+package ch.liip.timeforcoffee.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,22 +9,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import java.util.List;
 
 import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.DeparturesActivity;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.fragment.StationListFragment;
 import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
 
-public class StationSearchActivity extends AppCompatActivity implements StationListFragment.Callbacks {
+public class StationSearchFragment extends Fragment implements StationListFragment.Callbacks {
 
-    StationSearchPresenter mPresenter;
-    StationListFragment mStationListFragment;
+    private StationSearchPresenter mPresenter;
+    private StationListFragment mStationListFragment;
 
     private EditText mSearchEditText;
     private ProgressBar mSearchProgressBar;
@@ -34,23 +36,25 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
     public static final String SEARCH_QUERY_KEY = "search_query";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_station_list);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_search_station_list, container, false);
 
         // Presenter
         String searchQuery = null;
         if (savedInstanceState != null) {
             searchQuery = savedInstanceState.getString(SEARCH_QUERY_KEY);
         }
-
         mPresenter = new StationSearchPresenter(this, searchQuery);
 
         // Action bar
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setCustomView(R.layout.search_bar);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mSearchEditText = actionBar.getCustomView().findViewById(R.id.searchField);
         mSearchEditText.addTextChangedListener(new SearchWatcher());
@@ -65,24 +69,14 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
         stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, true);
 
         if (savedInstanceState == null) {
-            mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
+            mStationListFragment = (StationListFragment) Fragment.instantiate(getContext(), StationListFragment.class.getName(), stationsFragmentArgs);
         }
         else{
-            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mStationListFragment = (StationListFragment) getActivity().getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
         }
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mStationListFragment).commit();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mStationListFragment).commit();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Save fragment
-        getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
-
-        // Save search query
-        outState.putString(SEARCH_QUERY_KEY, mPresenter.getSearchQuery());
+        return rootView;
     }
 
     @Override
@@ -92,9 +86,19 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         mPresenter.onPauseView();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     @Override
@@ -103,22 +107,10 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
-
         stopSearching();
         mPresenter.onDestroy();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -132,7 +124,7 @@ public class StationSearchActivity extends AppCompatActivity implements StationL
     }
 
     private void selectStation(Station station) {
-        Intent detailIntent = new Intent(this, DeparturesActivity.class);
+        Intent detailIntent = new Intent(getContext(), DeparturesActivity.class);
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_ID, station.getId());
         detailIntent.putExtra(DeparturesActivity.ARG__STATION_NAME, station.getName());
         detailIntent.putExtra(DeparturesActivity.ARG_STATION_DISTANCE, station.getDistance());
