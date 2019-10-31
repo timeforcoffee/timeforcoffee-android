@@ -1,6 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.fragment.app.ListFragment;
@@ -63,7 +63,9 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
 
         mFavoriteMode = args.getInt(ARG_MODE);
         if(mFavoriteMode == FavoritesListFragment.ARG_MODE_STATIONS) {
-            mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), this);
+            if (mStationListAdapter == null) {
+                mStationListAdapter = new StationListAdapter(getActivity(), new ArrayList<Station>(), this);
+            }
             setListAdapter(mStationListAdapter);
         }
         else {
@@ -79,18 +81,19 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         mNoFavoritesLayout = rootView.findViewById(R.id.noFavoritesLayout);
         mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        showNoFavoritesLayout(mStationListAdapter == null || mStationListAdapter.getCount() == 0);
 
         return rootView;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
 
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -127,6 +130,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         if(mCallbacks != null) {
             mCallbacks.onStationFavoriteToggled(station, isFavorite);
         }
+        showNoFavoritesLayout(mStationListAdapter.getCount() == 0);
     }
 
     @Override
@@ -146,7 +150,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
         mDepartureListAdapter.setDepartures(departures);
     }
 
-    public void showNoFavoritesLayout(boolean show) {
+    private void showNoFavoritesLayout(boolean show) {
         if (show) {
             mNoFavoritesLayout.setVisibility(View.VISIBLE);
         } else {
