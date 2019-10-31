@@ -18,11 +18,13 @@ import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.fragment.StationSearchFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
 
     private MainPresenter mPresenter;
+    private ActionBar actionBar;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         setContentView(R.layout.activity_station_list);
 
         // Hide action bar
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.hide();
 
         // Presenter
@@ -157,16 +159,21 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
             switch (menuItem.getItemId()) {
                 case R.id.action_search:
-                    selectedFragment = new Fragment();
+                    selectedFragment = new StationSearchFragment();
+                    actionBar.show();
                     break;
                 case R.id.action_stations:
                     selectedFragment = mStationListFragment;
+                    actionBar.hide();
                     break;
                 case R.id.action_favorites:
                     selectedFragment = mFavoriteListFragment;
+                    actionBar.hide();
                     break;
                 case R.id.action_about:
                     selectedFragment = new Fragment();
+                    actionBar.hide();
+                    break;
             }
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
