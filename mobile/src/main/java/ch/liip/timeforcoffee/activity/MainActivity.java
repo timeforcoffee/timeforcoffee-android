@@ -57,12 +57,13 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             mStationListFragment = (StationListFragment) getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
             mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
-
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
+
 
         // Bottom navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navLister);
+        bottomNav.setSelectedItemId(R.id.action_stations);
     }
 
     @Override
