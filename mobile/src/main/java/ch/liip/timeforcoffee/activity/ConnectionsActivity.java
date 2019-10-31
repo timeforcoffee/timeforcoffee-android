@@ -5,6 +5,9 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -152,6 +155,39 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     @Override
     public void onRefresh() {
         mPresenter.onRefreshView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_fav, menu);
+        MenuItem favItem = menu.findItem(R.id.action_fav);
+
+        if (mPresenter.getIsFavorite()) {
+            favItem.setIcon(R.drawable.ic_action_star);
+        } else {
+            favItem.setIcon(R.drawable.ic_action_star_border);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (id == R.id.action_fav) {
+            mPresenter.toggleFavorite();
+            if (mPresenter.getIsFavorite()) {
+                item.setIcon(R.drawable.ic_action_star);
+            } else {
+                item.setIcon(R.drawable.ic_action_star_border);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -19,11 +19,13 @@ import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.fragment.AboutFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.fragment.StationSearchFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
 
     private MainPresenter mPresenter;
+    private ActionBar actionBar;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
 
@@ -36,39 +38,40 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         setContentView(R.layout.activity_station_list);
 
         // Hide action bar
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.hide();
 
         // Presenter
         mPresenter = new MainPresenter(this);
 
         // Fragments
-        Bundle favoritesFragmentArgs = new Bundle();
-        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
-
         Bundle stationsFragmentArgs = new Bundle();
+        Bundle favoritesFragmentArgs = new Bundle();
         stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, false);
+        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
             mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
         }
         else{
-            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
-            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+            mStationListFragment = (StationListFragment) getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
+
 
         // Bottom navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navLister);
+        bottomNav.setSelectedItemId(R.id.action_stations);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(mStationListFragment.isAdded() && mFavoriteListFragment.isAdded()) {
+        if(mStationListFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
-            getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
         }
     }
 
@@ -157,16 +160,21 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
             switch (menuItem.getItemId()) {
                 case R.id.action_search:
-                    selectedFragment = new Fragment();
+                    selectedFragment = new StationSearchFragment();
+                    actionBar.show();
                     break;
                 case R.id.action_stations:
-                    selectedFragment = new Fragment();
+                    selectedFragment = mStationListFragment;
+                    actionBar.hide();
                     break;
                 case R.id.action_favorites:
-                    selectedFragment = new Fragment();
+                    selectedFragment = mFavoriteListFragment;
+                    actionBar.hide();
                     break;
                 case R.id.action_about:
-                    selectedFragment = new AboutFragment();
+                    selectedFragment = new Fragment();
+                    actionBar.hide();
+                    break;
             }
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();

@@ -1,6 +1,7 @@
 package ch.liip.timeforcoffee.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.fragment.app.FragmentActivity;
@@ -20,7 +21,6 @@ import javax.inject.Inject;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
 import ch.liip.timeforcoffee.activity.MainActivity;
-import ch.liip.timeforcoffee.activity.StationSearchActivity;
 import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.helper.FavoritesDataSource;
@@ -101,19 +101,17 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
         if(mActivity instanceof MainActivity) {
             ((MainActivity)mActivity).performStationsUpdate();
         }
-        else if(mActivity instanceof StationSearchActivity) {
-            ((StationSearchActivity)mActivity).performStationsSearch();
-        }
+        onRefresh();
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
 
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -155,8 +153,10 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
             showNoStationsLayout(stations.size() == 0);
         }
 
-        mEnterSearchLayout.setVisibility(View.GONE);
-        mStationListAdapter.setStations(stations);
+        if (mEnterSearchLayout != null || mStationListAdapter != null) {
+            mEnterSearchLayout.setVisibility(View.GONE);
+            mStationListAdapter.setStations(stations);
+        }
     }
 
     public void showLoadingPositionLayout(boolean show) {
@@ -171,7 +171,7 @@ public class StationListFragment extends ListFragment implements SwipeRefreshLay
 
     }
 
-    public void showNoStationsLayout(boolean show) {
+    private void showNoStationsLayout(boolean show) {
         if(mNoStationsLayout != null && mEnterSearchLayout != null) {
             mEnterSearchLayout.setVisibility(View.GONE);
             if (show) {
