@@ -86,19 +86,6 @@
         </activity>
 
         <activity
-            android:name=".activity.StationSearchActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/activity_title"
-            android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-
-        </activity>
-
-        <activity
             android:name=".activity.DeparturesActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/activity_title"
