@@ -1,6 +1,5 @@
 package ch.liip.timeforcoffee.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -147,7 +146,7 @@ public class FavoritesListFragment extends ListFragment implements SwipeRefreshL
     }
 
     public void setDepartures(List<Departure> departures) {
-//        showNoFavoritesLayout(departures.size() == 0);
+        showNoFavoritesLayout(departures.size() == 0);
         mDepartureListAdapter.setDepartures(departures);
     }
 

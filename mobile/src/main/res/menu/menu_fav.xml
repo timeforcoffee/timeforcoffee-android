@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:context=".StationListActivity">
+
+  <item
+    android:id="@+id/action_fav"
+    android:title="@string/action_favorite"
+    android:icon="@drawable/ic_action_star"
+    app:showAsAction="always" />
+
+</menu>
