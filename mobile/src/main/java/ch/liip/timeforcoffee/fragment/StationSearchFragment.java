@@ -35,6 +35,7 @@ public class StationSearchFragment extends Fragment implements StationListFragme
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String SEARCH_QUERY_KEY = "search_query";
+    private static final int NUMBER_MIN_OF_CHAR = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -176,19 +177,22 @@ public class StationSearchFragment extends Fragment implements StationListFragme
 
         @Override
         public void afterTextChanged(Editable editable) {
-            //Stop current handler since we have a new text entered
-            stopSearching();
 
-            //Search after 1 sec. This allow to stop the search is user is still entering text
-            mSearchRunnable = new Runnable() {
-                public void run() {
-                    mPresenter.setSearchQuery(mSearchEditText.getText().toString());
-                    mPresenter.search();
-                }
-            };
+            if (editable.length() >= NUMBER_MIN_OF_CHAR) {
+                //Stop current handler since we have a new text entered
+                stopSearching();
 
-            mSearchHandler = new android.os.Handler();
-            mSearchHandler.postDelayed(mSearchRunnable, 1000);
+                //Search after 1 sec. This allow to stop the search is user is still entering text
+                mSearchRunnable = new Runnable() {
+                    public void run() {
+                        mPresenter.setSearchQuery(mSearchEditText.getText().toString());
+                        mPresenter.search();
+                    }
+                };
+
+                mSearchHandler = new android.os.Handler();
+                mSearchHandler.postDelayed(mSearchRunnable, 1000);
+            }
         }
     }
 }
