@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -60,6 +61,8 @@ public class StationSearchFragment extends Fragment implements StationListFragme
         mSearchEditText.addTextChangedListener(new SearchWatcher());
         mSearchEditText.setText(searchQuery);
         mSearchEditText.requestFocus();
+        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         mSearchProgressBar = actionBar.getCustomView().findViewById(R.id.search_progress_bar);
         mSearchProgressBar.setVisibility(View.GONE);
