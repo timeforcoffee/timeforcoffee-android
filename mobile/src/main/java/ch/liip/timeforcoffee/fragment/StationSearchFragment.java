@@ -192,6 +192,8 @@ public class StationSearchFragment extends Fragment implements StationListFragme
 
                 mSearchHandler = new android.os.Handler();
                 mSearchHandler.postDelayed(mSearchRunnable, 1000);
+            } else {
+                mPresenter.clear();
             }
         }
     }
