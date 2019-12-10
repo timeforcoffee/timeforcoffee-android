@@ -33,6 +33,8 @@ public class StationSearchFragment extends Fragment implements StationListFragme
     private Handler mSearchHandler;
     private Runnable mSearchRunnable;
 
+    private boolean isFirstTime = true;
+
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String SEARCH_QUERY_KEY = "search_query";
     private static final int NUMBER_MIN_OF_CHAR = 2;
@@ -192,9 +194,22 @@ public class StationSearchFragment extends Fragment implements StationListFragme
 
                 mSearchHandler = new android.os.Handler();
                 mSearchHandler.postDelayed(mSearchRunnable, 1000);
-            } else {
-                mPresenter.clear();
             }
+
+            else if (!isFirstTime){
+                mSearchRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        mPresenter.clear();
+                        mSearchEditText.setError(getString(R.string.station_search_error));
+                    }
+                };
+
+                mSearchHandler = new android.os.Handler();
+                mSearchHandler.postDelayed(mSearchRunnable, 1000);
+            }
+
+            isFirstTime = false;
         }
     }
 }
