@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -32,8 +33,11 @@ public class StationSearchFragment extends Fragment implements StationListFragme
     private Handler mSearchHandler;
     private Runnable mSearchRunnable;
 
+    private boolean isFirstTime = true;
+
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String SEARCH_QUERY_KEY = "search_query";
+    private static final int NUMBER_MIN_OF_CHAR = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class StationSearchFragment extends Fragment implements StationListFragme
         mSearchEditText.addTextChangedListener(new SearchWatcher());
         mSearchEditText.setText(searchQuery);
         mSearchEditText.requestFocus();
+        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         mSearchProgressBar = actionBar.getCustomView().findViewById(R.id.search_progress_bar);
         mSearchProgressBar.setVisibility(View.GONE);
@@ -173,19 +179,37 @@ public class StationSearchFragment extends Fragment implements StationListFragme
 
         @Override
         public void afterTextChanged(Editable editable) {
-            //Stop current handler since we have a new text entered
-            stopSearching();
 
-            //Search after 1 sec. This allow to stop the search is user is still entering text
-            mSearchRunnable = new Runnable() {
-                public void run() {
-                    mPresenter.setSearchQuery(mSearchEditText.getText().toString());
-                    mPresenter.search();
-                }
-            };
+            if (editable.length() >= NUMBER_MIN_OF_CHAR) {
+                //Stop current handler since we have a new text entered
+                stopSearching();
 
-            mSearchHandler = new android.os.Handler();
-            mSearchHandler.postDelayed(mSearchRunnable, 1000);
+                //Search after 1 sec. This allow to stop the search is user is still entering text
+                mSearchRunnable = new Runnable() {
+                    public void run() {
+                        mPresenter.setSearchQuery(mSearchEditText.getText().toString());
+                        mPresenter.search();
+                    }
+                };
+
+                mSearchHandler = new android.os.Handler();
+                mSearchHandler.postDelayed(mSearchRunnable, 1000);
+            }
+
+            else if (!isFirstTime){
+                mSearchRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        mPresenter.clear();
+                        mSearchEditText.setError(getString(R.string.station_search_error));
+                    }
+                };
+
+                mSearchHandler = new android.os.Handler();
+                mSearchHandler.postDelayed(mSearchRunnable, 1000);
+            }
+
+            isFirstTime = false;
         }
     }
 }

@@ -107,4 +107,11 @@ public class StationSearchPresenter implements Presenter {
             favoritesDataSource.deleteFavoriteStation(mFragment.getContext(), station);
         }
     }
+
+    public void clear() {
+        if (mStations != null) {
+            mStations.clear();
+            mFragment.updateStations(mStations);
+        }
+    }
 }

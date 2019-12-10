@@ -38,6 +38,8 @@
     <string name="departure_action_remove">von</string>
     <string name="departure_action_remove_2">gelöscht</string>
     <string name="map_loading">Wird geladen…</string>
+    <string name="station_search_placeholder">Finde eine Station...</string>
+    <string name="station_search_error">Minimum 2 Zeichen</string>
 </resources>
 
 
