@@ -2,91 +2,76 @@ package ch.liip.timeforcoffee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import android.view.Menu;
 import android.view.MenuItem;
 
-import com.astuetz.PagerSlidingTabStrip;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
-import java.util.Vector;
 
 import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.adapter.TabsAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
+import ch.liip.timeforcoffee.fragment.AboutFragment;
 import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
+import ch.liip.timeforcoffee.fragment.StationSearchFragment;
 import ch.liip.timeforcoffee.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
 
     private MainPresenter mPresenter;
+    private ActionBar actionBar;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
-    private ViewPager mTabsViewPager;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
-    private static final int STATION_LIST_TAB = 0;
-    private static final int FAVORITE_LIST_TAB = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_list);
 
+        // Hide action bar
+        actionBar = getSupportActionBar();
+        actionBar.hide();
+
         // Presenter
         mPresenter = new MainPresenter(this);
 
         // Fragments
-        Bundle favoritesFragmentArgs = new Bundle();
-        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
-
         Bundle stationsFragmentArgs = new Bundle();
+        Bundle favoritesFragmentArgs = new Bundle();
         stationsFragmentArgs.putBoolean(StationListFragment.ARG_SEARCH_MODE, false);
+        favoritesFragmentArgs.putInt(FavoritesListFragment.ARG_MODE, FavoritesListFragment.ARG_MODE_STATIONS);
 
         if (savedInstanceState == null) {
             mStationListFragment = (StationListFragment) Fragment.instantiate(this, StationListFragment.class.getName(), stationsFragmentArgs);
             mFavoriteListFragment = (FavoritesListFragment) Fragment.instantiate(this, FavoritesListFragment.class.getName(), favoritesFragmentArgs);
         }
         else{
-            mStationListFragment = (StationListFragment)getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
-            mFavoriteListFragment = (FavoritesListFragment)getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
+            mStationListFragment = (StationListFragment) getSupportFragmentManager().getFragment(savedInstanceState, STATION_LIST_FRAGMENT_KEY);
+            mFavoriteListFragment = (FavoritesListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FAVORITE_LIST_FRAGMENT_KEY);
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFavoriteListFragment).commit();
 
-        List fragments = new Vector();
-        fragments.add(mStationListFragment);
-        fragments.add(mFavoriteListFragment);
 
-        // Initialize the ViewPager and bind to tabs
-        mTabsViewPager = findViewById(R.id.viewpager);
-        mTabsViewPager.setAdapter(new TabsAdapter(
-                this,
-                super.getSupportFragmentManager(),
-                new int[]{ R.string.tab_stations, R.string.tab_favorites },
-                fragments
-        ));
-
-        PagerSlidingTabStrip tabs = findViewById(R.id.tabs);
-        tabs.setViewPager(mTabsViewPager);
-        tabs.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mPresenter.updateFavorites();
-            }
-        });
+        // Bottom navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navLister);
+        bottomNav.setSelectedItemId(R.id.action_stations);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(mStationListFragment.isAdded() && mFavoriteListFragment.isAdded()) {
+        if(mStationListFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, STATION_LIST_FRAGMENT_KEY, mStationListFragment);
-            getSupportFragmentManager().putFragment(outState, FAVORITE_LIST_FRAGMENT_KEY, mFavoriteListFragment);
         }
     }
 
@@ -120,32 +105,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                navigateUpTo(new Intent(this, MainActivity.class));
-                return true;
-            case R.id.action_search:
-                Intent stationSearchIntent = new Intent(this, StationSearchActivity.class);
-                startActivity(stationSearchIntent);
-                return true;
-            case R.id.action_about:
-                Intent aboutIntent = new Intent(this, AboutActivity.class);
-                startActivity(aboutIntent);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onStationSelected(Station station) {
         selectStation(station);
     }
@@ -194,7 +153,32 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
         mStationListFragment.showLoadingPositionLayout(loading);
     }
 
-    public void displayStationList() {
-        mTabsViewPager.setCurrentItem(STATION_LIST_TAB);
-    }
+    private BottomNavigationView.OnNavigationItemSelectedListener navLister = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment selectedFragment = null;
+
+            switch (menuItem.getItemId()) {
+                case R.id.action_search:
+                    selectedFragment = new StationSearchFragment();
+                    actionBar.show();
+                    break;
+                case R.id.action_stations:
+                    selectedFragment = mStationListFragment;
+                    actionBar.hide();
+                    break;
+                case R.id.action_favorites:
+                    selectedFragment = mFavoriteListFragment;
+                    actionBar.hide();
+                    break;
+                case R.id.action_about:
+                    selectedFragment = new AboutFragment();
+                    actionBar.hide();
+                    break;
+            }
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+            return true;
+        }
+    };
 }

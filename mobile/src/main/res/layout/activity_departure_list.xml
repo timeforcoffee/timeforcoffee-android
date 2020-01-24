@@ -1,44 +1,44 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/content"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:sothree="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/content"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        android:id="@+id/sliding_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top"
-        sothree:umanoPanelHeight="96dp"
-        sothree:umanoShadowHeight="0dp"
-        sothree:umanoDragView="@+id/overlay">
+      android:id="@+id/sliding_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="top"
+      sothree:umanoPanelHeight="96dp"
+      sothree:umanoShadowHeight="0dp"
+      sothree:umanoDragView="@+id/overlay">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
 
             <com.astuetz.PagerSlidingTabStrip
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="48dip" />
+              android:id="@+id/tabs"
+              android:layout_width="match_parent"
+              android:layout_height="48dip" />
             <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+              android:id="@+id/viewpager"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" />
 
         </LinearLayout>
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/station_map"
-            android:name="ch.liip.timeforcoffee.fragment.StationMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            tools:context="ch.liip.timeforcoffee.DepartureListActivity"
-            tools:layout="@android:layout/list_content" />
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@+id/station_map"
+          android:name="ch.liip.timeforcoffee.fragment.StationMapFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          tools:context="ch.liip.timeforcoffee.DepartureListActivity"
+          tools:layout="@android:layout/list_content" />
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 

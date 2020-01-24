@@ -38,4 +38,6 @@
     <string name="departure_action_remove">supprimé</string>
     <string name="departure_action_remove_2">de</string>
     <string name="map_loading">Chargement…</string>
+    <string name="station_search_placeholder">Trouver une station...</string>
+    <string name="station_search_error">Minimum 2 caractères</string>
 </resources>
