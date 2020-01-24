@@ -79,13 +79,13 @@ public class ConnectionListFragment extends ListFragment implements SwipeRefresh
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof ConnectionListFragment.Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof ConnectionListFragment.Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
 
-        mCallbacks = (ConnectionListFragment.Callbacks) activity;
+        mCallbacks = (ConnectionListFragment.Callbacks) context;
     }
 
     @Override

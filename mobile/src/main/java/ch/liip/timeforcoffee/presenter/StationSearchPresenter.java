@@ -10,7 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import ch.liip.timeforcoffee.TimeForCoffeeApplication;
-import ch.liip.timeforcoffee.activity.StationSearchActivity;
+import ch.liip.timeforcoffee.fragment.StationSearchFragment;
 import ch.liip.timeforcoffee.api.StationService;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchErrorEvent;
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearchEvent;
@@ -22,7 +22,7 @@ import ch.liip.timeforcoffee.widget.SnackBars;
 
 public class StationSearchPresenter implements Presenter {
 
-    private StationSearchActivity mActivity;
+    private StationSearchFragment mFragment;
     private List<Station> mStations;
     private String mSearchQuery;
 
@@ -35,11 +35,11 @@ public class StationSearchPresenter implements Presenter {
     @Inject
     FavoritesDataSource favoritesDataSource;
 
-    public StationSearchPresenter(StationSearchActivity activity, String searchQuery) {
-        mActivity = activity;
+    public StationSearchPresenter(StationSearchFragment fragment, String searchQuery) {
+        mFragment = fragment;
         mSearchQuery = searchQuery;
 
-        ((TimeForCoffeeApplication) activity.getApplication()).inject(this);
+        ((TimeForCoffeeApplication) fragment.getActivity().getApplication()).inject(this);
         mEventBus.register(this);
     }
 
@@ -56,27 +56,27 @@ public class StationSearchPresenter implements Presenter {
 
     @Override
     public void onDestroy() {
-        mActivity = null;
+        mFragment = null;
         mEventBus.unregister(this);
     }
 
     @Subscribe
     public void onStationsFetchedEvent(StationsSearchFetchedEvent event) {
-        mActivity.setIsSearchLoading(false);
+        mFragment.setIsSearchLoading(false);
         mStations = event.getStations();
 
-        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mActivity);
+        List<Station> favoriteStations = favoritesDataSource.getAllFavoriteStations(mFragment.getContext());
         for(Station station : mStations) {
             station.setIsFavorite(favoriteStations.contains(station));
         }
 
-        mActivity.updateStations(mStations);
+        mFragment.updateStations(mStations);
     }
 
     @Subscribe
     public void onFetchErrorEvent(FetchStationsSearchErrorEvent event) {
-        mActivity.setIsSearchLoading(false);
-        SnackBars.showNetworkError(mActivity, new View.OnClickListener() {
+        mFragment.setIsSearchLoading(false);
+        SnackBars.showNetworkError(mFragment.getActivity(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 search();
@@ -94,17 +94,24 @@ public class StationSearchPresenter implements Presenter {
 
     public void search() {
         if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
-            mActivity.setIsSearchLoading(true);
+            mFragment.setIsSearchLoading(true);
             mEventBus.post(new FetchStationsSearchEvent(mSearchQuery));
         }
     }
 
     public void updateStationIsFavorite(Station station, boolean isFavorite) {
         if (isFavorite) {
-            favoritesDataSource.insertFavoriteStation(mActivity, station);
+            favoritesDataSource.insertFavoriteStation(mFragment.getContext(), station);
         }
         else {
-            favoritesDataSource.deleteFavoriteStation(mActivity, station);
+            favoritesDataSource.deleteFavoriteStation(mFragment.getContext(), station);
+        }
+    }
+
+    public void clear() {
+        if (mStations != null) {
+            mStations.clear();
+            mFragment.updateStations(mStations);
         }
     }
 }
