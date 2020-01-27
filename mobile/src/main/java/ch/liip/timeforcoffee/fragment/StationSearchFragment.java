@@ -20,8 +20,10 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.activity.DeparturesActivity;
+import ch.liip.timeforcoffee.activity.MainActivity;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
+import ch.liip.timeforcoffee.utils.KeyboardUtils;
 
 public class StationSearchFragment extends Fragment implements StationListFragment.Callbacks {
 
@@ -65,7 +67,22 @@ public class StationSearchFragment extends Fragment implements StationListFragme
         mSearchEditText.setText(searchQuery);
         mSearchEditText.requestFocus();
         InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        imgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+        KeyboardUtils.addKeyboardToggleListener(getActivity(), new KeyboardUtils.SoftKeyboardToggleListener()
+        {
+            @Override
+            public void onToggleSoftKeyboard(boolean isVisible)
+            {
+                if (getActivity() != null) {
+                    if (isVisible) {
+                        ((MainActivity)getActivity()).hideBottomNavigation();
+                    } else {
+                        ((MainActivity)getActivity()).showBottomNavigation();
+                    }
+                }
+            }
+        });
 
         mSearchProgressBar = actionBar.getCustomView().findViewById(R.id.search_progress_bar);
         mSearchProgressBar.setVisibility(View.GONE);
