@@ -13,4 +13,5 @@
     <color name="divider">#B6B6B6</color>
     <color name="dark_blue">#FF4285F4</color>
     <color name="gray">#EEEEEE</color>
+    <color name="search_hint">#66FFFFFF</color>
 </resources>
