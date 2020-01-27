@@ -1,7 +1,6 @@
 package ch.liip.timeforcoffee.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,6 @@ import java.util.List;
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Connection;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.api.models.WalkingDistance;
 import io.nlopez.smartlocation.SmartLocation;
 
 
@@ -51,7 +48,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
     private ImageView mGradientOverlay;
     private TextView mTitleTextView;
-    private TextView mSubtitleTextView;
     private ImageView mChevron;
 
     private Callbacks mCallbacks;
@@ -70,7 +66,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
         mGradientOverlay = view.findViewById(R.id.gradient_overlay);
         mTitleTextView = view.findViewById(R.id.journey_title);
-        mSubtitleTextView = view.findViewById(R.id.journey_subtitle);
         mChevron = view.findViewById(R.id.chevron);
 
         mMapFragment = MapFragment.newInstance();
@@ -132,13 +127,9 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
     public void setup(List<Connection> connections) {
         mConnections = connections;
-
-        Connection departure = mConnections.get(0);
         Connection destination = mConnections.get(mConnections.size() - 1);
 
         mTitleTextView.setText(destination.getStationName());
-        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getStationName()));
-        mSubtitleTextView.setVisibility(View.VISIBLE);
 
         loadMap();
     }
@@ -171,26 +162,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         if (currentLocation != null) {
             LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             mVisiblePoints.add(userLocation);
-
-            // Draw walking distance
-            mStation.setOnDistanceComputedListener(new Station.OnDistanceComputedListener() {
-                @Override
-                public void onDistanceComputed(WalkingDistance distance) {
-                    if (distance == null || !isAdded()) return;
-
-                    mSubtitleTextView.setText(distance.getWalkingDistance());
-                    if (distance.getWalkingPath() != null) {
-                        drawPathForCheckpoints(distance.getWalkingPath().getPoints());
-                    }
-                }
-            });
-
-            // Display Walking distance
-            WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
-            if (distance != null) {
-                mSubtitleTextView.setVisibility(View.VISIBLE);
-                mSubtitleTextView.setText(distance.getWalkingDistance());
-            }
         }
     }
 
@@ -222,16 +193,6 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         checkpoints.add(destinationLocation);
 
         mVisiblePoints.addAll(checkpoints);
-    }
-
-    private void drawPathForCheckpoints(List<LatLng> checkpoints) {
-        if(checkpoints.size() < 2) return;
-
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(getResources().getColor(R.color.dark_blue));
-        polylineOptions.width(5);
-        polylineOptions.addAll(checkpoints);
-        mMap.addPolyline(polylineOptions);
     }
 
     private void calculateZoomForVisiblePoints() {
