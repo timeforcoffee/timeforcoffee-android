@@ -19,7 +19,7 @@
         android:hint="@string/station_search_placeholder"
         android:background="@android:color/transparent"
         android:textColor="@color/primary_text"
-        android:textColorHint="@color/primary_text"/>
+        android:textColorHint="@color/search_hint"/>
 
     <ProgressBar
         android:id="@+id/search_progress_bar"
