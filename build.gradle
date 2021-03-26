@@ -18,7 +18,7 @@ ext {
         return project.hasProperty('versionCode') ? project.property('versionCode') as int : 33
     }
 
-    MIN_SDK = 19
+    MIN_SDK = 25
     COMPILE_SDK = 28
     TARGET_SDK = 28
 
@@ -32,8 +32,9 @@ ext {
     KEYSTORE_PATH = project.hasProperty('keystoreFilePath') ? project.property('keystoreFilePath') : "."
     KEYSTORE_STORE_PASS = project.hasProperty('keystoreStorePass') ? project.property('keystoreStorePass') : ""
 
-    BACKEND_DEV_URL = "https://timeforcoffee-backend-staging.herokuapp.com"
-    BACKEND_PROD_URL = "https://timeforcoffee-backend.herokuapp.com"
+    OPEN_DATA_URL = "https://transport.opendata.ch"
+    BACKEND_DEV_URL = "https://tfc.chregu.tv"
+    BACKEND_PROD_URL = "https://tfc.chregu.tv"
     BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername') : ""
     BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword') : ""
 

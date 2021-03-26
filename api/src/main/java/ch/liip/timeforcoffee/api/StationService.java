@@ -18,7 +18,7 @@ import ch.liip.timeforcoffee.api.events.stationsSearchEvents.FetchStationsSearch
 import ch.liip.timeforcoffee.api.events.stationsSearchEvents.StationsSearchFetchedEvent;
 import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.backend.BackendService;
+import ch.liip.timeforcoffee.backend.OpenDataService;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,11 +27,11 @@ import rx.schedulers.Schedulers;
 public class StationService {
 
     private final EventBus eventBus;
-    private final BackendService backendService;
+    private final OpenDataService openDataService;
 
     @Inject
-    public StationService(EventBus eventBus, BackendService backendService) {
-        this.backendService = backendService;
+    public StationService(EventBus eventBus, OpenDataService openDataService) {
+        this.openDataService = openDataService;
         this.eventBus = eventBus;
         this.eventBus.register(this);
     }
@@ -39,9 +39,10 @@ public class StationService {
     @Subscribe
     public void onEvent(FetchStationsSearchEvent event) {
         Map<String, String> query = new HashMap<>();
+        query.put("type", "station");
         query.put("query", event.getSearchQuery());
 
-        backendService.getStations(query)
+        openDataService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
@@ -68,10 +69,11 @@ public class StationService {
     @Subscribe
     public void onEvent(FetchStationsLocationEvent event) {
         Map<String, String> query = new HashMap<>();
+        query.put("type", "station");
         query.put("x", Double.toString(event.getX()));
         query.put("y", Double.toString(event.getY()));
 
-        backendService.getStations(query)
+        openDataService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
