@@ -38,6 +38,7 @@ android {
         versionName project.VERSION
         buildConfigField "String", "BACKEND_BASIC_AUTH_USERNAME", "\"" + project.BACKEND_BASIC_AUTH_USERNAME + "\""
         buildConfigField "String", "BACKEND_BASIC_AUTH_PASSWORD", "\"" + project.BACKEND_BASIC_AUTH_PASSWORD + "\""
+        buildConfigField "String", "OPEN_DATA_URL", "\"" + project.OPEN_DATA_URL + "\""
         resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
     }
     buildTypes {
