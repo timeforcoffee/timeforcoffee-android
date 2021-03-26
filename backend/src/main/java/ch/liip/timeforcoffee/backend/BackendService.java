@@ -11,14 +11,10 @@ import rx.Observable;
 public interface BackendService {
 
     @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/stations")
-    Observable<List<Station>> getStations(@QueryMap Map<String, String> query);
-
-    @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/stationboard")
+    @GET("/api/ch/stationboard")
     Observable<List<Departure>> getDepartures(@QueryMap Map<String, String> query);
 
     @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/connections")
+    @GET("/api/ch/connections")
     Observable<List<Connection>> getConnections(@QueryMap Map<String, String> query);
 }

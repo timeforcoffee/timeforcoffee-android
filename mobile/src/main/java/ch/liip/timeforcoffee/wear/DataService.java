@@ -23,6 +23,7 @@ import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.backend.BackendService;
+import ch.liip.timeforcoffee.backend.OpenDataService;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,6 +47,9 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
     @Inject
     BackendService backendService;
+
+    @Inject
+    OpenDataService openDataService;
 
     @Nullable
     @Override
@@ -125,7 +129,7 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         query.put("y", Double.toString(longitude));
 
         _gettingStations = true;
-        backendService.getStations(query)
+        openDataService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
