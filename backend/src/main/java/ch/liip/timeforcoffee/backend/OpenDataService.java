@@ -12,5 +12,5 @@ public interface OpenDataService {
 
     @Headers("Cache-Control:public, max-age=20")
     @GET("/v1/locations")
-    Observable<List<Station>> getStations(@QueryMap Map<String, String> query);
+    Observable<Stations> getStations(@QueryMap Map<String, String> query);
 }

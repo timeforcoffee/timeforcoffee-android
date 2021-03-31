@@ -64,19 +64,6 @@ class TimeForCoffeeModule {
                 .setEndpoint(BuildConfig.BACKEND_URL)
                 .setConverter(new GsonConverter(gson))
                 .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
-//                .setRequestInterceptor(new RequestInterceptor() {
-//                    @Override
-//                    public void intercept(RequestFacade request) {
-//                        String username = BuildConfig.BACKEND_BASIC_AUTH_USERNAME;
-//                        String password = BuildConfig.BACKEND_BASIC_AUTH_PASSWORD;
-//                        String basicString = "Basic " + Base64.encodeToString(
-//                                (username + ":" + password).getBytes(), Base64.NO_WRAP
-//                        );
-//
-//                        request.addHeader("Authorization", basicString);
-//                        request.addQueryParam("format", "json");
-//                    }
-//                })
                 .build();
 
         return restAdapter.create(BackendService.class);

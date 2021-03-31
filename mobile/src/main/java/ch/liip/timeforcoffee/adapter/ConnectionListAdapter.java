@@ -22,8 +22,8 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
         TextView stationTextView;
         TextView timeLabelTextView;
         TextView timeTextView;
-        TextView realtimeDepartureTextView;
-        TextView departureTextView;
+        TextView realtimeTextView;
+        TextView minutesTextView;
     }
 
     public ConnectionListAdapter(Context context, List<Connection> connexions) {
@@ -43,8 +43,8 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
             viewHolder.stationTextView = convertView.findViewById(R.id.station);
             viewHolder.timeLabelTextView = convertView.findViewById(R.id.time_label);
             viewHolder.timeTextView = convertView.findViewById(R.id.time);
-            viewHolder.realtimeDepartureTextView = convertView.findViewById(R.id.realtime);
-            viewHolder.departureTextView = convertView.findViewById(R.id.departure);
+            viewHolder.realtimeTextView = convertView.findViewById(R.id.realtime);
+            viewHolder.minutesTextView = convertView.findViewById(R.id.minutes);
 
 
             convertView.setTag(viewHolder);
@@ -56,24 +56,36 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
         Connection connection = this.mConnexions.get(position);
         viewHolder.stationTextView.setText(connection.getStationName());
-        viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
-        viewHolder.departureTextView.setText(connection.getDepartureInMinutes());
 
-        if(position != mConnexions.size() - 1) {
+        if(position == 0) {
             viewHolder.timeLabelTextView.setText(mContext.getResources().getString(R.string.connection_departure));
+            viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
+            viewHolder.minutesTextView.setText(connection.getDepartureInMinutes());
+
+            if (connection.isDepartureLate()) {
+                viewHolder.realtimeTextView.setVisibility(View.VISIBLE);
+                viewHolder.realtimeTextView.setText(connection.getRealtimeDepartureStr());
+                viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+            else {
+                viewHolder.realtimeTextView.setVisibility(View.GONE);
+                viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
         }
         else {
             viewHolder.timeLabelTextView.setText(mContext.getResources().getString(R.string.connection_arrival));
-        }
+            viewHolder.timeTextView.setText(connection.getScheduledArrivalStr());
+            viewHolder.minutesTextView.setText(connection.getArrivalInMinutes());
 
-        if (connection.isLate()) {
-            viewHolder.realtimeDepartureTextView.setVisibility(View.VISIBLE);
-            viewHolder.realtimeDepartureTextView.setText(connection.getRealtimeDepartureStr());
-            viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-        else {
-            viewHolder.realtimeDepartureTextView.setVisibility(View.GONE);
-            viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            if (connection.isArrivalLate()) {
+                viewHolder.realtimeTextView.setVisibility(View.VISIBLE);
+                viewHolder.realtimeTextView.setText(connection.getRealtimeDepartureStr());
+                viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+            else {
+                viewHolder.realtimeTextView.setVisibility(View.GONE);
+                viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
         }
 
         return convertView;

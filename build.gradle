@@ -35,8 +35,6 @@ ext {
     OPEN_DATA_URL = "https://transport.opendata.ch"
     BACKEND_DEV_URL = "https://tfc.chregu.tv"
     BACKEND_PROD_URL = "https://tfc.chregu.tv"
-    BACKEND_BASIC_AUTH_USERNAME = project.hasProperty('backendBasicAuthUsername') ? project.property('backendBasicAuthUsername') : ""
-    BACKEND_BASIC_AUTH_PASSWORD = project.hasProperty('backendBasicAuthPassword') ? project.property('backendBasicAuthPassword') : ""
 
     GOOGLE_MAPS_API_KEY = project.hasProperty('googleMapsApiKey') ? project.property('googleMapsApiKey') : ""
 }

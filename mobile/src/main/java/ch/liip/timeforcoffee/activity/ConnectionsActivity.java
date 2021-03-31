@@ -46,7 +46,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     public static final String ARG_DEPARTURE_DEPARTURE_SCHEDULED = "departure_departure_scheduled";
     public static final String ARG_DEPARTURE_DEPARTURE_REALTIME = "departure_departure_realtime";
     public static final String ARG_DEPARTURE_ARRIVAL_SCHEDULED = "departure_arrival_scheduled";
-    public static final String ARG_DEPARTURE_ARRIVAL_REALTIME = "departure_arrival_scheduled";
+    public static final String ARG_DEPARTURE_ARRIVAL_REALTIME = "departure_arrival_realtime";
     public static final String ARG_DEPARTURE_LINE = "departure_line";
     public static final String ARG_DEPARTURE_PLATFORM = "departure_platform";
     public static final String ARG_DEPARTURE_COLOR_FG = "departure_color_fg";
@@ -217,7 +217,7 @@ public class ConnectionsActivity extends AppCompatActivity implements SlidingUpP
     }
 
     public void updateConnections(List<Connection> connections) {
-        mStationMapFragment.setup(connections);
+        mStationMapFragment.setup(connections, mPresenter.getStation(), mPresenter.getDeparture());
         mConnectionListFragment.setConnections(connections);
     }
 
