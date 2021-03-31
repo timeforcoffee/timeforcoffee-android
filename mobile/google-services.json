@@ -1,0 +1,74 @@
+{
+  "project_info": {
+    "project_number": "861628624705",
+    "project_id": "timeforcoffee-976",
+    "storage_bucket": "timeforcoffee-976.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861628624705:android:54e12e54138a2f54697bc0",
+        "android_client_info": {
+          "package_name": "ch.liip.timeforcoffee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "***REMOVED***",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "***REMOVED***"
+        },
+        {
+          "current_key": "***REMOVED***"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "***REMOVED***",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861628624705:android:93fb4b76535f332a697bc0",
+        "android_client_info": {
+          "package_name": "ch.liip.timeforcoffee.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "***REMOVED***",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "***REMOVED***"
+        },
+        {
+          "current_key": "***REMOVED***"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "***REMOVED***",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
