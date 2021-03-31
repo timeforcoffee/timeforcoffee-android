@@ -9,8 +9,8 @@ import ch.liip.timeforcoffee.api.models.Departure;
 public class DepartureMapper {
 
     public static Departure fromBackend(ch.liip.timeforcoffee.backend.Departure backendDeparture) {
-        int colorBg = Color.parseColor(backendDeparture.getColor().getBg());
-        int colorFg = Color.parseColor(backendDeparture.getColor().getFg());
+        int colorBg = Color.parseColor(backendDeparture.getColors().getBg());
+        int colorFg = Color.parseColor(backendDeparture.getColors().getFg());
 
         Date departureScheduled = null;
         Date departureRealtime = null;
@@ -27,13 +27,13 @@ public class DepartureMapper {
         }
 
         return new Departure(
-                backendDeparture.getDestination().getId(),
-                backendDeparture.getDestination().getName(),
+                backendDeparture.getId(),
+                backendDeparture.getTo(),
                 departureScheduled,
                 departureRealtime,
                 arrivalScheduled,
                 arrivalRealtime,
-                backendDeparture.getLine(),
+                backendDeparture.getName(),
                 backendDeparture.getPlatform(),
                 colorFg,
                 colorBg,

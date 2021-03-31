@@ -10,23 +10,32 @@ public class ConnectionMapper {
 
     public static Connection fromBackend(ch.liip.timeforcoffee.backend.Connection backendConnection) {
         Location stationLocation = new Location("reverseGeocoded");
-        stationLocation.setLatitude(backendConnection.getStation().getLocation().getX());
-        stationLocation.setLongitude(backendConnection.getStation().getLocation().getY());
+        stationLocation.setLatitude(backendConnection.getLocation().getLatitude());
+        stationLocation.setLongitude(backendConnection.getLocation().getLongitude());
 
-        Date timeScheduled = null;
-        Date timeRealtime = null;
+        Date departureTimeScheduled = null;
+        Date departureTimeRealtime = null;
+        Date arrivalTimeScheduled = null;
+        Date arrivalTimeRealtime = null;
 
-        if(backendConnection.getTime() != null) {
-            timeScheduled = backendConnection.getTime().getScheduled();
-            timeRealtime = backendConnection.getTime().getRealtime();
+        if(backendConnection.getDeparture() != null) {
+            departureTimeScheduled = backendConnection.getDeparture().getScheduled();
+            departureTimeRealtime = backendConnection.getDeparture().getRealtime();
+        }
+
+        if(backendConnection.getArrival() != null) {
+            arrivalTimeScheduled = backendConnection.getArrival().getScheduled();
+            arrivalTimeRealtime = backendConnection.getArrival().getRealtime();
         }
 
         return new Connection(
-                backendConnection.getStation().getId(),
-                backendConnection.getStation().getName(),
+                backendConnection.getId(),
+                backendConnection.getName(),
                 stationLocation,
-                timeScheduled,
-                timeRealtime
+                departureTimeScheduled,
+                departureTimeRealtime,
+                arrivalTimeScheduled,
+                arrivalTimeRealtime
         );
     }
 }

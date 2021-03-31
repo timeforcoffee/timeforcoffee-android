@@ -84,7 +84,8 @@ public class ConnectionsPresenter implements Presenter {
         mEventBus.post(new FetchConnectionsEvent(
                 mStation.getId(),
                 mDeparture.getDestinationId(),
-                mDeparture.getDepartureStrForBackend())
+                mDeparture.getDepartureStrForBackend(),
+                mDeparture.getArrivalStrForBackend())
         );
     }
 

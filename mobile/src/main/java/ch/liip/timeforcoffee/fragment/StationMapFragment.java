@@ -32,6 +32,7 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Connection;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.api.models.WalkingDistance;
 import io.nlopez.smartlocation.SmartLocation;
@@ -110,7 +111,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         if(mStation != null) {
             drawWalkingPath();
         }
-        else if(mConnections != null) {
+        else if(mConnections != null && mConnections.size() != 0) {
             drawTransportPath();
         }
     }
@@ -130,14 +131,11 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         loadMap();
     }
 
-    public void setup(List<Connection> connections) {
+    public void setup(List<Connection> connections, Station departure, Departure destination) {
         mConnections = connections;
 
-        Connection departure = mConnections.get(0);
-        Connection destination = mConnections.get(mConnections.size() - 1);
-
-        mTitleTextView.setText(destination.getStationName());
-        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getStationName()));
+        mTitleTextView.setText(destination.getDestinationName());
+        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getName()));
         mSubtitleTextView.setVisibility(View.VISIBLE);
 
         loadMap();
