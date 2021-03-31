@@ -14,23 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "861628624705-gvk40rtbv8qg45fe2q1581maq847o4k7.apps.googleusercontent.com",
+          "client_id": "",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD1a4ATVxYCJdzxlhVq8Qcpa7okxSo1sxU"
+          "current_key": ""
         },
         {
-          "current_key": "AIzaSyAwy5pW4FeqNbBJpFVTdAoYXeadLNeKSDE"
+          "current_key": ""
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "861628624705-gvk40rtbv8qg45fe2q1581maq847o4k7.apps.googleusercontent.com",
+              "client_id": "",
               "client_type": 3
             }
           ]
