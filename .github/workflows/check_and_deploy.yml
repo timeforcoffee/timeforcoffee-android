@@ -7,10 +7,11 @@ jobs:
   unit_tests:
     runs-on: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Install dependencies
-      - run: bundle install
+        run: bundle install
 
       - name: Unit tests
         run: bundle exec fastlane ci_test
