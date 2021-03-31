@@ -91,14 +91,7 @@ public class MainPresenter implements Presenter, OnLocationUpdatedListener {
     }
 
     public void updateStations() {
-        if (Build.FINGERPRINT.contains("generic")) { //emulator
-            mLastLocation = new Location("emulator");
-            mLastLocation.setLatitude(46.8017);
-            mLastLocation.setLongitude(7.1456);
-
-            loadStationsWithLastPosition();
-        }
-        else if (!mIsCapturingLocation) {
+        if (!mIsCapturingLocation) {
             startLocation();
         }
     }
