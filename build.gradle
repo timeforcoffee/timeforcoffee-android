@@ -18,7 +18,7 @@ ext {
         return project.hasProperty('versionCode') ? project.property('versionCode') as int : 33
     }
 
-    MIN_SDK = 19
+    MIN_SDK = 25
     COMPILE_SDK = 28
     TARGET_SDK = 28
 
