@@ -46,23 +46,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "***REMOVED***",
+          "client_id": "",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "***REMOVED***"
+          "current_key": ""
         },
         {
-          "current_key": "***REMOVED***"
+          "current_key": ""
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "***REMOVED***",
+              "client_id": "",
               "client_type": 3
             }
           ]
