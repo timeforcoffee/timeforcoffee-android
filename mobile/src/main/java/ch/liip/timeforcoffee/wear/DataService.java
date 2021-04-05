@@ -147,8 +147,12 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     @Override
                     public void onNext(ch.liip.timeforcoffee.backend.Stations backendStations) {
                         ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Station station : backendStations.getStations()) {
-                            stations.add( StationMapper.fromBackend(station));
+                        for (ch.liip.timeforcoffee.backend.Station backendStation : backendStations.getStations()) {
+                            if (backendStation.getId() == 0) {
+                                //the API returns a station with null id corresponding to current location, we exclude it
+                                continue;
+                            }
+                            stations.add( StationMapper.fromBackend(backendStation));
                         }
 
                         sendStations(stations, _sourceNodeId);
