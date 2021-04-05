@@ -38,7 +38,7 @@ platform :android do
   lane :release do
 
     gradleProperties = {
-        versionCode: 255321 + ENV['GITHUB_RUN_NUMBER'], #255321 is the last build number used on GitlabCI
+        versionCode: 255321 + ENV['GITHUB_RUN_NUMBER'].to_i, #255321 is the last build number used on GitlabCI
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: 'private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
