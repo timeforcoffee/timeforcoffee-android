@@ -3,6 +3,7 @@ package ch.liip.timeforcoffee.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     private ActionBar actionBar;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
+    private BottomNavigationView bottomNav;
 
     public static final String STATION_LIST_FRAGMENT_KEY = "station_list";
     public static final String FAVORITE_LIST_FRAGMENT_KEY = "favorite_list";
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
 
 
         // Bottom navigation
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navLister);
         bottomNav.setSelectedItemId(R.id.action_stations);
     }
@@ -181,4 +183,12 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             return true;
         }
     };
+
+    public void showBottomNavigation() {
+        bottomNav.setVisibility(View.VISIBLE);
+    }
+
+    public void hideBottomNavigation() {
+        bottomNav.setVisibility(View.GONE);
+    }
 }
