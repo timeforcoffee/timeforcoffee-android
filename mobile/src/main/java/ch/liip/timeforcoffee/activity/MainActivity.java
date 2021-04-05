@@ -26,7 +26,6 @@ import ch.liip.timeforcoffee.presenter.MainPresenter;
 public class MainActivity extends AppCompatActivity implements StationListFragment.Callbacks, FavoritesListFragment.Callbacks {
 
     private MainPresenter mPresenter;
-    private ActionBar actionBar;
     private StationListFragment mStationListFragment;
     private FavoritesListFragment mFavoriteListFragment;
     private BottomNavigationView bottomNav;
@@ -38,10 +37,6 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_list);
-
-        // Hide action bar
-        actionBar = getSupportActionBar();
-        actionBar.hide();
 
         // Presenter
         mPresenter = new MainPresenter(this);
@@ -163,19 +158,15 @@ public class MainActivity extends AppCompatActivity implements StationListFragme
             switch (menuItem.getItemId()) {
                 case R.id.action_search:
                     selectedFragment = new StationSearchFragment();
-                    actionBar.show();
                     break;
                 case R.id.action_stations:
                     selectedFragment = mStationListFragment;
-                    actionBar.hide();
                     break;
                 case R.id.action_favorites:
                     selectedFragment = mFavoriteListFragment;
-                    actionBar.hide();
                     break;
                 case R.id.action_about:
                     selectedFragment = new AboutFragment();
-                    actionBar.hide();
                     break;
             }
 

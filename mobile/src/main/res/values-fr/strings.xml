@@ -5,7 +5,7 @@
     <string name="tab_favorites">Favoris</string>
     <string name="action_settings">"Paramètres"</string>
     <string name="action_search">"Recherche</string>
-    <string name="action_about">"A propos de cette appli"</string>
+    <string name="action_about">"A propos"</string>
     <string name="action_favorite">"Ajouter aux favoris"</string>
     <string name="title_loading_position">Nous essayons de vous localiser…</string>
     <string name="title_no_stations">"Pas d'arrêts trouvés"</string>
