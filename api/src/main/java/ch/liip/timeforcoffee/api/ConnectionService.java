@@ -34,15 +34,15 @@ public class ConnectionService {
 
     @Subscribe
     public void onEvent(FetchConnectionsEvent event) {
-        Map<String, String> query = new HashMap<>();
-        query.put("station_id", String.valueOf(event.getStationId()));
-        query.put("destination_id", String.valueOf(event.getDestinationId()));
-        query.put("departure", event.getDepartureString());
 
-        backendService.getConnections(query)
+        backendService.getConnections(
+                String.valueOf(event.getStationId()),
+                String.valueOf(event.getDestinationId()),
+                event.getDepartureString(),
+                event.getArrivalString())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Connection>>() {
+                .subscribe(new Subscriber<ch.liip.timeforcoffee.backend.Connections>() {
                     @Override
                     public void onCompleted() {
 
@@ -54,10 +54,13 @@ public class ConnectionService {
                     }
 
                     @Override
-                    public void onNext(List<ch.liip.timeforcoffee.backend.Connection> backendConnections) {
+                    public void onNext(ch.liip.timeforcoffee.backend.Connections backendConnections) {
                         List<Connection> connections = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Connection backendConnection : backendConnections) {
-                            connections.add(ConnectionMapper.fromBackend(backendConnection));
+                        List<List<ch.liip.timeforcoffee.backend.Connection>> backendConnectionsList = backendConnections.getConnections();
+                        if (backendConnectionsList.size() > 0) {
+                            for (ch.liip.timeforcoffee.backend.Connection backendConnection : backendConnectionsList.get(0)) {
+                                connections.add(ConnectionMapper.fromBackend(backendConnection));
+                            }
                         }
 
                         eventBus.post(new ConnectionsFetchedEvent(connections));
