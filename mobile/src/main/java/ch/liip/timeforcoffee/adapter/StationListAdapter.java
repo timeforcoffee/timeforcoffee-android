@@ -64,15 +64,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
 
         viewHolder.nameTextView.setText(currentStation.getName());
 
-        Location location;
-        if (Build.FINGERPRINT.startsWith("generic")) { //emulator
-            location = new Location("emulator");
-            location.setLatitude(46.803);
-            location.setLongitude(7.145);
-        }
-        else {
-            location = SmartLocation.with(mContext).location().getLastLocation();
-        }
+        Location location = SmartLocation.with(mContext).location().getLastLocation();
 
         currentStation.setOnDistanceComputedListener(new Station.OnDistanceComputedListener() {
             @Override
