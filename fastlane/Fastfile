@@ -15,27 +15,11 @@ platform :android do
   desc "Runs all the tests"
   lane :ci_test do
 
-  # Setup the environment variables
-    gradleProperties = nil
-    if ENV['CI']
-      gradleProperties = {
-          versionCode: ENV['CI_JOB_ID'],
-          keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-          keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
-          keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
-          keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
-          backendBasicAuthUsername: ENV['BACKEND_BASIC_AUTH_USERNAME'],
-          backendBasicAuthPassword: ENV['BACKEND_BASIC_AUTH_PASSWORD'],
-          googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY']
-      }
-    end
-
     # We make sure the app compiles
     gradle(
         task: "assemble",
         flavor: "Full",
-        build_type: "Debug",
-        properties: gradleProperties
+        build_type: "Debug"
     )
 
     # Then run the unit tests
