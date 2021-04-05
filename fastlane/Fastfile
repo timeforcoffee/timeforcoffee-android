@@ -37,20 +37,15 @@ platform :android do
   desc "Submit a build to Google Play, in the internal lane"
   lane :release do
 
-    gradleProperties = nil
-    if ENV['CI']
-        gradleProperties = {
-            versionCode: ENV['CI_JOB_ID'],
-            keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-            keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
-            keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
-            keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
-            backendBasicAuthUsername: ENV['BACKEND_BASIC_AUTH_USERNAME'],
-            backendBasicAuthPassword: ENV['BACKEND_BASIC_AUTH_PASSWORD'],
-            googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY']
-        }
-    end
-
+    gradleProperties = {
+        versionCode: 255321 + ${{ env.GITHUB_RUN_NUMBER }}, #255321 is the last build number used on GitlabCI
+        googleMapsApiKey: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        keystoreFilePath: 'files/timeforcoffee.jks',
+        keystoreKeyAlias: ${{ secrets.PLAYSTORE_KEY_ALIAS }}
+        keystoreKeyPass:  ${{ secrets.PLAYSTORE_KEY_PASS }}
+        keystoreStorePass: ${{ secrets.PLAYSTORE_STORE_PASS }}
+    }
+    
     gradle(
         task: "assemble",
         flavor: "Full",
