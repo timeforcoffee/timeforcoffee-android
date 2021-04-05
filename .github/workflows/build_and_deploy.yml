@@ -33,4 +33,10 @@ jobs:
       - run: bundle install
 
       - name: Release
+        env:
+          GITHUB_RUN_NUMBER: ${{ env.GITHUB_RUN_NUMBER }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          PLAYSTORE_KEY_ALIAS: ${{ secrets.PLAYSTORE_KEY_ALIAS }}
+          PLAYSTORE_KEY_PASS: ${{ secrets.PLAYSTORE_KEY_PASS }}
+          PLAYSTORE_STORE_PASS: ${{ secrets.PLAYSTORE_STORE_PASS }}
         run: bundle exec fastlane release
