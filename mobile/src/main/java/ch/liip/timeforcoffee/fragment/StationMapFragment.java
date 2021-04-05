@@ -102,6 +102,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         mMap = googleMap;
         mMap.setOnMapLoadedCallback(this);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
