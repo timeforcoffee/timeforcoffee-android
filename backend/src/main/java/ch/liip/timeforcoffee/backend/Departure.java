@@ -2,34 +2,35 @@ package ch.liip.timeforcoffee.backend;
 
 public class Departure {
 
-    private Station destination;
-    private String line;
+    private int id;
+    private String name;
     private String platform;
+    private String to;
     private boolean accessible;
-    private Color color;
+    private Color colors;
     private Time departure;
     private Time arrival;
 
     public Departure() {}
 
-    public Station getDestination() {
-        return destination;
+    public int getId() {
+        return id;
     }
 
-    public String getLine() {
-        return line;
-    }
+    public String getName() { return name; }
 
     public String getPlatform() {
         return platform;
     }
 
+    public String getTo() { return to; }
+
     public boolean isAccessible() {
         return accessible;
     }
 
-    public Color getColor() {
-        return color;
+    public Color getColors() {
+        return colors;
     }
 
     public Time getDeparture() {

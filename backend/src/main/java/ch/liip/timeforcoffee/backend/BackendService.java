@@ -5,20 +5,21 @@ import java.util.Map;
 
 import retrofit.http.GET;
 import retrofit.http.Headers;
+import retrofit.http.Path;
 import retrofit.http.QueryMap;
 import rx.Observable;
 
 public interface BackendService {
 
     @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/stations")
-    Observable<List<Station>> getStations(@QueryMap Map<String, String> query);
+    @GET("/api/ch/stationboard/{stationId}")
+    Observable<Departures> getDepartures(@Path("stationId") String stationId);
 
     @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/stationboard")
-    Observable<List<Departure>> getDepartures(@QueryMap Map<String, String> query);
-
-    @Headers("Cache-Control:public, max-age=20")
-    @GET("/api/connections")
-    Observable<List<Connection>> getConnections(@QueryMap Map<String, String> query);
+    @GET("/api/ch/connections/{stationId}/{destinationId}/{departureDate}/{arrivalDate}")
+    Observable<Connections> getConnections(
+            @Path("stationId") String stationId,
+            @Path("destinationId") String destinationId,
+            @Path("departureDate") String departureDate,
+            @Path("arrivalDate") String arrivalDate);
 }

@@ -1,10 +1,12 @@
 package ch.liip.timeforcoffee.backend;
 
+import androidx.annotation.Nullable;
+
 public class Station {
 
     private int id;
     private String name;
-    private Location location;
+    private Location coordinate;
 
     public Station() {}
 
@@ -16,7 +18,7 @@ public class Station {
         return name;
     }
 
-    public Location getLocation() {
-        return location;
+    public Location getCoordinate() {
+        return coordinate;
     }
 }

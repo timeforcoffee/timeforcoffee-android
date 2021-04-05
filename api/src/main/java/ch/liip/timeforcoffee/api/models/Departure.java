@@ -114,6 +114,16 @@ public class Departure {
         return null;
     }
 
+    public String getArrivalStrForBackend() {
+        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        if (arrivalScheduled != null) {
+            return dt.format(arrivalScheduled);
+        }
+
+        return null;
+    }
+
+
     public Boolean isLate() {
         return departureRealtime != null && departureScheduled != null && departureRealtime.compareTo(departureScheduled) != 0;
     }
