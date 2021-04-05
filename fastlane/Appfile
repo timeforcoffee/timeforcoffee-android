@@ -1,2 +1,2 @@
-json_key_file "files/googleplay.json"
+json_key_file "private/googleplay.json"
 package_name "ch.liip.timeforcoffee"
