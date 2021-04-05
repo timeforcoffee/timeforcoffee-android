@@ -1,9 +1,2 @@
-if ENV['CI']
-    json_key_data_raw ENV['PLAYSTORE_DEPLOY_SERVICE_ACCOUNT']
-end
-
+json_key_file "files/googleplay.json"
 package_name "ch.liip.timeforcoffee"
-
-for_lane :staging do
-  package_name "ch.liip.timeforcoffee.staging"
-end
