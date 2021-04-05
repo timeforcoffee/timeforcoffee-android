@@ -24,7 +24,7 @@ ext {
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
-    VERSION = "1.5.0"
+    VERSION = "2.0.0"
     VERSION_CODE = getVersionCode()
 
     KEYSTORE_KEY_ALIAS = project.hasProperty('keystoreKeyAlias') ? project.property('keystoreKeyAlias') : ""
