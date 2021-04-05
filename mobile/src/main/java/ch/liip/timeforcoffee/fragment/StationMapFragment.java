@@ -168,6 +168,12 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
             LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             mVisiblePoints.add(userLocation);
         }
+
+        String distance = mStation.getDistanceForDisplay(currentLocation);
+        if (distance != null) {
+            mSubtitleTextView.setText(distance);
+            mSubtitleTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void drawTransportPath() {
