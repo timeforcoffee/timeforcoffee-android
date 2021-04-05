@@ -1,72 +1,86 @@
-[
-  {
-    "station": {
-      "id": 8583274,
-      "name": "Sion, Jonction",
-      "location": {
-        "y": 7.336384,
-        "x": 46.225724
+{
+  "passlist": [
+    [
+      {
+        "id": 8583274,
+        "name": "Sion, Jonction",
+        "location": {
+          "lng": 7.336384,
+          "lat": 46.225724
+        },
+        "departure": {
+          "scheduled": "2018-06-21T10:50:00",
+          "realtime": "2018-06-21T10:51:00"
+        },
+        "arrival": {
+          "scheduled": "2018-06-21T10:50:00",
+          "realtime": "2018-06-21T10:51:00"
+        }
+      },
+      {
+        "id": 8583269,
+        "name": "Sion, Furet",
+        "location": {
+          "lng": 7.332564,
+          "lat": 46.224097
+        },
+        "departure": {
+          "scheduled": "2018-06-21T10:51:00",
+          "realtime": "2018-06-21T10:52:00"
+        },
+        "arrival": {
+          "scheduled": "2018-06-21T10:51:00",
+          "realtime": "2018-06-21T10:52:00"
+        }
+      },
+      {
+        "id": 8583264,
+        "name": "Sion, Châteauneuf",
+        "location": {
+          "lng": 7.328627,
+          "lat": 46.22203
+        },
+        "departure": {
+          "scheduled": "2018-06-21T10:52:00",
+          "realtime": null
+        },
+        "arrival": {
+          "scheduled": "2018-06-21T10:52:00",
+          "realtime": null
+        }
+      },
+      {
+        "id": 8583370,
+        "name": "Sion, Treille",
+        "location": {
+          "lng": 7.324986,
+          "lat": 46.220681
+        },
+        "departure": {
+          "scheduled": "2018-06-21T10:53:00",
+          "realtime": null
+        },
+        "arrival": {
+          "scheduled": "2018-06-21T10:53:00",
+          "realtime": null
+        }
+      },
+      {
+        "id": 8583271,
+        "name": "Sion, Garenne",
+        "location": {
+          "lng": 7.321669,
+          "lat": 46.219998
+        },
+        "departure": {
+          "scheduled": "2018-06-21T10:55:00",
+          "realtime": null
+        },
+        "arrival": {
+          "scheduled": "2018-06-21T10:55:00",
+          "realtime": null
+        }
       }
-    },
-    "time": {
-      "scheduled": "2018-06-21T10:50:00",
-      "realtime": "2018-06-21T10:51:00"
-    }
-  },
-  {
-    "station": {
-      "id": 8583269,
-      "name": "Sion, Furet",
-      "location": {
-        "y": 7.332564,
-        "x": 46.224097
-      }
-    },
-    "time": {
-      "scheduled": "2018-06-21T10:51:00",
-      "realtime": "2018-06-21T10:52:00"
-    }
-  },
-  {
-    "station": {
-      "id": 8583264,
-      "name": "Sion, Châteauneuf",
-      "location": {
-        "y": 7.328627,
-        "x": 46.22203
-      }
-    },
-    "time": {
-      "scheduled": "2018-06-21T10:52:00",
-      "realtime": null
-    }
-  },
-  {
-    "station": {
-      "id": 8583370,
-      "name": "Sion, Treille",
-      "location": {
-        "y": 7.324986,
-        "x": 46.220681
-      }
-    },
-    "time": {
-      "scheduled": "2018-06-21T10:53:00",
-      "realtime": null
-    }
-  },
-  {
-    "station": {
-      "id": 8583271,
-      "name": "Sion, Garenne",
-      "location": {
-        "y": 7.321669,
-        "x": 46.219998
-      }
-    },
-    "time": {
-      "scheduled": "2018-06-21T10:55:00",
-      "realtime": null
-    }
-  }
-]
+    ]
+  ]
+}

@@ -70,7 +70,6 @@ public class Station implements RoutingListener {
 
     @Override
     public void onRoutingFailure() {
-
     }
 
     @Override

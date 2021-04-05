@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Build;
 import androidx.annotation.NonNull;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,9 @@ import io.nlopez.smartlocation.SmartLocation;
 
 public class StationListAdapter extends ArrayAdapter<Station> {
 
-    private List<Station> mStations;
+    private final List<Station> mStations;
+    private final Context mContext;
 
-    private Context mContext;
     private Callbacks mCallbacks = new Callbacks() {
         @Override
         public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
@@ -64,17 +65,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
         // Set name
         viewHolder.nameTextView.setText(currentStation.getName());
 
-        // Distance
-        Location location;
-        if (Build.FINGERPRINT.contains("generic")) { //emulator
-            location = new Location("emulator");
-            location.setLatitude(46.803);
-            location.setLongitude(7.145);
-        }
-        else {
-            location = SmartLocation.with(mContext).location().getLastLocation();
-        }
-
+        Location location = SmartLocation.with(mContext).location().getLastLocation();
         String walkingDistance = currentStation.getDistanceForDisplay(location);
         if (walkingDistance != null) {
             viewHolder.distanceTextView.setText(walkingDistance);

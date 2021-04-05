@@ -23,6 +23,7 @@ import ch.liip.timeforcoffee.api.mappers.StationMapper;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import ch.liip.timeforcoffee.backend.BackendService;
+import ch.liip.timeforcoffee.backend.OpenDataService;
 import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,6 +47,9 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
     @Inject
     BackendService backendService;
+
+    @Inject
+    OpenDataService openDataService;
 
     @Nullable
     @Override
@@ -125,10 +129,10 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
         query.put("y", Double.toString(longitude));
 
         _gettingStations = true;
-        backendService.getStations(query)
+        openDataService.getStations(query)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Station>>() {
+                .subscribe(new Subscriber<ch.liip.timeforcoffee.backend.Stations>() {
 
                     @Override
                     public void onCompleted() {
@@ -141,9 +145,9 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(List<ch.liip.timeforcoffee.backend.Station> backendStations) {
+                    public void onNext(ch.liip.timeforcoffee.backend.Stations backendStations) {
                         ArrayList<Station> stations = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Station station : backendStations) {
+                        for (ch.liip.timeforcoffee.backend.Station station : backendStations.getStations()) {
                             stations.add( StationMapper.fromBackend(station));
                         }
 
@@ -169,14 +173,11 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
 
         Log.d(LOG_TAG, "DataService: getStationBoard");
 
-        Map<String, String> query = new HashMap<String, String>();
-        query.put("station_id", stationId);
-
         _gettingStationBoard = true;
-        backendService.getDepartures(query)
+        backendService.getDepartures(stationId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Departure>>() {
+                .subscribe(new Subscriber<ch.liip.timeforcoffee.backend.Departures>() {
                     @Override
                     public void onCompleted() {
                         _gettingStations = false;
@@ -188,9 +189,9 @@ public class DataService extends Service implements GoogleApiClient.ConnectionCa
                     }
 
                     @Override
-                    public void onNext(List<ch.liip.timeforcoffee.backend.Departure> backendDepartures) {
+                    public void onNext(ch.liip.timeforcoffee.backend.Departures backendDepartures) {
                         ArrayList<Departure> departures = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : backendDepartures) {
+                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : backendDepartures.getDepartures()) {
                             departures.add(DepartureMapper.fromBackend(backendDeparture));
                         }
 
