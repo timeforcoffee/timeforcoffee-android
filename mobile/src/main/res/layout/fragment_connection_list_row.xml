@@ -54,7 +54,7 @@
 
     </LinearLayout>
 
-    <TextView android:id="@+id/departure"
+    <TextView android:id="@+id/minutes"
         tools:text="5'"
         android:textSize="18sp"
         android:layout_width="48dp"
