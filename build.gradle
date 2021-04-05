@@ -6,9 +6,9 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
     }
 }
 
@@ -18,13 +18,13 @@ ext {
         return project.hasProperty('versionCode') ? project.property('versionCode') as int : 33
     }
 
-    MIN_SDK = 19
+    MIN_SDK = 25
     COMPILE_SDK = 28
     TARGET_SDK = 28
 
     PACKAGE_NAME = "ch.liip.timeforcoffee"
 
-    VERSION = "1.4.5"
+    VERSION = "1.5.0"
     VERSION_CODE = getVersionCode()
 
     KEYSTORE_KEY_ALIAS = project.hasProperty('keystoreKeyAlias') ? project.property('keystoreKeyAlias') : ""
