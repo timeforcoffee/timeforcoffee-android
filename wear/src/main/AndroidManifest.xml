@@ -19,8 +19,7 @@
         android:theme="@android:style/Theme.DeviceDefault.Light">
 
         <uses-library
-            android:name="com.google.android.wearable"
-            android:required="false" />
+            android:name="com.google.android.wearable" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -30,6 +29,10 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_api_key" />
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="false" />
 
         <activity
             android:name=".activity.WearActivity"
