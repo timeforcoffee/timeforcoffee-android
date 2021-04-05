@@ -30,8 +30,7 @@
 
         </LinearLayout>
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
+        <fragment
           android:id="@+id/station_map"
           android:name="ch.liip.timeforcoffee.fragment.StationMapFragment"
           android:layout_width="match_parent"

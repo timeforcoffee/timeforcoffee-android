@@ -30,6 +30,7 @@ public class StationSearchFragment extends Fragment implements StationListFragme
     private StationSearchPresenter mPresenter;
     private StationListFragment mStationListFragment;
 
+    private ActionBar actionBar;
     private EditText mSearchEditText;
     private ProgressBar mSearchProgressBar;
     private Handler mSearchHandler;
@@ -58,8 +59,7 @@ public class StationSearchFragment extends Fragment implements StationListFragme
         mPresenter = new StationSearchPresenter(this, searchQuery);
 
         // Action bar
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setCustomView(R.layout.search_bar);
 
         mSearchEditText = actionBar.getCustomView().findViewById(R.id.searchField);
@@ -105,12 +105,14 @@ public class StationSearchFragment extends Fragment implements StationListFragme
     @Override
     public void onResume() {
         super.onResume();
+        actionBar.setDisplayShowCustomEnabled(true);
         mPresenter.onResumeView();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        actionBar.setDisplayShowCustomEnabled(false);
         mPresenter.onPauseView();
     }
 
