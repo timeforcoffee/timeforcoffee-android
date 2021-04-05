@@ -17,7 +17,13 @@ jobs:
         with:
           repository: timeforcoffee/timeforcofee-android-secrets
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          clean: false
+          path: private
+
+      - name: Copy file
+        uses: canastro/copy-file-action@master
+        with:
+        source: "private/googleplay.json"
+        target: "mobile/googleplay.json"
 
       - name: install dependencies
         uses: ruby/setup-ruby@v1
