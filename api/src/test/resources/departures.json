@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "station_id": "8577784",
+    "station_name": "Fribourg, Beauregard"
+  },
+  "departures": [
+    {
+      "id": 8583270,
+      "to": "Sion, Gare Bus Sédunois",
+      "departure": {
+        "scheduled": "2018-06-21T10:21:00",
+        "realtime": "2018-06-21T10:22:00"
+      },
+      "arrival": {
+        "scheduled": "2018-06-21T10:36:00",
+        "realtime": "2018-06-21T10:37:00"
+      },
+      "name": "1",
+      "platform": null,
+      "colors": {
+        "fg": "#000000",
+        "bg": "#FFFFFF"
+      }
+    },
+    {
+      "id": 8583271,
+      "to": "Sion, Garenne",
+      "departure": {
+        "scheduled": "2018-06-21T10:50:00",
+        "realtime": "2018-06-21T10:51:00"
+      },
+      "arrival": {
+        "scheduled": "2018-06-21T10:55:00",
+        "realtime": "2018-06-21T10:56:00"
+      },
+      "name": "1",
+      "platform": null,
+      "colors": {
+        "fg": "#000000",
+        "bg": "#FFFFFF"
+      }
+    },
+    {
+      "id": 8583270,
+      "to": "Sion, Gare Bus Sédunois",
+      "departure": {
+        "scheduled": "2018-06-21T11:00:00",
+        "realtime": null
+      },
+      "arrival": {
+        "scheduled": "2018-06-21T11:15:00",
+        "realtime": null
+      },
+      "name": "1",
+      "platform": null,
+      "colors": {
+        "fg": "#000000",
+        "bg": "#FFFFFF"
+      }
+    }
+  ]
+}
