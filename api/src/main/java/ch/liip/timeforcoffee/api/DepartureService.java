@@ -34,13 +34,11 @@ public class DepartureService {
 
     @Subscribe
     public void onEvent(FetchDeparturesEvent event) {
-        Map<String, String> query = new HashMap<>();
-        query.put("station_id", String.valueOf(event.getStationId()));
 
-        backendService.getDepartures(query)
+        backendService.getDepartures(String.valueOf(event.getStationId()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ch.liip.timeforcoffee.backend.Departure>>() {
+                .subscribe(new Subscriber<ch.liip.timeforcoffee.backend.Departures>() {
                     @Override
                     public void onCompleted() {
 
@@ -52,9 +50,9 @@ public class DepartureService {
                     }
 
                     @Override
-                    public void onNext(List<ch.liip.timeforcoffee.backend.Departure> backendDepartures) {
+                    public void onNext(ch.liip.timeforcoffee.backend.Departures backendDepartures) {
                         ArrayList<Departure> departures = new ArrayList<>();
-                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : backendDepartures) {
+                        for (ch.liip.timeforcoffee.backend.Departure backendDeparture : backendDepartures.getDepartures()) {
                             departures.add(DepartureMapper.fromBackend(backendDeparture));
                         }
 

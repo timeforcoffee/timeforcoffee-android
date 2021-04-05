@@ -1,34 +1,36 @@
-[
-  {
-    "id": 8589154,
-    "name": "Fribourg, Industrie",
-    "location": {
-      "y": 7.155319,
-      "x": 46.796343
+{
+  "stations": [
+    {
+      "id": 8589154,
+      "name": "Fribourg, Industrie",
+      "coordinate": {
+        "y": 7.155319,
+        "x": 46.796343
+      }
+    },
+    {
+      "id": 8588858,
+      "name": "Fribourg, J. Vogt",
+      "coordinate": {
+        "y": 7.153067,
+        "x": 46.798704
+      }
+    },
+    {
+      "id": 8577741,
+      "name": "Fribourg, Charmettes",
+      "coordinate": {
+        "y": 7.157359,
+        "x": 46.794549
+      }
+    },
+    {
+      "id": 8589155,
+      "name": "Fribourg, Fries",
+      "coordinate": {
+        "y": 7.152193,
+        "x": 46.800573
+      }
     }
-  },
-  {
-    "id": 8588858,
-    "name": "Fribourg, J. Vogt",
-    "location": {
-      "y": 7.153067,
-      "x": 46.798704
-    }
-  },
-  {
-    "id": 8577741,
-    "name": "Fribourg, Charmettes",
-    "location": {
-      "y": 7.157359,
-      "x": 46.794549
-    }
-  },
-  {
-    "id": 8589155,
-    "name": "Fribourg, Fries",
-    "location": {
-      "y": 7.152193,
-      "x": 46.800573
-    }
-  }
-]
+  ]
+}

@@ -30,6 +30,7 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Connection;
+import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 import io.nlopez.smartlocation.SmartLocation;
 
@@ -41,13 +42,14 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
     private MapFragment mMapFragment;
     private GoogleMap mMap;
-    private List<LatLng> mVisiblePoints = new ArrayList<>();
+    private final List<LatLng> mVisiblePoints = new ArrayList<>();
 
     private Station mStation;
     private List<Connection> mConnections;
 
     private ImageView mGradientOverlay;
     private TextView mTitleTextView;
+    private TextView mSubtitleTextView;
     private ImageView mChevron;
 
     private Callbacks mCallbacks;
@@ -66,6 +68,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
         mGradientOverlay = view.findViewById(R.id.gradient_overlay);
         mTitleTextView = view.findViewById(R.id.journey_title);
+        mSubtitleTextView = view.findViewById(R.id.journey_subtitle);
         mChevron = view.findViewById(R.id.chevron);
 
         mMapFragment = MapFragment.newInstance();
@@ -97,6 +100,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         mMap = googleMap;
         mMap.setOnMapLoadedCallback(this);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -105,7 +109,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         if(mStation != null) {
             drawWalkingPath();
         }
-        else if(mConnections != null) {
+        else if(mConnections != null && mConnections.size() != 0) {
             drawTransportPath();
         }
     }
@@ -125,11 +129,12 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         loadMap();
     }
 
-    public void setup(List<Connection> connections) {
+    public void setup(List<Connection> connections, Station departure, Departure destination) {
         mConnections = connections;
-        Connection destination = mConnections.get(mConnections.size() - 1);
 
-        mTitleTextView.setText(destination.getStationName());
+        mTitleTextView.setText(destination.getDestinationName());
+        mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getName()));
+        mSubtitleTextView.setVisibility(View.VISIBLE);
 
         loadMap();
     }
