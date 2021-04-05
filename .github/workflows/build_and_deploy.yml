@@ -1,4 +1,4 @@
-name: Build & deploy on Play store
+name: Build & deploy on PlayStore
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2  
         with:
           repository: timeforcoffee/timeforcofee-android-secrets
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: install dependencies
         uses: ruby/setup-ruby@v1
