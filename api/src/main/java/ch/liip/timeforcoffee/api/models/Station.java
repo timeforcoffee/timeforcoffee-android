@@ -66,7 +66,7 @@ public class Station implements RoutingListener {
     }
 
     public WalkingDistance getDistanceForDisplay(Location userLocation) {
-        if (userLocation == null || location == null || userLocation == null) {
+        if (userLocation == null || location == null) {
             onDistanceComputedListener.onDistanceComputed(null);
         }
 
@@ -100,11 +100,6 @@ public class Station implements RoutingListener {
     }
 
     private void getWalkingDistance(Location userLocation) {
-
-        if (Build.FINGERPRINT.contains("generic") || location == null || userLocation == null) {
-            return;
-        }
-
         LatLng start = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
         LatLng end = new LatLng(this.getLocation().getLatitude(), this.getLocation().getLongitude());
 
