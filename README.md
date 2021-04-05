@@ -2,6 +2,12 @@
 
 Time for Coffee for Android with Wear App. Real-time departure info for Switzerland.
 
+### Install dependencies
+
+```bash
+bundle install
+```
+
 ## Contributing
 
 1. Fork it!
