@@ -5,11 +5,13 @@ public class FetchConnectionsEvent {
     private final int stationId;
     private final int destinationId;
     private final String departureString;
+    private final String arrivalString;
 
-    public FetchConnectionsEvent(int stationId, int destinationId, String departureString) {
+    public FetchConnectionsEvent(int stationId, int destinationId, String departureString, String arrivalString) {
         this.stationId = stationId;
         this.destinationId = destinationId;
         this.departureString = departureString;
+        this.arrivalString = arrivalString;
     }
 
     public int getStationId() {
@@ -22,5 +24,9 @@ public class FetchConnectionsEvent {
 
     public String getDepartureString() {
         return departureString;
+    }
+
+    public String getArrivalString() {
+        return arrivalString;
     }
 }
