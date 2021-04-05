@@ -8,80 +8,67 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import ch.liip.timeforcoffee.api.deserializers.ConnectionsDeserializer;
 import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
-import ch.liip.timeforcoffee.zvv.ConnectionsResponse;
-import ch.liip.timeforcoffee.zvv.Departure;
-import ch.liip.timeforcoffee.zvv.StationboardMeta;
-import ch.liip.timeforcoffee.zvv.StationboardResponse;
+import ch.liip.timeforcoffee.backend.Departure;
+import ch.liip.timeforcoffee.backend.Departures;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class DepartureDeserializationTest {
 
-    private SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    private Gson gson = new GsonBuilder()
+    private final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(Date.class, new DateDeserializer())
             .create();
 
     @Test
     public void departuresDeserialization_Works() throws UnsupportedEncodingException {
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("departures.json");
-        InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
+        InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 
-        StationboardResponse stationboardResponse = gson.fromJson(reader, StationboardResponse.class);
+        Departures departures = gson.fromJson(reader, Departures.class);
 
-        StationboardMeta stationboardMeta = stationboardResponse.getMeta();
-        assertEquals("8577725", stationboardMeta.getStationId());
-        assertEquals("Bulle, gare", stationboardMeta.getStationName());
+        assertEquals(3, departures.getDepartures().size());
 
-        List<Departure> departures = stationboardResponse.getDepartures();
-        assertEquals(3, departures.size());
-
-        Departure departure1 = departures.get(0);
-        assertEquals("8593286", departure1.getId());
-        assertEquals("201", departure1.getName());
-        assertEquals("bus", departure1.getType());
+        Departure departure1 = departures.getDepartures().get(0);
+        assertEquals(8583270, departure1.getId());
+        assertEquals("Sion, Gare Bus Sédunois", departure1.getTo());
+        assertEquals("2018-06-21T10:21:00" , dateTimeFormatter.format(departure1.getDeparture().getScheduled()));
+        assertEquals("2018-06-21T10:22:00" , dateTimeFormatter.format(departure1.getDeparture().getRealtime()));
+        assertEquals("2018-06-21T10:36:00" , dateTimeFormatter.format(departure1.getArrival().getScheduled()));
+        assertEquals("2018-06-21T10:37:00" , dateTimeFormatter.format(departure1.getArrival().getRealtime()));
+        assertEquals("1", departure1.getName());
+        assertNull(departure1.getPlatform());
         assertEquals("#000000", departure1.getColors().getFg());
         assertEquals("#FFFFFF", departure1.getColors().getBg());
-        assertEquals("La Tour-de-Trême, Le Closalet", departure1.getTo());
-        assertEquals(null, departure1.getPlatform());
-        assertEquals("2018-03-09T15:44:00" , dateTimeFormatter.format(departure1.getDeparture().getScheduled()));
-        assertEquals(null , departure1.getDeparture().getRealtime());
-        assertEquals("2018-03-09T15:50:00" , dateTimeFormatter.format(departure1.getArrival().getScheduled()));
-        assertEquals(null , departure1.getArrival().getRealtime());
-        assertEquals(false , departure1.getAccessible());
 
-        Departure departure2 = departures.get(1);
-        assertEquals("8593291", departure2.getId());
-        assertEquals("202", departure2.getName());
-        assertEquals("bus", departure2.getType());
+        Departure departure2 = departures.getDepartures().get(1);
+        assertEquals(8583271, departure2.getId());
+        assertEquals("Sion, Garenne", departure2.getTo());
+        assertEquals("2018-06-21T10:50:00" , dateTimeFormatter.format(departure2.getDeparture().getScheduled()));
+        assertEquals("2018-06-21T10:51:00" , dateTimeFormatter.format(departure2.getDeparture().getRealtime()));
+        assertEquals("2018-06-21T10:55:00" , dateTimeFormatter.format(departure2.getArrival().getScheduled()));
+        assertEquals("2018-06-21T10:56:00" , dateTimeFormatter.format(departure2.getArrival().getRealtime()));
+        assertEquals("1", departure2.getName());
+        assertNull(departure2.getPlatform());
         assertEquals("#000000", departure2.getColors().getFg());
         assertEquals("#FFFFFF", departure2.getColors().getBg());
-        assertEquals("Vuadens, gare", departure2.getTo());
-        assertEquals(null, departure2.getPlatform());
-        assertEquals("2018-03-09T15:44:00" , dateTimeFormatter.format(departure2.getDeparture().getScheduled()));
-        assertEquals(null , departure2.getDeparture().getRealtime());
-        assertEquals("2018-03-09T15:53:00" , dateTimeFormatter.format(departure2.getArrival().getScheduled()));
-        assertEquals(null , departure2.getArrival().getRealtime());
-        assertEquals(false , departure2.getAccessible());
 
-        Departure departure3 = departures.get(2);
-        assertEquals("8593289", departure3.getId());
-        assertEquals("202", departure3.getName());
-        assertEquals("bus", departure3.getType());
+        Departure departure3 = departures.getDepartures().get(2);
+        assertEquals(8583270, departure3.getId());
+        assertEquals("Sion, Gare Bus Sédunois", departure3.getTo());
+        assertEquals("2018-06-21T11:00:00" , dateTimeFormatter.format(departure3.getDeparture().getScheduled()));
+        assertNull(departure3.getDeparture().getRealtime());
+        assertEquals("2018-06-21T11:15:00" , dateTimeFormatter.format(departure3.getArrival().getScheduled()));
+        assertNull(departure3.getArrival().getRealtime());
+        assertEquals("1", departure3.getName());
+        assertNull(departure3.getPlatform());
         assertEquals("#000000", departure3.getColors().getFg());
         assertEquals("#FFFFFF", departure3.getColors().getBg());
-        assertEquals("Morlon, Eglise", departure3.getTo());
-        assertEquals(null, departure3.getPlatform());
-        assertEquals("2018-03-09T15:45:00" , dateTimeFormatter.format(departure3.getDeparture().getScheduled()));
-        assertEquals(null , departure3.getDeparture().getRealtime());
-        assertEquals("2018-03-09T15:58:00" , dateTimeFormatter.format(departure3.getArrival().getScheduled()));
-        assertEquals(null , departure3.getArrival().getRealtime());
-        assertEquals(false , departure3.getAccessible());
     }
 }

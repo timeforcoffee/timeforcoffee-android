@@ -7,40 +7,38 @@ import java.util.concurrent.TimeUnit;
 
 public class Departure {
 
-    private String name;
     private int destinationId;
     private String destinationName;
-    private String platform;
     private Date departureScheduled;
     private Date departureRealtime;
     private Date arrivalScheduled;
+    private Date arrivalRealtime;
+    private String line;
+    private String platform;
     private int colorFg;
     private int colorBg;
     private boolean accessible;
     private boolean isFavorite;
 
-    public Departure(String name, int destinationId, String destinationName, String platform, int colorFg, int colorBg, Date departureScheduled, Date departureRealtime, Date arrivalScheduled, boolean accessible, boolean isFavorite) {
-        this.name = name;
-        this.colorBg = colorBg;
-        this.colorFg = colorFg;
+    public Departure(int destinationId, String destinationName, Date departureScheduled, Date departureRealtime, Date arrivalScheduled, Date arrivalRealtime, String line, String platform, int colorFg, int colorBg, boolean accessible, boolean isFavorite) {
         this.destinationId = destinationId;
         this.destinationName = destinationName;
-        this.platform = platform;
         this.departureScheduled = departureScheduled;
         this.departureRealtime = departureRealtime;
         this.arrivalScheduled = arrivalScheduled;
+        this.arrivalRealtime = arrivalRealtime;
+        this.line = line;
+        this.platform = platform;
+        this.colorBg = colorBg;
+        this.colorFg = colorFg;
         this.accessible = accessible;
         this.isFavorite = isFavorite;
     }
 
-    public Departure(String name, int destinationId, boolean isFavorite) {
-        this.name = name;
+    public Departure(int destinationId, String line, boolean isFavorite) {
         this.destinationId = destinationId;
+        this.line = line;
         this.isFavorite = isFavorite;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public boolean isAccessible() {
@@ -51,16 +49,16 @@ public class Departure {
         return destinationId;
     }
 
-    public String getDestinationIdStr() {
-        return String.valueOf(destinationId);
-    }
-
     public void setDestinationId(int destinationId) {
         this.destinationId = destinationId;
     }
 
     public String getDestinationName() {
         return destinationName;
+    }
+
+    public String getLine() {
+        return line;
     }
 
     public String getPlatform() {return platform;}
@@ -75,6 +73,10 @@ public class Departure {
 
     public Date getArrivalScheduled() {
         return arrivalScheduled;
+    }
+
+    public Date getArrivalRealtime() {
+        return arrivalRealtime;
     }
 
     public int getColorFg() {
@@ -103,7 +105,7 @@ public class Departure {
         return null;
     }
 
-    public String getDepartureStrForZvv() {
+    public String getDepartureStrForBackend() {
         DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         if (departureScheduled != null) {
             return dt.format(departureScheduled);
@@ -112,7 +114,7 @@ public class Departure {
         return null;
     }
 
-    public String getArrivalStrForZvv() {
+    public String getArrivalStrForBackend() {
         DateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         if (arrivalScheduled != null) {
             return dt.format(arrivalScheduled);
@@ -120,6 +122,7 @@ public class Departure {
 
         return null;
     }
+
 
     public Boolean isLate() {
         return departureRealtime != null && departureScheduled != null && departureRealtime.compareTo(departureScheduled) != 0;
@@ -161,7 +164,7 @@ public class Departure {
         boolean sameDestinationId = false;
 
         if (object != null && object.getClass() == Departure.class) {
-            sameName = this.name.equals(((Departure) object).getName());
+            sameName = this.line.equals(((Departure) object).getLine());
             sameDestinationId = this.destinationId == ((Departure) object).getDestinationId();
         }
 

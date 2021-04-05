@@ -1,14 +1,13 @@
 package ch.liip.timeforcoffee.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,6 @@ import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Connection;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.api.models.WalkingDistance;
 import io.nlopez.smartlocation.SmartLocation;
 
 
@@ -45,7 +42,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
 
     private MapFragment mMapFragment;
     private GoogleMap mMap;
-    private List<LatLng> mVisiblePoints = new ArrayList<>();
+    private final List<LatLng> mVisiblePoints = new ArrayList<>();
 
     private Station mStation;
     private List<Connection> mConnections;
@@ -83,13 +80,13 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof Callbacks)) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
 
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -103,6 +100,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         mMap = googleMap;
         mMap.setOnMapLoadedCallback(this);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -111,7 +109,7 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         if(mStation != null) {
             drawWalkingPath();
         }
-        else if(mConnections != null) {
+        else if(mConnections != null && mConnections.size() != 0) {
             drawTransportPath();
         }
     }
@@ -131,13 +129,10 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         loadMap();
     }
 
-    public void setup(List<Connection> connections) {
+    public void setup(List<Connection> connections, Station departure, Departure destination) {
         mConnections = connections;
 
-        Connection departure = mConnections.get(0);
-        Connection destination = mConnections.get(mConnections.size() - 1);
-
-        mTitleTextView.setText(destination.getName());
+        mTitleTextView.setText(destination.getDestinationName());
         mSubtitleTextView.setText(String.format("%s %s", getResources().getString(R.string.connection_from), departure.getName()));
         mSubtitleTextView.setVisibility(View.VISIBLE);
 
@@ -172,26 +167,12 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         if (currentLocation != null) {
             LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             mVisiblePoints.add(userLocation);
+        }
 
-            // Draw walking distance
-            mStation.setOnDistanceComputedListener(new Station.OnDistanceComputedListener() {
-                @Override
-                public void onDistanceComputed(WalkingDistance distance) {
-                    if (distance == null || !isAdded()) return;
-
-                    mSubtitleTextView.setText(distance.getWalkingDistance());
-                    if (distance.getWalkingPath() != null) {
-                        drawPathForCheckpoints(distance.getWalkingPath().getPoints());
-                    }
-                }
-            });
-
-            // Display Walking distance
-            WalkingDistance distance = mStation.getDistanceForDisplay(currentLocation);
-            if (distance != null) {
-                mSubtitleTextView.setVisibility(View.VISIBLE);
-                mSubtitleTextView.setText(distance.getWalkingDistance());
-            }
+        String distance = mStation.getDistanceForDisplay(currentLocation);
+        if (distance != null) {
+            mSubtitleTextView.setText(distance);
+            mSubtitleTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -206,33 +187,23 @@ public class StationMapFragment extends Fragment implements OnMapReadyCallback, 
         mConnections.remove(destination);
 
         // Departure
-        LatLng departureLocation = new LatLng(departure.getLocation().getLatitude(), departure.getLocation().getLongitude());
-        mMap.addMarker(new MarkerOptions().position(departureLocation).title(departure.getName()));
+        LatLng departureLocation = new LatLng(departure.getStationLocation().getLatitude(), departure.getStationLocation().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(departureLocation).title(departure.getStationName()));
         checkpoints.add(departureLocation);
 
         // Checkpoints
         for(Connection connection : mConnections) {
-            LatLng location = new LatLng(connection.getLocation().getLatitude(), connection.getLocation().getLongitude());
-            mMap.addMarker(new MarkerOptions().position(location).icon(checkpointIcon).anchor(0.5f, 0.9f).title(connection.getName()));
+            LatLng location = new LatLng(connection.getStationLocation().getLatitude(), connection.getStationLocation().getLongitude());
+            mMap.addMarker(new MarkerOptions().position(location).icon(checkpointIcon).anchor(0.5f, 0.9f).title(connection.getStationName()));
             checkpoints.add(location);
         }
 
         // Destination
-        LatLng destinationLocation = new LatLng(destination.getLocation().getLatitude(), destination.getLocation().getLongitude());
-        mMap.addMarker(new MarkerOptions().position(destinationLocation).icon(destinationIcon).anchor(0.2f, 0.9f).title(destination.getName()));
+        LatLng destinationLocation = new LatLng(destination.getStationLocation().getLatitude(), destination.getStationLocation().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(destinationLocation).icon(destinationIcon).anchor(0.2f, 0.9f).title(destination.getStationName()));
         checkpoints.add(destinationLocation);
 
         mVisiblePoints.addAll(checkpoints);
-    }
-
-    private void drawPathForCheckpoints(List<LatLng> checkpoints) {
-        if(checkpoints.size() < 2) return;
-
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(getResources().getColor(R.color.dark_blue));
-        polylineOptions.width(5);
-        polylineOptions.addAll(checkpoints);
-        mMap.addPolyline(polylineOptions);
     }
 
     private void calculateZoomForVisiblePoints() {

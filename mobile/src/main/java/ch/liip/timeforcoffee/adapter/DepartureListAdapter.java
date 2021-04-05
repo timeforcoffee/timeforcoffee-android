@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,6 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Departure;
-import ch.liip.timeforcoffee.common.FontFitTextView;
 import ch.liip.timeforcoffee.common.Typefaces;
 
 public class DepartureListAdapter extends ArrayAdapter<Departure> {
@@ -25,10 +24,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     private List<Departure> mDepartures;
 
     private Context mContext;
-    private Callbacks mCallbacks = new Callbacks() {
-        @Override
-        public void onDepartureFavoriteToggled(Departure departure, boolean isFavorite) { }
-    };
+    private Callbacks mCallbacks;
 
     public interface Callbacks {
         void onDepartureFavoriteToggled(Departure departure, boolean isFavorite);
@@ -83,10 +79,11 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
         }
 
         if (departure.getPlatform() != null) {
+            viewHolder.platformTextView.setVisibility(View.VISIBLE);
             viewHolder.platformTextView.setText(String.format(getContext().getString(R.string.platform), departure.getPlatform()));
         }
         else {
-            viewHolder.platformTextView.setText("");
+            viewHolder.platformTextView.setVisibility(View.GONE);
         }
 
         if (departure.isAccessible()) {
@@ -110,11 +107,11 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     }
 
     private void setLineName(TextView textView, Departure departure) {
-        String name = departure.getName();
-        textView.setText(name);
+        String line = departure.getLine();
+        textView.setText(line);
 
         try {
-            if (Arrays.asList(linesWithSymbol).contains(name)) {
+            if (Arrays.asList(linesWithSymbol).contains(line)) {
                 Typeface type = Typefaces.get(mContext, "trainsymbol");
                 textView.setTypeface(type);
                 textView.setTextColor(Color.WHITE);
@@ -122,7 +119,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
             }
             else {
                 textView.setTypeface(Typeface.DEFAULT_BOLD);
-                textView.setTextColor(name.equals("RE") ? Color.RED : departure.getColorFg());
+                textView.setTextColor(line.equals("RE") ? Color.RED : departure.getColorFg());
                 textView.setBackgroundColor(departure.getColorBg() == Color.WHITE ? mContext.getResources().getColor(R.color.gray) : departure.getColorBg());
             }
         }
@@ -142,7 +139,7 @@ public class DepartureListAdapter extends ArrayAdapter<Departure> {
     }
 
     private static class DepartureViewHolder {
-        FontFitTextView lineNameTextView;
+        TextView lineNameTextView;
         TextView destinationTextView;
         TextView departureTextView;
         TextView scheduledTimeTextView;

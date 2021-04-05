@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion project.COMPILE_SDK
-    buildToolsVersion project.BUILD_TOOL
 
     defaultConfig {
         applicationId project.PACKAGE_NAME
@@ -11,13 +10,11 @@ android {
         targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
+        resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
     }
     buildTypes {
-        debug {
-            resValue "string", "google_maps_api_key", project.DEBUG_MAP_API_KEY
-        }
+        debug {}
         release {
-            resValue "string", "google_maps_api_key", project.RELEASE_MAP_API_KEY
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -35,14 +32,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(':opendata')
     implementation project(':api')
     implementation project(':common')
 
-    implementation 'com.google.android.gms:play-services-location:' + project.PLAY_SERVICES_VERSION
-    implementation 'com.google.android.gms:play-services-wearable:' + project.PLAY_SERVICES_VERSION
-    implementation 'com.google.android.gms:play-services-maps:' + project.PLAY_SERVICES_VERSION
-    implementation 'com.android.support:support-v13:' + project.SUPPORT_VERSION
-    implementation 'com.google.android.support:wearable:' + project.SUPPORT_WEARABLE_VERSION
-
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-wearable:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'com.google.android.support:wearable:2.8.1'
 }

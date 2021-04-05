@@ -3,7 +3,8 @@ package ch.liip.timeforcoffee.adapter;
 import android.content.Context;
 import android.location.Location;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,14 @@ import java.util.List;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.api.models.WalkingDistance;
 import ch.liip.timeforcoffee.widget.FavoriteButton;
 import io.nlopez.smartlocation.SmartLocation;
 
 public class StationListAdapter extends ArrayAdapter<Station> {
 
-    private List<Station> mStations;
+    private final List<Station> mStations;
+    private final Context mContext;
 
-    private Context mContext;
     private Callbacks mCallbacks = new Callbacks() {
         @Override
         public void onStationFavoriteToggled(Station station, boolean isFavorite) { }
@@ -54,40 +54,24 @@ public class StationListAdapter extends ArrayAdapter<Station> {
             viewHolder.favoriteButton = convertView.findViewById(R.id.fav);
 
             convertView.setTag(viewHolder);
-
         }
         else {
             viewHolder = (StationViewHolder) convertView.getTag();
         }
 
+        // Select station
         final Station currentStation = this.mStations.get(position);
 
+        // Set name
         viewHolder.nameTextView.setText(currentStation.getName());
 
-        Location location;
-        if (Build.FINGERPRINT.startsWith("generic")) { //emulator
-            location = new Location("emulator");
-            location.setLatitude(46.803);
-            location.setLongitude(7.145);
-        }
-        else {
-            location = SmartLocation.with(mContext).location().getLastLocation();
-        }
-
-        currentStation.setOnDistanceComputedListener(new Station.OnDistanceComputedListener() {
-            @Override
-            public void onDistanceComputed(WalkingDistance distance) {
-                if (distance != null) {
-                    viewHolder.distanceTextView.setText(distance.getWalkingDistance());
-                }
-            }
-        });
-
-        WalkingDistance walkingDistance = currentStation.getDistanceForDisplay(location);
+        Location location = SmartLocation.with(mContext).location().getLastLocation();
+        String walkingDistance = currentStation.getDistanceForDisplay(location);
         if (walkingDistance != null) {
-            viewHolder.distanceTextView.setText(walkingDistance.getWalkingDistance());
+            viewHolder.distanceTextView.setText(walkingDistance);
         }
 
+        // Set favorite
         viewHolder.favoriteButton.setIsFavorite(currentStation.getIsFavorite());
         viewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,24 +15,11 @@ platform :android do
   desc "Runs all the tests"
   lane :ci_test do
 
-  # Setup the environment variables
-    gradleProperties = nil
-    if ENV['CI']
-      gradleProperties = {
-          versionCode: ENV['CI_JOB_ID'],
-          keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-          keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
-          keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
-          keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
-      }
-    end
-
     # We make sure the app compiles
     gradle(
         task: "assemble",
         flavor: "Full",
-        build_type: "Debug",
-        properties: gradleProperties
+        build_type: "Debug"
     )
 
     # Then run the unit tests
@@ -47,20 +34,18 @@ platform :android do
     )
   end
 
-  desc "Submit a build to Google Play, in the alpha lane"
+  desc "Submit a build to Google Play, in the internal lane"
   lane :release do
 
-    gradleProperties = nil
-    if ENV['CI']
-        gradleProperties = {
-            versionCode: ENV['CI_JOB_ID'],
-            keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-            keystoreKeyPass: ENV['PLAYSTORE_KEY_PASS'],
-            keystoreFilePath: ENV['PLAYSTORE_FILE_PATH'],
-            keystoreStorePass: ENV['PLAYSTORE_STORE_PASS'],
-        }
-    end
-
+    gradleProperties = {
+        versionCode: 255321 + $env.GITHUB_RUN_NUMBER, #255321 is the last build number used on GitlabCI
+        googleMapsApiKey: $secrets.GOOGLE_MAPS_API_KEY,
+        keystoreFilePath: 'files/timeforcoffee.jks',
+        keystoreKeyAlias: $secrets.PLAYSTORE_KEY_ALIAS,
+        keystoreKeyPass:  $secrets.PLAYSTORE_KEY_PASS,
+        keystoreStorePass: $secrets.PLAYSTORE_STORE_PASS
+    }
+    
     gradle(
         task: "assemble",
         flavor: "Full",
@@ -69,7 +54,7 @@ platform :android do
     )
 
     supply(
-        track: 'alpha',
+        track: 'internal',
         apk: 'mobile/build/outputs/apk/full/release/mobile-full-release.apk'
     )
   end

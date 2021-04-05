@@ -20,10 +20,14 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
     private static class ConnexionViewHolder {
         TextView stationTextView;
-        TextView timeLabelTextView;
-        TextView timeTextView;
-        TextView realtimeDepartureTextView;
+        TextView slashTextView;
         TextView departureTextView;
+        TextView departureTimeTextView;
+        TextView departureRealtimeTextView;
+        TextView arrivalTextView;
+        TextView arrivalTimeTextView;
+        TextView arrivalRealtimeTextView;
+        TextView minutesTextView;
     }
 
     public ConnectionListAdapter(Context context, List<Connection> connexions) {
@@ -34,8 +38,6 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ConnectionListAdapter.ConnexionViewHolder viewHolder;
-        String departureLabel = mContext.getResources().getString(R.string.connection_departure);
-        String arrivalLabel = mContext.getResources().getString(R.string.connection_arrival);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -43,11 +45,14 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
 
             viewHolder = new ConnectionListAdapter.ConnexionViewHolder();
             viewHolder.stationTextView = convertView.findViewById(R.id.station);
-            viewHolder.timeLabelTextView = convertView.findViewById(R.id.time_label);
-            viewHolder.timeTextView = convertView.findViewById(R.id.time);
-            viewHolder.realtimeDepartureTextView = convertView.findViewById(R.id.realtime);
+            viewHolder.arrivalTextView = convertView.findViewById(R.id.arrival);
+            viewHolder.arrivalTimeTextView = convertView.findViewById(R.id.arrival_time);
+            viewHolder.arrivalRealtimeTextView = convertView.findViewById(R.id.arrival_realtime);
+            viewHolder.slashTextView = convertView.findViewById(R.id.slash);
             viewHolder.departureTextView = convertView.findViewById(R.id.departure);
-
+            viewHolder.departureTimeTextView = convertView.findViewById(R.id.departure_time);
+            viewHolder.departureRealtimeTextView = convertView.findViewById(R.id.departure_realtime);
+            viewHolder.minutesTextView = convertView.findViewById(R.id.minutes);
 
             convertView.setTag(viewHolder);
 
@@ -57,19 +62,43 @@ public class ConnectionListAdapter extends ArrayAdapter<Connection> {
         }
 
         Connection connection = this.mConnexions.get(position);
-        viewHolder.stationTextView.setText(connection.getName());
-        viewHolder.timeLabelTextView.setText(connection.getTimeLabel(departureLabel, arrivalLabel));
-        viewHolder.timeTextView.setText(connection.getScheduledDepartureStr());
-        viewHolder.departureTextView.setText(connection.getDepartureInMinutes());
+        viewHolder.stationTextView.setText(connection.getStationName());
+        viewHolder.minutesTextView.setText(connection.getDepartureInMinutes());
 
-        if (connection.isLate()) {
-            viewHolder.realtimeDepartureTextView.setVisibility(View.VISIBLE);
-            viewHolder.realtimeDepartureTextView.setText(connection.getRealtimeDepartureStr());
-            viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        viewHolder.departureTimeTextView.setText(connection.getScheduledDepartureStr());
+
+        if (connection.isDepartureLate()) {
+            viewHolder.departureRealtimeTextView.setVisibility(View.VISIBLE);
+            viewHolder.departureRealtimeTextView.setText(connection.getRealtimeDepartureStr());
+            viewHolder.departureTimeTextView.setPaintFlags(viewHolder.departureTimeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
         else {
-            viewHolder.realtimeDepartureTextView.setVisibility(View.GONE);
-            viewHolder.timeTextView.setPaintFlags(viewHolder.timeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            viewHolder.departureRealtimeTextView.setVisibility(View.GONE);
+            viewHolder.departureTimeTextView.setPaintFlags(viewHolder.departureTimeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
+
+        viewHolder.arrivalTimeTextView.setText(connection.getScheduledArrivalStr());
+
+        if (connection.isArrivalLate()) {
+            viewHolder.arrivalRealtimeTextView.setVisibility(View.VISIBLE);
+            viewHolder.arrivalRealtimeTextView.setText(connection.getRealtimeDepartureStr());
+            viewHolder.arrivalTimeTextView.setPaintFlags(viewHolder.arrivalTimeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            viewHolder.arrivalRealtimeTextView.setVisibility(View.GONE);
+            viewHolder.arrivalTimeTextView.setPaintFlags(viewHolder.arrivalTimeTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
+
+        //don't show arrival times for first item
+        if(position == 0) {
+            viewHolder.arrivalTextView.setVisibility(View.GONE);
+            viewHolder.arrivalTimeTextView.setVisibility(View.GONE);
+            viewHolder.arrivalRealtimeTextView.setVisibility(View.GONE);
+            viewHolder.slashTextView.setVisibility(View.GONE);
+        } else if (position == getCount() - 1) {
+            viewHolder.departureTextView.setVisibility(View.GONE);
+            viewHolder.departureTimeTextView.setVisibility(View.GONE);
+            viewHolder.departureRealtimeTextView.setVisibility(View.GONE);
+            viewHolder.slashTextView.setVisibility(View.GONE);
         }
 
         return convertView;

@@ -17,7 +17,7 @@
     <application
         android:name=".TimeForCoffeeApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_app"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
@@ -33,6 +33,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="0f094fc97e3bdd70012cabf92bbe12aeb81072c3" />
+
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
 
         <service android:name=".wear.DataService" />
 
@@ -57,6 +61,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/activity_title"
             android:screenOrientation="portrait">
 
@@ -66,31 +71,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name=".activity.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".activity.DeparturesActivity"
-            android:screenOrientation="portrait">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-
-        </activity>
-
-        <activity
-            android:name=".activity.StationSearchActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/activity_title"
-            android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
 
         </activity>
 

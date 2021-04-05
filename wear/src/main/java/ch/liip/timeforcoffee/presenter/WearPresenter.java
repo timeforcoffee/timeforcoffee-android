@@ -1,22 +1,14 @@
 package ch.liip.timeforcoffee.presenter;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
-import ch.liip.timeforcoffee.R;
-import ch.liip.timeforcoffee.activity.WearActivity;
-import ch.liip.timeforcoffee.api.models.Departure;
-import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
-import ch.liip.timeforcoffee.common.SerializableLocation;
-import ch.liip.timeforcoffee.common.presenter.Presenter;
-import ch.liip.timeforcoffee.helper.PermissionsChecker;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,9 +17,26 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.wearable.*;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ch.liip.timeforcoffee.R;
+import ch.liip.timeforcoffee.activity.WearActivity;
+import ch.liip.timeforcoffee.api.models.Departure;
+import ch.liip.timeforcoffee.api.models.Station;
+import ch.liip.timeforcoffee.common.SerialisationUtilsGSON;
+import ch.liip.timeforcoffee.common.SerializableLocation;
+import ch.liip.timeforcoffee.common.presenter.Presenter;
+import ch.liip.timeforcoffee.helper.PermissionsChecker;
 
 public class WearPresenter implements Presenter, MessageApi.MessageListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -206,7 +215,7 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
             //Select first station in the list and load departures for it
             Station station = stations.get(0);
             mActivity.setStation(station);
-            loadDepartures(station.getIdStr());
+            loadDepartures(station.getId());
 
             //Display station list
             mActivity.setStations(stations);
@@ -281,9 +290,9 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
         }
     }
 
-    private void loadDepartures(String stationId) {
+    private void loadDepartures(int stationId) {
         Log.d(TAG, "loadDepartures");
-        sendMessage("/station", stationId);
+        sendMessage("/station", String.valueOf(stationId));
     }
 
     private void sendMessage(final String path, final String message) {
@@ -313,6 +322,6 @@ public class WearPresenter implements Presenter, MessageApi.MessageListener,
     }
 
     public void selectStation(Station station) {
-        loadDepartures(station.getIdStr());
+        loadDepartures(station.getId());
     }
 }
