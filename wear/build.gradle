@@ -1,15 +1,23 @@
 apply plugin: 'com.android.application'
 
-
 android {
-    compileSdkVersion project.COMPILE_SDK
+    signingConfigs {
+        release {
+            keyAlias project.KEYSTORE_KEY_ALIAS
+            keyPassword project.KEYSTORE_KEY_PASS
+            storeFile file(project.KEYSTORE_PATH)
+            storePassword project.KEYSTORE_STORE_PASS
+        }
+    }
 
+    compileSdkVersion project.COMPILE_SDK
     defaultConfig {
         applicationId project.PACKAGE_NAME
         minSdkVersion project.MIN_SDK
         targetSdkVersion project.TARGET_SDK
         versionCode project.VERSION_CODE
         versionName project.VERSION
+        buildConfigField "String", "OPEN_DATA_URL", "\"" + project.OPEN_DATA_URL + "\""
         resValue "string", "google_maps_api_key", project.GOOGLE_MAPS_API_KEY
     }
     buildTypes {
@@ -18,13 +26,16 @@ android {
             minifyEnabled false
             applicationIdSuffix '.dev'
             versionNameSuffix '-DEV'
+            buildConfigField "String", "BACKEND_URL", "\"" + project.BACKEND_DEV_URL + "\""
         }
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            buildConfigField "String", "BACKEND_URL", "\"" + project.BACKEND_PROD_URL + "\""
         }
     }
-
     lintOptions {
         disable 'MissingTranslation'
         checkReleaseBuilds false
@@ -38,6 +49,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':api')
+    implementation project(':backend')
     implementation project(':common')
 
     implementation 'com.google.android.gms:play-services-location:18.0.0'
@@ -47,4 +59,6 @@ dependencies {
     implementation 'androidx.wear:wear:1.1.0'
     implementation 'com.google.android.support:wearable:2.8.1'
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
+    implementation 'com.squareup.dagger:dagger:1.2.5'
+    annotationProcessor 'com.squareup.dagger:dagger-compiler:1.2.5'
 }

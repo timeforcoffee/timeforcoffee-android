@@ -18,14 +18,12 @@ platform :android do
     # We make sure the app compiles
     gradle(
         task: "assemble",
-        flavor: "Full",
         build_type: "Debug"
     )
 
     # Then run the unit tests
     gradle(
       task: "test",
-      flavor: "Full",
       build_type: "DebugUnitTest"
     )
 
@@ -46,16 +44,35 @@ platform :android do
         keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
     }
     
+    # build and release mobile app
     gradle(
-        task: "assemble",
-        flavor: "Full",
-        build_type: "Release",
+        task: ":mobile:assemble",
         properties: gradleProperties
     )
 
     supply(
         track: 'internal',
-        apk: 'mobile/build/outputs/apk/full/release/mobile-full-release.apk'
+        apk: 'mobile/build/outputs/bundle/release/mobile-release.aab'
+    )
+
+    # build and release wear app
+     gradleProperties = {
+        versionCode: 255321 + $env.GITHUB_RUN_NUMBER + 1, #255321 is the last build number used on GitlabCI, + 1 because wear app must have a different version number that mobile app
+        googleMapsApiKey: $secrets.GOOGLE_MAPS_API_KEY,
+        keystoreFilePath: 'private/timeforcoffee.jks',
+        keystoreKeyAlias: $secrets.PLAYSTORE_KEY_ALIAS,
+        keystoreKeyPass:  $secrets.PLAYSTORE_KEY_PASS,
+        keystoreStorePass: $secrets.PLAYSTORE_STORE_PASS
+    }
+
+    gradle(
+        task: ":wear:assemble",
+        properties: gradleProperties
+    )
+
+    supply(
+        track: 'internal',
+        apk: 'wear/build/outputs/bundle/release/wear-release.aab'
     )
   end
 end
