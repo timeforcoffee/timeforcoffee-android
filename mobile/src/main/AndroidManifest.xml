@@ -34,26 +34,6 @@
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
 
-        <service android:name=".wear.DataService" />
-
-        <service android:name=".wear.WearService">
-            <intent-filter>
-
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-
-                <data
-                    android:host="*"
-                    android:path="/location"
-                    android:scheme="wear" />
-
-                <data
-                    android:host="*"
-                    android:path="/station"
-                    android:scheme="wear" />
-
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"

@@ -16,13 +16,8 @@ import ch.liip.timeforcoffee.api.deserializers.DateDeserializer;
 import ch.liip.timeforcoffee.backend.BackendService;
 import ch.liip.timeforcoffee.backend.OpenDataService;
 import ch.liip.timeforcoffee.fragment.DepartureListFragment;
-import ch.liip.timeforcoffee.fragment.FavoritesListFragment;
 import ch.liip.timeforcoffee.fragment.StationListFragment;
-import ch.liip.timeforcoffee.helper.FavoritesDataSource;
-import ch.liip.timeforcoffee.presenter.ConnectionsPresenter;
-import ch.liip.timeforcoffee.presenter.DeparturesPresenter;
-import ch.liip.timeforcoffee.presenter.MainPresenter;
-import ch.liip.timeforcoffee.presenter.StationSearchPresenter;
+import ch.liip.timeforcoffee.presenter.WearPresenter;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
@@ -30,17 +25,13 @@ import retrofit.converter.GsonConverter;
 
 @Module(
         injects = {
-                MainPresenter.class,
-                DeparturesPresenter.class,
-                StationSearchPresenter.class,
-                ConnectionsPresenter.class,
+                WearPresenter.class,
                 StationListFragment.class,
                 DepartureListFragment.class,
-                FavoritesListFragment.class
         }
 )
 
-class TimeForCoffeeModule {
+class TimeForCoffeeWearModule {
 
     @Provides
     @Singleton
@@ -90,17 +81,5 @@ class TimeForCoffeeModule {
     @Singleton
     DepartureService provideDepartureService(EventBus eventBus, BackendService backendService) {
         return new DepartureService(eventBus, backendService);
-    }
-
-    @Provides
-    @Singleton
-    ConnectionService provideConnectionService(EventBus eventBus, BackendService backendService) {
-        return new ConnectionService(eventBus, backendService);
-    }
-
-    @Provides
-    @Singleton
-    FavoritesDataSource provideFavoriteDataSource() {
-        return new FavoritesDataSource();
     }
 }
