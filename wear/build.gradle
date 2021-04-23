@@ -1,8 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion project.COMPILE_SDK
+    signingConfigs {
+        release {
+            keyAlias project.KEYSTORE_KEY_ALIAS
+            keyPassword project.KEYSTORE_KEY_PASS
+            storeFile file(project.KEYSTORE_PATH)
+            storePassword project.KEYSTORE_STORE_PASS
+        }
+    }
 
+    compileSdkVersion project.COMPILE_SDK
     defaultConfig {
         applicationId project.PACKAGE_NAME
         minSdkVersion project.MIN_SDK
@@ -21,8 +29,10 @@ android {
             buildConfigField "String", "BACKEND_URL", "\"" + project.BACKEND_DEV_URL + "\""
         }
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
             buildConfigField "String", "BACKEND_URL", "\"" + project.BACKEND_PROD_URL + "\""
         }
     }
@@ -39,6 +49,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':api')
+    implementation project(':backend')
     implementation project(':common')
 
     implementation 'com.google.android.gms:play-services-location:18.0.0'
