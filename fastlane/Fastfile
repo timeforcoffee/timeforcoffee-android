@@ -46,7 +46,7 @@ platform :android do
     
     # build and release mobile app
     gradle(
-        task: ":mobile:assemble",
+        task: ":mobile:bundle",
         properties: gradleProperties
     )
 
@@ -66,7 +66,7 @@ platform :android do
     }
 
     gradle(
-        task: ":wear:assemble",
+        task: ":wear:bundle",
         properties: gradleProperties
     )
 
