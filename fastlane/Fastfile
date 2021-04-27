@@ -36,7 +36,7 @@ platform :android do
   lane :release do
 
     gradleProperties = {
-        versionCode: 255321 + ENV['GITHUB_RUN_NUMBER'].to_i, #255321 is the last build number used on GitlabCI
+        versionCode: 2920000000, 
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
@@ -57,7 +57,7 @@ platform :android do
 
     # build and release wear app
      gradleProperties = {
-        versionCode: 255321 + ENV['GITHUB_RUN_NUMBER'].to_i + 1, #255321 is the last build number used on GitlabCI, + 1 because wear app must have a different version number that mobile app
+        versionCode: 2920000001,
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
