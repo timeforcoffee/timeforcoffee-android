@@ -57,7 +57,7 @@ platform :android do
 
     # build and release wear app
      gradleProperties = {
-        versionCode: 2920002, 
+        versionCode: 2920003, 
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
