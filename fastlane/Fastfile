@@ -36,7 +36,7 @@ platform :android do
   lane :release do
 
     gradleProperties = {
-        versionCode: 2920000000, 
+        versionCode: 2920000000,
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
@@ -57,7 +57,7 @@ platform :android do
 
     # build and release wear app
      gradleProperties = {
-        versionCode: 2920000001,
+        versionCode: 2920000001, 
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
