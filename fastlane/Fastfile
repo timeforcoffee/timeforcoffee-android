@@ -35,25 +35,25 @@ platform :android do
   desc "Submit a build to Google Play, in the internal lane"
   lane :release do
 
-    gradleProperties = {
-        versionCode: 2920001,
-        googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
-        keystoreFilePath: '../private/timeforcoffee.jks',
-        keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-        keystoreKeyPass:  ENV['PLAYSTORE_KEY_PASS'],
-        keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
-    }
+    #gradleProperties = {
+    #    versionCode: 2920001,
+    #    googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
+    #    keystoreFilePath: '../private/timeforcoffee.jks',
+    #    keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
+    #    keystoreKeyPass:  ENV['PLAYSTORE_KEY_PASS'],
+    #    keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
+    #}
     
-    # build and release mobile app
-    gradle(
-        task: ":mobile:bundle",
-        properties: gradleProperties
-    )
-
-    supply(
-        track: 'internal',
-        aab: 'mobile/build/outputs/bundle/release/mobile-release.aab'
-    )
+    ## build and release mobile app
+    #gradle(
+    #    task: ":mobile:bundle",
+    #    properties: gradleProperties
+    #)
+    #
+    #supply(
+    #    track: 'internal',
+    #    aab: 'mobile/build/outputs/bundle/release/mobile-release.aab'
+    #)
 
     # build and release wear app
      gradleProperties = {
