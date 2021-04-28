@@ -36,7 +36,7 @@ platform :android do
   lane :release do
 
     gradleProperties = {
-        versionCode: (ENV['GITHUB_RUN_NUMBER'].to_s + "00").to_i,
+        versionCode: ("29" + ENV['GITHUB_RUN_NUMBER'].to_s + "000").to_i, 
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
@@ -52,7 +52,7 @@ platform :android do
 
     # build and release wear app
     gradleProperties = {
-        versionCode: (ENV['GITHUB_RUN_NUMBER'].to_s + "01").to_i, 
+        versionCode: ("29" + ENV['GITHUB_RUN_NUMBER'].to_s + "001").to_i, 
         googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
         keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
