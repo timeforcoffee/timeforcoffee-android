@@ -3,15 +3,18 @@ package ch.liip.timeforcoffee.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.wear.widget.WearableLinearLayoutManager;
+import androidx.wear.widget.WearableRecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.adapter.DepartureListAdapter;
+import ch.liip.timeforcoffee.adapter.StationListAdapter;
 import ch.liip.timeforcoffee.api.models.Departure;
 import ch.liip.timeforcoffee.api.models.Station;
 
@@ -25,7 +28,8 @@ public class DepartureListFragment extends Fragment {
     private ProgressBar mProgressBar;
     private TextView mNoResultsTextView;
     private TextView mTitleTextView;
-    private ListView mListView;
+    WearableLinearLayoutManager mLinearLayoutManager;
+    private WearableRecyclerView mListView;
     private DepartureListAdapter mAdapter;
 
     private List<Departure> mDepartures = new ArrayList<>();
@@ -44,7 +48,11 @@ public class DepartureListFragment extends Fragment {
         mTitleTextView = view.findViewById(R.id.title);
         mListView = view.findViewById(R.id.list_view);
 
-        mAdapter = new DepartureListAdapter(getActivity(), mDepartures);
+        mLinearLayoutManager = new WearableLinearLayoutManager(getActivity());
+        mListView.setLayoutManager(mLinearLayoutManager);
+        mListView.setEdgeItemsCenteringEnabled(true);
+
+        mAdapter = new DepartureListAdapter(mDepartures);
         mListView.setAdapter(mAdapter);
 
         return view;
