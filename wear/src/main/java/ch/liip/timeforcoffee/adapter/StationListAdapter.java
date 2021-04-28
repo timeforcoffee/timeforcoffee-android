@@ -1,39 +1,36 @@
 package ch.liip.timeforcoffee.adapter;
 
 import android.content.Context;
-import android.support.wearable.view.WearableListView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import ch.liip.timeforcoffee.R;
 import ch.liip.timeforcoffee.api.models.Station;
-import ch.liip.timeforcoffee.view.StationItemView;
 
 import java.util.List;
 
-/**
- * Created by fsantschi on 08/03/15.
- */
-public class StationListAdapter extends WearableListView.Adapter {
 
-    private List<Station> mStations;
-    private Context mContext;
+public class StationListAdapter extends RecyclerView.Adapter<StationListAdapter.ViewHolder> {
+
+    private final List<Station> mStations;
 
     public StationListAdapter(Context context, List<Station> stations) {
         mStations = stations;
-        mContext = context;
     }
 
     @Override
-    public WearableListView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new WearableListView.ViewHolder(new StationItemView(mContext));
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.station_item, viewGroup, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(WearableListView.ViewHolder viewHolder, final int position) {
-        StationItemView view = (StationItemView) viewHolder.itemView;
-        final Station item = mStations.get(position);
-        TextView textView = (TextView) view.findViewById(R.id.name);
-        textView.setText(item.getName());
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        viewHolder.bind(mStations.get(position));
     }
 
     @Override
@@ -46,4 +43,18 @@ public class StationListAdapter extends WearableListView.Adapter {
         mStations.addAll(stations);
         notifyDataSetChanged();
     }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView mTextView;
+
+        public ViewHolder(View view) {
+            super(view);
+            mTextView = (TextView) view.findViewById(R.id.name);
+        }
+
+        public void bind(Station station) {
+            mTextView.setText(station.getName());
+        }
+    }
+
 }

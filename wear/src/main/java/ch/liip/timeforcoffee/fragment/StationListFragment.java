@@ -3,6 +3,9 @@ package ch.liip.timeforcoffee.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.wear.widget.WearableLinearLayoutManager;
+import androidx.wear.widget.WearableRecyclerView;
+
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +27,8 @@ public class StationListFragment extends Fragment implements WearableListView.Cl
     private ProgressBar mProgressBar;
     private TextView mTitleTextView;
 
-    private WearableListView mListView;
+    WearableLinearLayoutManager mLinearLayoutManager;
+    private WearableRecyclerView mListView;
     private StationListAdapter mAdapter;
 
     private List<Station> mStations = new ArrayList<>();
@@ -44,8 +48,12 @@ public class StationListFragment extends Fragment implements WearableListView.Cl
         mListView = view.findViewById(R.id.list_view);
 
         mAdapter = new StationListAdapter(getActivity(), mStations);
+
+        mLinearLayoutManager = new WearableLinearLayoutManager(getActivity());
+        mListView.setLayoutManager(mLinearLayoutManager);
+        mListView.setEdgeItemsCenteringEnabled(true);
         mListView.setAdapter(mAdapter);
-        mListView.setClickListener(this);
+        //mListView.setClickListener(this);
 
         return view;
     }
