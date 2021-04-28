@@ -44,7 +44,6 @@
         android:layout_marginTop="34dp"
         android:dividerHeight="0dp"
         android:listSelector="@android:color/transparent"
-        android:visibility="gone"
-        app:layout_box="left|bottom|right" />
+        android:visibility="gone"/>
 
 </FrameLayout>
