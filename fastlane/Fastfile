@@ -35,34 +35,29 @@ platform :android do
   desc "Submit a build to Google Play, in the internal lane"
   lane :release do
 
-    #gradleProperties = {
-    #    versionCode: 2920001,
-    #    googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
-    #    keystoreFilePath: '../private/timeforcoffee.jks',
-    #    keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-    #    keystoreKeyPass:  ENV['PLAYSTORE_KEY_PASS'],
-    #    keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
-    #}
+    gradleProperties = {
+        versionCode: ("29200" + $env.GITHUB_RUN_NUMBER.to_s + "00").to_i,
+        googleMapsApiKey: $secrets.GOOGLE_MAPS_API_KEY,
+        keystoreFilePath: '../private/timeforcoffee.jks',
+        keystoreKeyAlias: $secrets.PLAYSTORE_KEY_ALIAS,
+        keystoreKeyPass:  $secrets.PLAYSTORE_KEY_PASS,
+        keystoreStorePass: $secrets.PLAYSTORE_STORE_PASS
+    }
     
-    ## build and release mobile app
-    #gradle(
-    #    task: ":mobile:bundle",
-    #    properties: gradleProperties
-    #)
-    #
-    #supply(
-    #    track: 'internal',
-    #    aab: 'mobile/build/outputs/bundle/release/mobile-release.aab'
-    #)
+    # build and release mobile app
+    gradle(
+        task: ":mobile:bundle",
+        properties: gradleProperties
+    )
 
     # build and release wear app
-     gradleProperties = {
-        versionCode: 2920003, 
-        googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
+    gradleProperties = {
+        versionCode: ("292000" + $env.GITHUB_RUN_NUMBER.to_s + "01").to_i, 
+        googleMapsApiKey: $secrets.GOOGLE_MAPS_API_KEY,
         keystoreFilePath: '../private/timeforcoffee.jks',
-        keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
-        keystoreKeyPass:  ENV['PLAYSTORE_KEY_PASS'],
-        keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
+        keystoreKeyAlias: $secrets.PLAYSTORE_KEY_ALIAS,
+        keystoreKeyPass:  $secrets.PLAYSTORE_KEY_PASS,
+        keystoreStorePass:$secrets.PLAYSTORE_STORE_PASS
     }
 
     gradle(
@@ -72,7 +67,7 @@ platform :android do
 
     supply(
         track: 'internal',
-        aab: 'wear/build/outputs/bundle/release/wear-release.aab'
+        aab_paths: ['mobile/build/outputs/bundle/release/mobile-release.aab', 'wear/build/outputs/bundle/release/wear-release.aab']
     )
   end
 end
