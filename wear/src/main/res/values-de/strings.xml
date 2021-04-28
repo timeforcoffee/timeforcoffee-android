@@ -14,4 +14,5 @@
     <string name="permission_no_location">"Du hast die Erlaubnis um den Standort abrufen zu können, nicht gegeben"</string>
     <string name="timeout">"Timeout: Prüfe ob Deine Uhr mit Deinem Telefon verbunden ist, und ob dieses Internetanschluss hat."</string>
     <string name="no_result">Keine Ergebnisse</string>
+    <string name="network_error">Netzwerk Fehler!</string>
 </resources>
