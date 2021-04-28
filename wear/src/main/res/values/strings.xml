@@ -15,4 +15,5 @@
     <string name="play_services_error">"Google Play services error"</string>
     <string name="timeout">"Timeout: Check that your watch is connected to your mobile phone and that you mobile phone has internet access."</string>
     <string name="no_result">No results</string>
+    <string name="network_error">Network error!</string>
 </resources>

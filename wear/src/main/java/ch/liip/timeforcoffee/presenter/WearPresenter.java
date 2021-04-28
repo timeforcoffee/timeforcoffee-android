@@ -181,6 +181,7 @@ public class WearPresenter implements Presenter {
 
     @Subscribe
     public void onFetchErrorEvent(FetchStationsLocationErrorEvent event) {
+        showError(R.string.network_error);
     }
 
     private void loadDepartures(int stationId) {
@@ -195,7 +196,7 @@ public class WearPresenter implements Presenter {
 
     @Subscribe
     public void onFetchErrorEvent(FetchDeparturesErrorEvent event) {
-       //TODO
+        showError(R.string.network_error);
     }
 
     private void showError(int messageStringResId) {

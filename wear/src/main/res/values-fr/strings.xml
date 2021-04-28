@@ -14,4 +14,5 @@
     <string name="play_services_error">"Erreur du service Google Play"</string>
     <string name="timeout">"Timeout: Vérifie que ta montre est connectée à ton téléphone et que le téléphone est bienbconnecté à internet."</string>
     <string name="no_result">Pas de résultats</string>
+    <string name="network_error">"Problème de connection"</string>
 </resources>
