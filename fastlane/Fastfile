@@ -36,12 +36,12 @@ platform :android do
   lane :release do
 
     gradleProperties = {
-        versionCode: ("29200" + $env.GITHUB_RUN_NUMBER.to_s + "00").to_i,
-        googleMapsApiKey: $secrets.GOOGLE_MAPS_API_KEY,
+        versionCode: ("29200" + ENV['GITHUB_RUN_NUMBER'].to_s + "00").to_i,
+        googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
-        keystoreKeyAlias: $secrets.PLAYSTORE_KEY_ALIAS,
-        keystoreKeyPass:  $secrets.PLAYSTORE_KEY_PASS,
-        keystoreStorePass: $secrets.PLAYSTORE_STORE_PASS
+        keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
+        keystoreKeyPass:  ENV['PLAYSTORE_KEY_PASS'],
+        keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
     }
     
     # build and release mobile app
@@ -52,12 +52,12 @@ platform :android do
 
     # build and release wear app
     gradleProperties = {
-        versionCode: ("292000" + $env.GITHUB_RUN_NUMBER.to_s + "01").to_i, 
-        googleMapsApiKey: $secrets.GOOGLE_MAPS_API_KEY,
+        versionCode: ("292000" + ENV['GITHUB_RUN_NUMBER'].to_s + "01").to_i, 
+        googleMapsApiKey: ENV['GOOGLE_MAPS_API_KEY'],
         keystoreFilePath: '../private/timeforcoffee.jks',
-        keystoreKeyAlias: $secrets.PLAYSTORE_KEY_ALIAS,
-        keystoreKeyPass:  $secrets.PLAYSTORE_KEY_PASS,
-        keystoreStorePass:$secrets.PLAYSTORE_STORE_PASS
+        keystoreKeyAlias: ENV['PLAYSTORE_KEY_ALIAS'],
+        keystoreKeyPass:  ENV['PLAYSTORE_KEY_PASS'],
+        keystoreStorePass: ENV['PLAYSTORE_STORE_PASS']
     }
 
     gradle(
