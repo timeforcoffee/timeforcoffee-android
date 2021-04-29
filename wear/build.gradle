@@ -61,4 +61,8 @@ dependencies {
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
     implementation 'com.squareup.dagger:dagger:1.2.5'
     annotationProcessor 'com.squareup.dagger:dagger-compiler:1.2.5'
+
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 }

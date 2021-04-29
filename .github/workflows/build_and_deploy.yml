@@ -25,6 +25,12 @@ jobs:
           source: "private/googleplay.json"
           target: "mobile/googleplay.json"
 
+      - name: Copy file
+        uses: canastro/copy-file-action@master
+        with:
+          source: "private/googleplay.json"
+          target: "wear/googleplay.json"
+
       - name: install dependencies
         uses: ruby/setup-ruby@v1
         with:
